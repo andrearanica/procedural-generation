@@ -11,8 +11,8 @@ void MyShaderClass::set_camera_transform(const glm::mat4 &transform) {
 
 
 bool MyShaderClass::load_shaders() {
-  return  add_shader(GL_VERTEX_SHADER,"12.vert") &&
-          add_shader(GL_FRAGMENT_SHADER,"12.frag");
+  return  add_shader(GL_VERTEX_SHADER,"./shaders/vertex_shader.vert") &&
+          add_shader(GL_FRAGMENT_SHADER,"./shaders/fragment_shader.frag");
 }
 
 bool MyShaderClass::load_done() {

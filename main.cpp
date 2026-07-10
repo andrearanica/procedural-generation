@@ -9,81 +9,63 @@
 #include "./libs/camera/camera.h"
 #include "./libs/shaders/shaderclass.h"
 #include "./libs/shaders/myshaderclass.h"
+#include "./libs/world/world.h"
 
 
 /**
-  Struttura di comodo dove sono memorizzate tutte le variabili globali
+  Structure which stores all the global informations
 */
 struct global_struct {
+  // Window dimensions
+  int WINDOW_WIDTH  = 1024; 
+  int WINDOW_HEIGHT = 768;
 
-  int WINDOW_WIDTH  = 1024; // Larghezza della finestra 
-  int WINDOW_HEIGHT = 768; // Altezza della finestra
-
-  GLuint VAO; // Vertex Array Object
+  // Vertex Array Object
+  GLuint VAO;
 
   Camera camera;
 
-  // Istanza della classe di gestione degli shader 
+  World world;
+
+  // Shaders handler
   MyShaderClass shaders;
 
   const float SPEED = 10;
   float gradX;
   float gradY; 
 
-  global_struct() : gradX(0.0f), gradY(0.0f) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(5, 5) {}
 
 } global;
 
-/**
-  Struttura dati che contiene gli attributi di un vertice.
-*/
-struct Vertex {
-  glm::vec3 position; ///< Coordinate spaziali
-  glm::vec3 color;    ///< Colore
-  Vertex(float x, float y, float z, float r, float g, float b) {
-      position = glm::vec3(x,y,z);
-      color = glm::vec3(r,g,b);
-  }
 
-  Vertex(const glm::vec3 &xyz, const glm::vec3 &rgb) : position(xyz), color(rgb) {}
-};
-
-
-/**
-Prototipi della nostre funzioni di callback. 
-Sono definite più avanti nel codice.
-*/
+// Function invoked from the main loop that computes the transformation matrix
 void MyRenderScene(void);
-void MyIdle(void);
+// Function invoked everytime the keyboard is pressed
 void MyKeyboard(unsigned char key, int x, int y);
+// Function invoked when the window is closed
 void MyClose(void);
+// Function invoked everytime a special key is pressed on the keyboard
 void MySpecialKeyboard(int Key, int x, int y);
+// Function invoked everytime a mouse event is generated
 void MyMouse(int x, int y);
 
+
+// Initializes the OpenGL environment (GLUT + GLEW)
 void init(int argc, char*argv[]) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
-
 
   glutInitWindowSize(global.WINDOW_WIDTH, global.WINDOW_HEIGHT);
   glutInitWindowPosition(100, 100);
   glutCreateWindow("Informatica Grafica");
 
-/*
-  // Imposta la modalità a schemo intero e nasconde il cursore
-  std::stringstream game_mode;
-  game_mode << global.WINDOW_WIDTH << "x" << global.WINDOW_HEIGHT << ":32";
-  glutGameModeString(game_mode.str().c_str());
-  glutEnterGameMode();
-*/
   glutSetCursor(GLUT_CURSOR_NONE);
 
-  // Portiamo il mouse fisso al centro della finestra
   global.camera.set_mouse_init_position(global.WINDOW_WIDTH/2, global.WINDOW_HEIGHT/2);
   global.camera.lock_mouse_position(true);
   glutWarpPointer(global.WINDOW_WIDTH/2, global.WINDOW_HEIGHT/2);
 
- // Must be done after glut is initialized!
   GLenum res = glewInit();
   if (res != GLEW_OK) {
       std::cerr<<"Error : "<<glewGetErrorString(res)<<std::endl;
@@ -100,82 +82,20 @@ void init(int argc, char*argv[]) {
 
   glutSpecialFunc(MySpecialKeyboard);
 
-  // Callback per la gesione degli eventi del mouse.
   glutPassiveMotionFunc(MyMouse);
 
-  glEnable(GL_CULL_FACE);
+  // Disabilito backface culling glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
   glEnable(GL_DEPTH_TEST);
 }
 
+/**
+ * Function that creates the scene by defining objects, setting camera data
+ * and loading shaders
+ */
 void create_scene() {
-
-    Vertex Vertices[36] = {
-        Vertex(glm::vec3(-1.0f,-1.0f, 1.0f), glm::vec3( 1.0f, 0.0f, 0.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f, 1.0f), glm::vec3( 1.0f, 0.0f, 0.0f)),
-        Vertex(glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3( 1.0f, 0.0f, 0.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f, 1.0f), glm::vec3( 1.0f, 0.0f, 0.0f)),
-        Vertex(glm::vec3( 1.0f, 1.0f, 1.0f), glm::vec3( 1.0f, 0.0f, 0.0f)),
-        Vertex(glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3( 1.0f, 0.0f, 0.0f)),
-
-
-        Vertex(glm::vec3( 1.0f,-1.0f, 1.0f), glm::vec3( 0.0f, 1.0f, 0.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f,-1.0f), glm::vec3( 0.0f, 1.0f, 0.0f)),
-        Vertex(glm::vec3( 1.0f, 1.0f, 1.0f), glm::vec3( 0.0f, 1.0f, 0.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f,-1.0f), glm::vec3( 0.0f, 1.0f, 0.0f)),
-        Vertex(glm::vec3( 1.0f, 1.0f,-1.0f), glm::vec3( 0.0f, 1.0f, 0.0f)),
-        Vertex(glm::vec3( 1.0f, 1.0f, 1.0f), glm::vec3( 0.0f, 1.0f, 0.0f)),
-
-
-        Vertex(glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3( 0.0f, 0.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f, 1.0f, 1.0f), glm::vec3( 0.0f, 0.0f, 1.0f)),
-        Vertex(glm::vec3(-1.0f, 1.0f,-1.0f), glm::vec3( 0.0f, 0.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f, 1.0f, 1.0f), glm::vec3( 0.0f, 0.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f, 1.0f,-1.0f), glm::vec3( 0.0f, 0.0f, 1.0f)),
-        Vertex(glm::vec3(-1.0f, 1.0f,-1.0f), glm::vec3( 0.0f, 0.0f, 1.0f)),
-
-
-        Vertex(glm::vec3(-1.0f,-1.0f, 1.0f), glm::vec3( 1.0f, 1.0f, 0.0f)),
-        Vertex(glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3( 1.0f, 1.0f, 0.0f)),
-        Vertex(glm::vec3(-1.0f,-1.0f,-1.0f), glm::vec3( 1.0f, 1.0f, 0.0f)),
-        Vertex(glm::vec3(-1.0f,-1.0f,-1.0f), glm::vec3( 1.0f, 1.0f, 0.0f)),
-        Vertex(glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3( 1.0f, 1.0f, 0.0f)),
-        Vertex(glm::vec3(-1.0f, 1.0f,-1.0f), glm::vec3( 1.0f, 1.0f, 0.0f)),
-
-
-        Vertex(glm::vec3(-1.0f,-1.0f, 1.0f), glm::vec3( 0.0f, 1.0f, 1.0f)),
-        Vertex(glm::vec3(-1.0f,-1.0f,-1.0f), glm::vec3( 0.0f, 1.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f, 1.0f), glm::vec3( 0.0f, 1.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f, 1.0f), glm::vec3( 0.0f, 1.0f, 1.0f)),
-        Vertex(glm::vec3(-1.0f,-1.0f,-1.0f), glm::vec3( 0.0f, 1.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f,-1.0f), glm::vec3( 0.0f, 1.0f, 1.0f)),
-
-
-        Vertex(glm::vec3(-1.0f,-1.0f,-1.0f), glm::vec3( 1.0f, 0.0f, 1.0f)),
-        Vertex(glm::vec3(-1.0f, 1.0f,-1.0f), glm::vec3( 1.0f, 0.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f,-1.0f), glm::vec3( 1.0f, 0.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f,-1.0f), glm::vec3( 1.0f, 0.0f, 1.0f)),
-        Vertex(glm::vec3(-1.0f, 1.0f,-1.0f), glm::vec3( 1.0f, 0.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f, 1.0f,-1.0f), glm::vec3( 1.0f, 0.0f, 1.0f)),
-
-    };
- 
-  glGenVertexArrays(1, &(global.VAO));
-  glBindVertexArray(global.VAO);
- 
-  GLuint VBO;
-  glGenBuffers(1, &VBO);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-      reinterpret_cast<GLvoid*>(offsetof(struct Vertex, position)));
-  glEnableVertexAttribArray(0);
-
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-       reinterpret_cast<GLvoid*>(offsetof(struct Vertex, color)));
-  glEnableVertexAttribArray(1);
+  global.world.create_grid(&global.VAO);
 
   global.camera.set_camera(
       glm::vec3(0,0,4),
@@ -190,15 +110,11 @@ void create_scene() {
       0.1,
       100);
 
-  // Inizializza la classe degli shaders
-  // Vengono caricati gli shader indicati nel metodo init e 
-  // automaticamente linkato il programma 
   if (!global.shaders.init()) {
       std::cerr << "Error initializing shaders..." << std::endl;
       exit(0);
   }
 
-  // Abilitiamo il programma degli shader
   global.shaders.enable();
 }
 
@@ -214,7 +130,7 @@ void MyRenderScene() {
 
   glBindVertexArray(global.VAO);
 
-  glDrawArrays(GL_TRIANGLES, 0, 36);
+  glDrawArrays(GL_TRIANGLES, 0, 6 * global.world.width * global.world.height);
 
   glBindVertexArray(0);
 
@@ -222,7 +138,6 @@ void MyRenderScene() {
 
 }
 
-// Funzione globale che si occupa di gestire l'input da tastiera.
 void MyKeyboard(unsigned char key, int x, int y) {
   switch ( key )
   {
@@ -230,7 +145,7 @@ void MyKeyboard(unsigned char key, int x, int y) {
           glutDestroyWindow(glutGetWindow());
           return;
       break;
-  
+
       case 'a':
           global.gradY -= global.SPEED;
       break;
@@ -261,7 +176,6 @@ void MySpecialKeyboard(int Key, int x, int y) {
   glutPostRedisplay();
 }
 
-
 void MyMouse(int x, int y) {
   if (global.camera.onMouse(x,y)) {
     // Risposto il mouse al centro della finestra
@@ -270,12 +184,9 @@ void MyMouse(int x, int y) {
   glutPostRedisplay();
 }
 
-// Funzione globale che si occupa di gestire la chiusura della finestra.
 void MyClose(void) {
   std::cout << "Tearing down the system..." << std::endl;
-  // Clean up here
 
-  // A schermo intero dobbiamo uccidere l'applicazione.
   exit(0);
 }
 
@@ -286,6 +197,6 @@ int main(int argc, char* argv[])
   create_scene();
 
   glutMainLoop();
-  
+
   return 0;
 }

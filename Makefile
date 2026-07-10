@@ -15,12 +15,12 @@ ifeq ($(OS),Windows_NT)
 	LIBS += -lglew32
 
 else
-	LIBS += -lglut 
+	LIBS += -lglut
 	LIBS += -lGLEW
 	LIBS += -lGL
 endif
 
-OBJS = main.o utils.o transform.o camera.o shaderclass.o myshaderclass.o
+OBJS = main.o utils.o transform.o camera.o shaderclass.o myshaderclass.o world.o
 
 main.exe : $(OBJS)
 	$(CC) $(CCFLAGS) $^ $(LIBDIRS) $(LIBS) -o $@
@@ -41,6 +41,9 @@ shaderclass.o : ./libs/shaders/shaderclass.cpp
 	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
 
 myshaderclass.o : ./libs/shaders/myshaderclass.cpp
+	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
+
+world.o: ./libs/world/world.cpp
 	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
 
 .PHONY clean:
