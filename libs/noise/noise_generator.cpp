@@ -8,7 +8,8 @@ vector2 NoiseGenerator::randomGradient(int ix, int iz) {
     // No precomputed gradients mean this works for any number of grid coordinates
     const unsigned w = 8 * sizeof(unsigned);
     const unsigned s = w / 2; 
-    unsigned a = ix, b = iz;
+
+    unsigned a = ix + seed, b = iz + seed;
     a *= 3284157443;
  
     b ^= a << s | a >> w - s;
@@ -63,7 +64,6 @@ float NoiseGenerator::perlin(float x, float z) {
 
 float NoiseGenerator::get_noise(float x, float z) {
     // I create temp variables to prevent overwriting the class ones
-    std::cout << "Devo calcolare noise di " << x << "," << z << std::endl;
     float temp_freq = freq;
     float temp_amp = amp;
     

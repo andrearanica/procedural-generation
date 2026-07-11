@@ -7,10 +7,10 @@ layout (location = 1) in vec3 color;
 uniform mat4 Model2World;
 uniform mat4 World2Camera;
 
-out vec3 vertex_color;
+out float vertex_height;
 
 void main()
 {
     gl_Position = World2Camera * Model2World * vec4(position, 1.0);
-    vertex_color = color; 
+    vertex_height = position.y; 
 }

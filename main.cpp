@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <random>
 #include "GL/glew.h"
 #include "GL/freeglut.h"
 #include "glm/glm.hpp"
@@ -16,26 +17,22 @@
   Structure which stores all the global informations
 */
 struct global_struct {
-  // Window dimensions
   int WINDOW_WIDTH  = 1024; 
   int WINDOW_HEIGHT = 768;
 
-  // Vertex Array Object
   GLuint VAO;
 
   Camera camera;
 
   World world;
 
-  // Shaders handler
   MyShaderClass shaders;
 
   const float SPEED = 10;
   float gradX;
   float gradY; 
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(5, 5) {}
-
+  global_struct() : gradX(0.0f), gradY(0.0f), world(50, 50) {}
 } global;
 
 
@@ -194,6 +191,9 @@ void MyClose(void) {
 
 int main(int argc, char* argv[])
 {
+  srand(time(NULL));
+  global.world.noise_generator.seed = rand();
+
   init(argc,argv);
 
   create_scene();

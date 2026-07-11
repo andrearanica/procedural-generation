@@ -5,7 +5,7 @@
 
 void World::create_grid(GLuint* VAO) {
     Vertex vertices[6 * width * height];
-    
+
     for (int x = 0; x < height; x++) {
         for (int z = 0; z < width; z++) {
             int base = 6 * (x * width + z);

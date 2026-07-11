@@ -13,9 +13,12 @@ class NoiseGenerator {
         float perlin(float x, float z);
 
         float freq, amp;
-
     public:
-        NoiseGenerator(float freq, float amp) : freq(freq), amp(amp) {}
+        float seed;
+        NoiseGenerator(float freq, float amp, float seed) : freq(freq), amp(amp), seed(seed) {}
+        NoiseGenerator(float freq, float amp) : freq(freq), amp(amp) {
+            seed = 0;
+        }
 
         float get_noise(float x, float z);
 };

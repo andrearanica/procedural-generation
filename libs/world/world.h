@@ -2,6 +2,7 @@
 #define WORLD_H
 
 #include <vector>
+#include <cstdlib> // For random function
 
 #include "glm/glm.hpp"
 #include "GL/glew.h"
@@ -41,12 +42,15 @@ struct Vertex {
 };
 
 class World {
-    private:
-        NoiseGenerator noise_generator;
-
     public:
+        NoiseGenerator noise_generator;
         int width;
         int height;
+
+        World(int width, int height, float seed) : noise_generator(1.0, 1.0, seed) {
+            this->width = width;
+            this->height = height;
+        }
 
         World(int width, int height) : noise_generator(1.0, 1.0) {
             this->width = width;
