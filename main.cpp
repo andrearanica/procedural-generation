@@ -32,7 +32,7 @@ struct global_struct {
   float gradX;
   float gradY; 
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(50, 50) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(100, 100, 20) {}
 } global;
 
 
@@ -95,8 +95,8 @@ void create_scene() {
   global.world.create_grid(&global.VAO);
 
   global.camera.set_camera(
-      glm::vec3(2.5,2,6),
-      glm::vec3(2.5,0,0),
+      glm::vec3(global.world.width / 2, 2, global.world.width),
+      glm::vec3(0,0,0),
       glm::vec3(0,1,0)
   );
 
@@ -120,7 +120,7 @@ void MyRenderScene() {
 
   LocalTransform modelT;
   modelT.rotate(global.gradX, global.gradY ,0.0f);
-  modelT.translate(0,0,-4);
+  modelT.translate(-global.world.width / 2, 0, -4);
 
   global.shaders.set_model_transform(modelT.T());
   global.shaders.set_camera_transform(global.camera.CP());
@@ -191,9 +191,6 @@ void MyClose(void) {
 
 int main(int argc, char* argv[])
 {
-  srand(time(NULL));
-  global.world.noise_generator.seed = rand();
-
   init(argc,argv);
 
   create_scene();

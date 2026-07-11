@@ -47,12 +47,12 @@ class World {
         int width;
         int height;
 
-        World(int width, int height, float seed) : noise_generator(1.0, 1.0, seed) {
+        World(int width, int height, float seed) : noise_generator(0.5, 1.0, seed) {
             this->width = width;
             this->height = height;
         }
 
-        World(int width, int height) : noise_generator(1.0, 1.0) {
+        World(int width, int height) : noise_generator(0.5, 1.0) {
             this->width = width;
             this->height = height;
         }
