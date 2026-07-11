@@ -32,7 +32,7 @@ struct global_struct {
   float gradX;
   float gradY; 
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(100, 100, 20) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 20, 0.5, 1.5) {}
 } global;
 
 
@@ -81,7 +81,7 @@ void init(int argc, char*argv[]) {
 
   glutPassiveMotionFunc(MyMouse);
 
-  // Disabilito backface culling glEnable(GL_CULL_FACE);
+  glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
   glEnable(GL_DEPTH_TEST);
@@ -95,7 +95,7 @@ void create_scene() {
   global.world.create_grid(&global.VAO);
 
   global.camera.set_camera(
-      glm::vec3(global.world.width / 2, 2, global.world.width),
+      glm::vec3(0, global.world.width / 2, global.world.width * 1.5),
       glm::vec3(0,0,0),
       glm::vec3(0,1,0)
   );

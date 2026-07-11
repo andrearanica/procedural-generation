@@ -8,6 +8,10 @@
 #include "GL/glew.h"
 #include "../noise/noise_generator.h"
 
+enum VertexType {
+    GRID, OBJECT
+};
+
 /**
   Structure which contains the vertex attributes
 */
@@ -18,12 +22,12 @@ struct Vertex {
   // Colour
   glm::vec3 color;
 
-  float noise;
+  // Type of the vertex
+  VertexType type;
 
   Vertex(float x, float y, float z) {
       position = glm::vec3(x,y,z);
       color = glm::vec3(1, 1, 1);
-      noise = 0;
   }
 
   Vertex(float x, float y, float z, float r, float g, float b) {
@@ -31,14 +35,13 @@ struct Vertex {
       color = glm::vec3(r, g, b);
   }
 
-  Vertex() : position(0), color(0, 0, 0) {}
+  Vertex() : position(0), color(0, 0, 0), type(OBJECT) {}
 
-  Vertex(const glm::vec3 &xyz) : position(xyz), color(1, 1, 1) {}
+  Vertex(const glm::vec3 &xyz) : position(xyz), color(1, 1, 1), type(OBJECT) {}
 
-  Vertex(const glm::vec3 &xyz, const glm::vec3 &rgb) : position(xyz), color(rgb) {}
+  Vertex(const glm::vec3 &xyz, VertexType type) : position(xyz), color(1, 1, 1), type(type) {}
 
-  Vertex(const glm::vec3 &xyz, float noise) : position(xyz), color(1, 1, 1), noise(noise) {}
-
+  Vertex(const glm::vec3 &xyz, const glm::vec3 &rgb) : position(xyz), color(rgb), type(OBJECT) {}
 };
 
 class World {
@@ -47,12 +50,17 @@ class World {
         int width;
         int height;
 
-        World(int width, int height, float seed) : noise_generator(0.5, 1.0, seed) {
+        World(int width, int height, float seed, float freq, float amp) : noise_generator(freq, amp, seed) {
             this->width = width;
             this->height = height;
         }
 
-        World(int width, int height) : noise_generator(0.5, 1.0) {
+        World(int width, int height, float seed) : noise_generator(1.0, 1.0, seed) {
+            this->width = width;
+            this->height = height;
+        }
+
+        World(int width, int height) : noise_generator(1.0, 1.0) {
             this->width = width;
             this->height = height;
         }

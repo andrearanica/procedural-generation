@@ -20,12 +20,12 @@ void World::create_grid(GLuint* VAO) {
             ne.position.y = noise_generator.get_noise(ne.position.x, ne.position.z);
             nw.position.y = noise_generator.get_noise(nw.position.x, nw.position.z);
 
-            vertices[base+0] = sw;
-            vertices[base+1] = se;
-            vertices[base+2] = ne;
-            vertices[base+3] = ne;
-            vertices[base+4] = nw;
-            vertices[base+5] = sw;
+            vertices[base + 0] = sw;
+            vertices[base + 1] = se;
+            vertices[base + 2] = ne;
+            vertices[base + 3] = ne;
+            vertices[base + 4] = nw;
+            vertices[base + 5] = sw;
 
             float freq = 1;
             float amp = 1;
@@ -47,5 +47,9 @@ void World::create_grid(GLuint* VAO) {
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
         reinterpret_cast<GLvoid*>(offsetof(struct Vertex, color)));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, sizeof(float), GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+    reinterpret_cast<GLvoid*>(offsetof(struct Vertex, type)));
     glEnableVertexAttribArray(1);
 }

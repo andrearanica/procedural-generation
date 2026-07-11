@@ -109,6 +109,7 @@ bool Camera::onSpecialKeyboard(int key) {
 	switch (key) {
 		case GLUT_KEY_UP:
 			_position += (_lookat_dir * _speed);
+			
 		break;
 
 		case GLUT_KEY_DOWN:
