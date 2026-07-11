@@ -1,8 +1,7 @@
-#include "world.h"
-
 #include <iostream>
 
-void draw_face(int x, int z, GLuint* VAO);
+#include "world.h"
+#include "../noise/noise_generator.h"
 
 void World::create_grid(GLuint* VAO) {
     Vertex vertices[6 * width * height];
@@ -10,16 +9,26 @@ void World::create_grid(GLuint* VAO) {
     for (int x = 0; x < height; x++) {
         for (int z = 0; z < width; z++) {
             int base = 6 * (x * width + z);
-            vertices[base+0] = Vertex(glm::vec3(  x,-1.0f, z  ), glm::vec3(1, 0, 0));
-            vertices[base+1] = Vertex(glm::vec3(x+1,-1.0f, z  ), glm::vec3(1, 0, 0));
-            vertices[base+2] = Vertex(glm::vec3(x+1,-1.0f, z-1), glm::vec3(1, 0, 0));
-            vertices[base+3] = Vertex(glm::vec3(x+1,-1.0f, z-1), glm::vec3(0, 0, 1));
-            vertices[base+4] = Vertex(glm::vec3(  x,-1.0f, z-1), glm::vec3(0, 0, 1));
-            vertices[base+5] = Vertex(glm::vec3(  x,-1.0f, z),   glm::vec3(0, 0, 1));
 
-            std::cout << "Punto iniziale: " << x << ",-1," << z << std::endl;
+            Vertex sw = Vertex(glm::vec3(x,  -1.0f,z));
+            Vertex se = Vertex(glm::vec3(x+1,-1.0f,z));
+            Vertex ne = Vertex(glm::vec3(x+1,-1.0f,z-1));
+            Vertex nw = Vertex(glm::vec3(  x,-1.0f, z-1));
+
+            vertices[base+0] = sw;
+            vertices[base+1] = se;
+            vertices[base+2] = ne;
+            vertices[base+3] = ne;
+            vertices[base+4] = nw;
+            vertices[base+5] = sw;
+
+            float freq = 1;
+            float amp = 1;
+            float val = noise_generator.get_noise(sw.position.x / width, sw.position.z / height);
+            std::cout << "Noise: " << val << std::endl;
         }
     }
+
     glGenVertexArrays(1, VAO);
     glBindVertexArray(*VAO);
 
@@ -35,17 +44,4 @@ void World::create_grid(GLuint* VAO) {
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
         reinterpret_cast<GLvoid*>(offsetof(struct Vertex, color)));
     glEnableVertexAttribArray(1);
-}
-
-void draw_face(int x, int z, GLuint* VAO) {
-    /* Faccia front
-    Vertex Vertices[6] = {
-        Vertex(glm::vec3(-1.0f,-1.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f, 1.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f,-1.0f)),
-        Vertex(glm::vec3( 1.0f,-1.0f,-1.0f)),
-        Vertex(glm::vec3(-1.0f,-1.0f,-1.0f)),
-        Vertex(glm::vec3(-1.0f,-1.0f, 1.0f)),
-    };
-    */
 }

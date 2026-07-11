@@ -20,7 +20,7 @@ else
 	LIBS += -lGL
 endif
 
-OBJS = main.o utils.o transform.o camera.o shaderclass.o myshaderclass.o world.o
+OBJS = main.o utils.o transform.o camera.o shaderclass.o myshaderclass.o world.o noise.o
 
 main.exe : $(OBJS)
 	$(CC) $(CCFLAGS) $^ $(LIBDIRS) $(LIBS) -o $@
@@ -44,6 +44,9 @@ myshaderclass.o : ./libs/shaders/myshaderclass.cpp
 	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
 
 world.o: ./libs/world/world.cpp
+	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
+
+noise.o: ./libs/noise/noise_generator.cpp
 	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
 
 .PHONY clean:

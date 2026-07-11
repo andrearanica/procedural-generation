@@ -98,8 +98,8 @@ void create_scene() {
   global.world.create_grid(&global.VAO);
 
   global.camera.set_camera(
-      glm::vec3(0,0,4),
-      glm::vec3(0,0,0),
+      glm::vec3(2.5,2,6),
+      glm::vec3(2.5,0,0),
       glm::vec3(0,1,0)
   );
 
@@ -161,10 +161,12 @@ void MyKeyboard(unsigned char key, int x, int y) {
 
       case ' ': // Reimpostiamo la camera
           global.camera.set_camera(
-              glm::vec3(0,0,0),
-              glm::vec3(0,0,-1),
+              glm::vec3(2.5,2,6),
+              glm::vec3(2.5,0,0),
               glm::vec3(0,1,0)
           );
+          global.gradX = 0;
+          global.gradY = 0;
       break;
   }
 
