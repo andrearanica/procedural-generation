@@ -32,7 +32,7 @@ struct global_struct {
   float gradX;
   float gradY; 
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 8, 0.5, 3) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 11, 0.5, 5) {}
 } global;
 
 
@@ -95,8 +95,6 @@ void init(int argc, char*argv[]) {
  * and loading shaders
  */
 void create_scene() {
-  global.world.create_grid(&global.VAO);
-
   global.camera.set_camera(
       glm::vec3(0, global.world.width / 2, global.world.width * 1.5),
       glm::vec3(0,0,0),
@@ -119,6 +117,8 @@ void create_scene() {
 }
 
 void MyRenderScene() {
+  global.world.create_grid(&global.VAO);
+
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
   LocalTransform modelT;
@@ -159,14 +159,8 @@ void MyKeyboard(unsigned char key, int x, int y) {
           global.gradX += global.SPEED;
       break;
 
-      case ' ': // Reimpostiamo la camera
-          global.camera.set_camera(
-              glm::vec3(2.5,2,6),
-              glm::vec3(2.5,0,0),
-              glm::vec3(0,1,0)
-          );
-          global.gradX = 0;
-          global.gradY = 0;
+      case ' ':
+          global.world.noise_generator.seed++;
       break;
   }
 
