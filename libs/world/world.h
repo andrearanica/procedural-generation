@@ -9,7 +9,7 @@
 #include "../noise/noise_generator.h"
 
 enum VertexType {
-    GRID, OBJECT
+    VERTEX_GRID, VERTEX_WATER
 };
 
 /**
@@ -35,13 +35,13 @@ struct Vertex {
       color = glm::vec3(r, g, b);
   }
 
-  Vertex() : position(0), color(0, 0, 0), type(OBJECT) {}
+  Vertex() : position(0), color(0, 0, 0), type(VERTEX_GRID) {}
 
-  Vertex(const glm::vec3 &xyz) : position(xyz), color(1, 1, 1), type(OBJECT) {}
+  Vertex(const glm::vec3 &xyz) : position(xyz), color(1, 1, 1), type(VERTEX_GRID) {}
 
   Vertex(const glm::vec3 &xyz, VertexType type) : position(xyz), color(1, 1, 1), type(type) {}
 
-  Vertex(const glm::vec3 &xyz, const glm::vec3 &rgb) : position(xyz), color(rgb), type(OBJECT) {}
+  Vertex(const glm::vec3 &xyz, const glm::vec3 &rgb) : position(xyz), color(rgb), type(VERTEX_GRID) {}
 };
 
 class World {

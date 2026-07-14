@@ -8,13 +8,27 @@ void World::create_grid(GLuint *VAO)
     std::vector<Vertex> vertices;
     for (int z = 0; z < (height + 1); z++)
     {
+        // Terrain vertices
         for (int x = 0; x < (width + 1); x++)
         {
-            Vertex v(glm::vec3(x, 0, z), GRID);
+            Vertex v(glm::vec3(x, 0, z), VERTEX_GRID);
             v.position.y = noise_generator.get_noise(x, z);
             vertices.push_back(v);
         }
     }
+
+    // Water plane vertices
+    Vertex sw(glm::vec3(0, -0.2, 0),          VERTEX_WATER);
+    Vertex se(glm::vec3(width, -0.2, 0),      VERTEX_WATER);
+    Vertex nw(glm::vec3(0, -0.2, height),     VERTEX_WATER);
+    Vertex ne(glm::vec3(width, -0.2, height), VERTEX_WATER);
+
+    vertices.push_back(sw);
+    vertices.push_back(ne);
+    vertices.push_back(se);
+    vertices.push_back(sw);
+    vertices.push_back(nw);
+    vertices.push_back(ne);
 
     std::vector<unsigned int> indices;
     for (int z = 0; z < height; z++)
@@ -34,6 +48,11 @@ void World::create_grid(GLuint *VAO)
             indices.push_back(nw);
             indices.push_back(ne);
         }
+    }
+
+    int water_base_index = (height + 1) * (width + 1);
+    for  (int i = 0; i < 6; i++) {
+        indices.push_back(water_base_index + i);
     }
 
     glGenVertexArrays(1, VAO);
@@ -74,49 +93,3 @@ void World::create_grid(GLuint *VAO)
         GL_STATIC_DRAW
     );
 }
-
-/*
-int base = 6 * (x * width + z);
-
-// First I draw the grid mesh
-Vertex sw = Vertex(glm::vec3(x,   0, z), GRID);
-Vertex se = Vertex(glm::vec3(x+1, 0, z), GRID);
-Vertex ne = Vertex(glm::vec3(x+1, 0, z-1), GRID);
-Vertex nw = Vertex(glm::vec3(  x, 0, z-1), GRID);
-
-sw.position.y = noise_generator.get_noise(sw.position.x, sw.position.z);
-se.position.y = noise_generator.get_noise(se.position.x, se.position.z);
-ne.position.y = noise_generator.get_noise(ne.position.x, ne.position.z);
-nw.position.y = noise_generator.get_noise(nw.position.x, nw.position.z);
-
-vertices[base + 0] = sw;
-vertices[base + 1] = se;
-vertices[base + 2] = ne;
-vertices[base + 3] = ne;
-vertices[base + 4] = nw;
-vertices[base + 5] = sw;
-
-if (sw.position.y < 0 || se.position.y < 0 || ne.position.y < 0 || nw.position.y < 0) {
-    continue;
-}
-
-if (sw.position.y >= 0.5 || se.position.y >= 0.5 || ne.position.y >= 0.5 || nw.position.y >= 0.5) {
-    continue;
-}
-
-// Then for each mesh I draw a tree mesh
-glm::vec3 center_point = glm::vec3(x + 0.5, 0, z - 0.5);
-Vertex tree_sw = Vertex(center_point + glm::vec3(-0.05, 0, 0), OBJECT);
-Vertex tree_se = Vertex(center_point + glm::vec3(+0.05, 0, 0), OBJECT);
-Vertex tree_ne = Vertex(center_point + glm::vec3(+0.05, 0.5, 0), OBJECT);
-Vertex tree_nw = Vertex(center_point + glm::vec3(-0.05, 0.5, 0), OBJECT);
-
-std::cout << tree_sw.type << std::endl;
-
-vertices[base + 6] =  tree_sw;
-vertices[base + 7] =  tree_se;
-vertices[base + 8] =  tree_ne;
-vertices[base + 9] =  tree_ne;
-vertices[base + 10] = tree_nw;
-vertices[base + 11] = tree_sw;
-*/

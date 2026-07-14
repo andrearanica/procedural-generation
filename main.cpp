@@ -85,6 +85,9 @@ void init(int argc, char*argv[]) {
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
   glEnable(GL_DEPTH_TEST);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 /**
@@ -127,7 +130,8 @@ void MyRenderScene() {
 
   glBindVertexArray(global.VAO);
 
-  glDrawElements(GL_TRIANGLES, 6 * global.world.width * global.world.height, GL_UNSIGNED_INT, nullptr);
+  glDrawElements(GL_TRIANGLES, 6 + 6 * global.world.width * global.world.height, GL_UNSIGNED_INT, nullptr);
+
 
   glBindVertexArray(0);
 
