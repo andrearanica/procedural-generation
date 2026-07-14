@@ -4,15 +4,32 @@
 #include "world.h"
 #include "../noise/noise_generator.h"
 
-float World::get_vertex_distance_from_border(Vertex vertex)
+float World::get_vertex_attenuation_by_border_distance(Vertex vertex)
 {
     std::vector<float> distances = {
         vertex.position.z,
         height - vertex.position.z,
         vertex.position.x,
         width - vertex.position.x};
-    
-    return *std::min_element(distances.begin(), distances.end());
+
+    float distance = *std::min_element(distances.begin(), distances.end());
+    float clamped_distance = glm::clamp(distance / VERTEX_BORDER_THRESHOLD, 0.0f, 1.0f);
+
+    return clamped_distance;
+}
+
+float World::get_vertex_attenuation_by_center_distance(Vertex vertex)
+{
+    glm::vec3 world_center = glm::vec3(width / 2, 0, height / 2);
+
+    float dx = vertex.position.x - world_center.x;
+    float dz = vertex.position.z - world_center.z;
+
+    float distance = std::sqrt(dx * dx + dz * dz);
+    float max_distance = glm::length(world_center);
+
+    float attenuation = 1.0f - glm::clamp(distance / max_distance, 0.0f, 1.0f);
+    return attenuation;
 }
 
 void World::create_grid(GLuint *VAO)
@@ -24,13 +41,9 @@ void World::create_grid(GLuint *VAO)
         for (int x = 0; x < (width + 1); x++)
         {
             Vertex v(glm::vec3(x, 0, z), VERTEX_GRID);
+            float vertex_noise = noise_generator.get_noise(x, z);
 
-            float vertex_distance = get_vertex_distance_from_border(v);
-            float vertex_noise = std::max(noise_generator.get_noise(x, z), -0.5f);
-
-            if (vertex_distance <= VERTEX_BORDER_THRESHOLD && vertex_noise > 0) {
-                vertex_noise *= vertex_distance;
-            }
+            vertex_noise *= get_vertex_attenuation_by_center_distance(v);
 
             v.position.y = vertex_noise;
             vertices.push_back(v);
