@@ -6,12 +6,11 @@
 void World::create_grid(GLuint *VAO)
 {
     std::vector<Vertex> vertices;
-
     for (int z = 0; z < (height + 1); z++)
     {
         for (int x = 0; x < (width + 1); x++)
         {
-            Vertex v(glm::vec3(x, 0, -z), GRID);
+            Vertex v(glm::vec3(x, 0, z), GRID);
             v.position.y = noise_generator.get_noise(x, z);
             vertices.push_back(v);
         }
@@ -27,12 +26,13 @@ void World::create_grid(GLuint *VAO)
             int nw = (z + 1) * (width + 1) + x;
             int ne = nw + 1;
 
+            // CCW order: remember that Z+ is towards the camera
             indices.push_back(sw);
+            indices.push_back(ne);
             indices.push_back(se);
-            indices.push_back(ne);
-            indices.push_back(ne);
-            indices.push_back(nw);
             indices.push_back(sw);
+            indices.push_back(nw);
+            indices.push_back(ne);
         }
     }
 
@@ -64,6 +64,7 @@ void World::create_grid(GLuint *VAO)
                            (void *)(offsetof(struct Vertex, type)));
     glEnableVertexAttribArray(2);
 
+    // Finally I fill the EBO with the indices of the faces
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(
