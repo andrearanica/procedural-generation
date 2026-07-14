@@ -32,7 +32,7 @@ struct global_struct {
   float gradX;
   float gradY; 
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 67, 0.5, 1.5) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 8, 0.5, 3) {}
 } global;
 
 

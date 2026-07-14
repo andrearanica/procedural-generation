@@ -8,6 +8,8 @@
 #include "GL/glew.h"
 #include "../noise/noise_generator.h"
 
+#define VERTEX_BORDER_THRESHOLD 0.5f
+
 enum VertexType {
     VERTEX_GRID, VERTEX_WATER
 };
@@ -66,6 +68,8 @@ class World {
         }
 
         void create_grid(GLuint* VAO);
+    private:
+        float get_vertex_distance_from_border(Vertex vertex);
 };
 
 #endif
