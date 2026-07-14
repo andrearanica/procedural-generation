@@ -32,7 +32,7 @@ struct global_struct {
   float gradX;
   float gradY; 
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 20, 0.5, 1.5) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 2, 0.5, 1.5) {}
 } global;
 
 
@@ -119,7 +119,7 @@ void MyRenderScene() {
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
   LocalTransform modelT;
-  modelT.rotate(global.gradX, global.gradY ,0.0f);
+  modelT.rotate(global.gradX, global.gradY, 0.0f);
   modelT.translate(-global.world.width / 2, 0, -4);
 
   global.shaders.set_model_transform(modelT.T());
@@ -127,12 +127,11 @@ void MyRenderScene() {
 
   glBindVertexArray(global.VAO);
 
-  glDrawArrays(GL_TRIANGLES, 0, 6 * global.world.width * global.world.height);
+  glDrawElements(GL_TRIANGLES, 6 * global.world.width * global.world.height, GL_UNSIGNED_INT, nullptr);
 
   glBindVertexArray(0);
 
   glutSwapBuffers();
-
 }
 
 void MyKeyboard(unsigned char key, int x, int y) {
@@ -191,6 +190,7 @@ void MyClose(void) {
 
 int main(int argc, char* argv[])
 {
+  srand(time(NULL));
   init(argc,argv);
 
   create_scene();
