@@ -67,7 +67,7 @@ class World {
             this->height = height;
         }
 
-        void create_grid(GLuint* VAO);
+        void create_grid();
     private:
         float get_vertex_attenuation_by_border_distance(Vertex vertex);
         float get_vertex_attenuation_by_center_distance(Vertex vertex);

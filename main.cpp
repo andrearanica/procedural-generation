@@ -20,8 +20,6 @@ struct global_struct {
   int WINDOW_WIDTH  = 1024; 
   int WINDOW_HEIGHT = 768;
 
-  GLuint VAO;
-
   Camera camera;
 
   World world;
@@ -117,7 +115,6 @@ void create_scene() {
 }
 
 void MyRenderScene() {
-  global.world.create_grid(&global.VAO);
 
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -128,12 +125,7 @@ void MyRenderScene() {
   global.shaders.set_model_transform(modelT.T());
   global.shaders.set_camera_transform(global.camera.CP());
 
-  glBindVertexArray(global.VAO);
-
-  glDrawElements(GL_TRIANGLES, 6 + 6 * global.world.width * global.world.height, GL_UNSIGNED_INT, nullptr);
-
-
-  glBindVertexArray(0);
+  global.world.create_grid();
 
   glutSwapBuffers();
 }

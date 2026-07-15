@@ -32,7 +32,7 @@ float World::get_vertex_attenuation_by_center_distance(Vertex vertex)
     return attenuation;
 }
 
-void World::create_grid(GLuint *VAO)
+void World::create_grid()
 {
     std::vector<Vertex> vertices;
     for (int z = 0; z < (height + 1); z++)
@@ -90,8 +90,9 @@ void World::create_grid(GLuint *VAO)
         indices.push_back(water_base_index + i);
     }
 
-    glGenVertexArrays(1, VAO);
-    glBindVertexArray(*VAO);
+    GLuint VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
     GLuint VBO, EBO;
 
@@ -125,4 +126,12 @@ void World::create_grid(GLuint *VAO)
         indices.size() * sizeof(unsigned int),
         &indices[0],
         GL_STATIC_DRAW);
+    
+  glBindVertexArray(VAO);
+
+  glDrawElements(GL_TRIANGLES, 6 + 6 * width * height, GL_UNSIGNED_INT, nullptr);
+
+
+  glBindVertexArray(0);
+
 }
