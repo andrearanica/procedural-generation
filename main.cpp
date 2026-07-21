@@ -30,7 +30,7 @@ struct global_struct {
   float gradX;
   float gradY; 
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 11, 0.5, 2) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 0, 0.5, 2) {}
 } global;
 
 
@@ -93,6 +93,12 @@ void init(int argc, char*argv[]) {
  * and loading shaders
  */
 void create_scene() {
+  std::random_device random;
+  std::mt19937 range(random());
+  std::uniform_int_distribution<int> distribution(1, 100);
+
+  global.world.noise_generator.seed = distribution(range);
+
   global.camera.set_camera(
       glm::vec3(0, global.world.width / 2, global.world.width * 1.5),
       glm::vec3(0,0,0),
