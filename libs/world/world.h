@@ -68,9 +68,9 @@ class World {
         }
 
         void create_grid();
+
     private:
-        float get_vertex_attenuation_by_border_distance(Vertex vertex);
-        float get_vertex_attenuation_by_center_distance(Vertex vertex);
+        float get_vertex_distance_from_world_center(Vertex vertex);
 };
 
 #endif

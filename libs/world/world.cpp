@@ -4,21 +4,8 @@
 #include "world.h"
 #include "../noise/noise_generator.h"
 
-float World::get_vertex_attenuation_by_border_distance(Vertex vertex)
-{
-    std::vector<float> distances = {
-        vertex.position.z,
-        height - vertex.position.z,
-        vertex.position.x,
-        width - vertex.position.x};
 
-    float distance = *std::min_element(distances.begin(), distances.end());
-    float clamped_distance = glm::clamp(distance / VERTEX_BORDER_THRESHOLD, 0.0f, 1.0f);
-
-    return clamped_distance;
-}
-
-float World::get_vertex_attenuation_by_center_distance(Vertex vertex)
+float World::get_vertex_distance_from_world_center(Vertex vertex)
 {
     glm::vec3 world_center = glm::vec3(width / 2, 0, height / 2);
 
@@ -28,7 +15,7 @@ float World::get_vertex_attenuation_by_center_distance(Vertex vertex)
     float distance = std::sqrt(dx * dx + dz * dz);
     float max_distance = glm::length(world_center);
 
-    float attenuation = 1.0f - glm::clamp(distance / max_distance, 0.0f, 1.0f);
+    float attenuation = pow(glm::clamp(distance / max_distance, 0.0f, 1.0f), 3);
     return attenuation;
 }
 
@@ -41,11 +28,11 @@ void World::create_grid()
         for (int x = 0; x < (width + 1); x++)
         {
             Vertex v(glm::vec3(x, 0, z), VERTEX_GRID);
+
             float vertex_noise = noise_generator.get_noise(x, z);
+            float falloff = get_vertex_distance_from_world_center(v);
 
-            vertex_noise *= get_vertex_attenuation_by_center_distance(v);
-
-            v.position.y = vertex_noise;
+            v.position.y = vertex_noise - falloff;
             vertices.push_back(v);
         }
     }

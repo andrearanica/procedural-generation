@@ -30,7 +30,7 @@ struct global_struct {
   float gradX;
   float gradY; 
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 11, 0.5, 5) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 11, 0.5, 2) {}
 } global;
 
 
@@ -151,9 +151,6 @@ void MyKeyboard(unsigned char key, int x, int y) {
           global.gradX += global.SPEED;
       break;
 
-      case ' ':
-          global.world.noise_generator.seed++;
-      break;
   }
 
   glutPostRedisplay();
