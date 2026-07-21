@@ -10,26 +10,35 @@
 void WaterGenerator::render()
 {
     std::vector<Vertex> vertices;
-
-    // Water plane vertices
-    float water_plane_extension = width * height * 10;
-    Vertex sw(glm::vec3(-water_plane_extension, -0.05, -water_plane_extension), VERTEX_WATER);
-    Vertex se(glm::vec3(water_plane_extension, -0.05, -water_plane_extension), VERTEX_WATER);
-    Vertex nw(glm::vec3(-water_plane_extension, -0.05, water_plane_extension), VERTEX_WATER);
-    Vertex ne(glm::vec3(water_plane_extension, -0.05, water_plane_extension), VERTEX_WATER);
-
-    vertices.push_back(sw);
-    vertices.push_back(se);
-    vertices.push_back(nw);
-    vertices.push_back(ne);
+    for (int z = position.z; z < (height + 1); z++)
+    {
+        // Terrain vertices
+        for (int x = position.x; x < (width + 1); x++)
+        {
+            Vertex v(glm::vec3(x, -0.05, z), VERTEX_WATER);
+            vertices.push_back(v);
+        }
+    }
 
     std::vector<unsigned int> indices;
-    indices.push_back(0);
-    indices.push_back(2);
-    indices.push_back(1);
-    indices.push_back(1);
-    indices.push_back(2);
-    indices.push_back(3);
+    for (int z = position.z; z < height; z++)
+    {
+        for (int x = position.x; x < width; x++)
+        {
+            int sw = z * (width + 1) + x;
+            int se = sw + 1;
+            int nw = (z + 1) * (width + 1) + x;
+            int ne = nw + 1;
+
+            // CCW order: remember that Z+ is towards the camera
+            indices.push_back(sw);
+            indices.push_back(ne);
+            indices.push_back(se);
+            indices.push_back(sw);
+            indices.push_back(nw);
+            indices.push_back(ne);
+        }
+    }
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
