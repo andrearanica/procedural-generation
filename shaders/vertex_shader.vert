@@ -7,6 +7,7 @@ layout (location = 2) in int  type;
 
 uniform mat4 Model2World;
 uniform mat4 World2Camera;
+uniform float uTime;
 
 out float vertex_height;
 flat out int   vertex_type;
@@ -16,4 +17,9 @@ void main()
     gl_Position = World2Camera * Model2World * vec4(position, 1.0);
     vertex_height = position.y;
     vertex_type = type; 
+
+    if (vertex_type == 1)
+    {
+        sin(5);
+    }
 }

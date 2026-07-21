@@ -19,7 +19,7 @@ float World::get_vertex_distance_from_world_center(Vertex vertex)
     return attenuation;
 }
 
-void World::create_grid()
+void World::render()
 {
     std::vector<Vertex> vertices;
     for (int z = 0; z < (height + 1); z++)
@@ -36,20 +36,6 @@ void World::create_grid()
             vertices.push_back(v);
         }
     }
-
-    // Water plane vertices
-    float water_plane_extension = width * height * 10;
-    Vertex sw(glm::vec3(-water_plane_extension, -0.05, -water_plane_extension), VERTEX_WATER);
-    Vertex se(glm::vec3(water_plane_extension, -0.05, -water_plane_extension), VERTEX_WATER);
-    Vertex nw(glm::vec3(-water_plane_extension, -0.05, water_plane_extension), VERTEX_WATER);
-    Vertex ne(glm::vec3(water_plane_extension, -0.05, water_plane_extension), VERTEX_WATER);
-
-    vertices.push_back(sw);
-    vertices.push_back(ne);
-    vertices.push_back(se);
-    vertices.push_back(sw);
-    vertices.push_back(nw);
-    vertices.push_back(ne);
 
     std::vector<unsigned int> indices;
     for (int z = 0; z < height; z++)
@@ -69,12 +55,6 @@ void World::create_grid()
             indices.push_back(nw);
             indices.push_back(ne);
         }
-    }
-
-    int water_base_index = (height + 1) * (width + 1);
-    for (int i = 0; i < 6; i++)
-    {
-        indices.push_back(water_base_index + i);
     }
 
     GLuint VAO;
@@ -114,11 +94,11 @@ void World::create_grid()
         &indices[0],
         GL_STATIC_DRAW);
     
-  glBindVertexArray(VAO);
+    glBindVertexArray(VAO);
 
-  glDrawElements(GL_TRIANGLES, 6 + 6 * width * height, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, 6 + 6 * width * height, GL_UNSIGNED_INT, nullptr);
 
+    glBindVertexArray(0);
 
-  glBindVertexArray(0);
-
+    water_generator.render();
 }

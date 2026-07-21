@@ -131,7 +131,7 @@ void MyRenderScene() {
   global.shaders.set_model_transform(modelT.T());
   global.shaders.set_camera_transform(global.camera.CP());
 
-  global.world.create_grid();
+  global.world.render();
 
   glutSwapBuffers();
 }
