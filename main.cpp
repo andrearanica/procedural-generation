@@ -11,6 +11,7 @@
 #include "./libs/shaders/shaderclass.h"
 #include "./libs/shaders/myshaderclass.h"
 #include "./libs/world/world.h"
+#include "./libs/texture/texture.h"
 
 #define WATER_SPEED 0.01
 
@@ -35,6 +36,8 @@ struct global_struct {
   global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 0, 0.5, 2) {}
 
   float time = 0;
+
+  Texture2D texture_manager;
 } global;
 
 
@@ -124,6 +127,10 @@ void create_scene() {
   }
 
   global.shaders.enable();
+
+  global.texture_manager.load("./textures/face.png");
+  global.texture_manager.bind(0);
+  global.shaders.set_color_texture_sampler(0);
 }
 
 void MyRenderScene() {

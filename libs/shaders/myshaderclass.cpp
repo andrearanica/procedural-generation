@@ -13,6 +13,10 @@ void MyShaderClass::set_time(float time) {
   glUniform1f(_time_location, time);
 }
 
+void MyShaderClass::set_color_texture_sampler(int sampler_id) {
+  glUniform1i(_color_texture_sampler_location, sampler_id);
+}
+
 bool MyShaderClass::load_shaders() {
   return  add_shader(GL_VERTEX_SHADER,"./shaders/vertex_shader.vert") &&
           add_shader(GL_FRAGMENT_SHADER,"./shaders/fragment_shader.frag");

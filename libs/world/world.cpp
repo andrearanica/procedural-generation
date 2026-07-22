@@ -27,7 +27,7 @@ void World::render()
         // Terrain vertices
         for (int x = 0; x < (width + 1); x++)
         {
-            Vertex v(glm::vec3(x, 0, z), VERTEX_GRID);
+            Vertex v(glm::vec3(x, 0, z), VERTEX_GRID, glm::vec2(0.5, 0.5));
 
             float vertex_noise = noise_generator.get_noise(x, z);
             float falloff = get_vertex_distance_from_world_center(v);
