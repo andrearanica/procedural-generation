@@ -10,20 +10,20 @@
 void WaterGenerator::render()
 {
     std::vector<Vertex> vertices;
-    for (int z = position.z; z < (height + 1); z++)
+    for (int z = 0; z < (height + 1); z++)
     {
         // Terrain vertices
-        for (int x = position.x; x < (width + 1); x++)
+        for (int x = 0; x < (width + 1); x++)
         {
-            Vertex v(glm::vec3(x, -0.05, z), VERTEX_WATER);
+            Vertex v(glm::vec3(position.x + x, -0.05, position.z + z), VERTEX_WATER);
             vertices.push_back(v);
         }
     }
 
     std::vector<unsigned int> indices;
-    for (int z = position.z; z < height; z++)
+    for (int z = 0; z < height; z++)
     {
-        for (int x = position.x; x < width; x++)
+        for (int x = 0; x < width; x++)
         {
             int sw = z * (width + 1) + x;
             int se = sw + 1;
@@ -34,6 +34,7 @@ void WaterGenerator::render()
             indices.push_back(sw);
             indices.push_back(ne);
             indices.push_back(se);
+
             indices.push_back(sw);
             indices.push_back(nw);
             indices.push_back(ne);

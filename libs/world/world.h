@@ -20,17 +20,17 @@ class World {
         int width;
         int height;
 
-        World(int width, int height, float seed, float freq, float amp) : noise_generator(freq, amp, seed), water_generator(glm::vec3(-width, 0, -height), width * height, width * height) {
+        World(int width, int height, float seed, float freq, float amp) : noise_generator(freq, amp, seed), water_generator(glm::vec3(-width / 2, 0, -height / 2), width * 2, height * 2) {
             this->width = width;
             this->height = height;
         }
 
-        World(int width, int height, float seed) : noise_generator(1.0, 1.0, seed), water_generator(glm::vec3(-width, 0, -height), width * height, width * height) {
+        World(int width, int height, float seed) : noise_generator(1.0, 1.0, seed), water_generator(glm::vec3(-width / 2, 0, -height / 2), width * 2, height * 2) {
             this->width = width;
             this->height = height;
         }
 
-        World(int width, int height) : noise_generator(1.0, 1.0), water_generator(glm::vec3(-width, 0, -height), width * height, width * height) {
+        World(int width, int height) : noise_generator(1.0, 1.0), water_generator(glm::vec3(-width / 2, 0, -height / 2), width * 2, height * 2) {
             this->width = width;
             this->height = height;
         }
