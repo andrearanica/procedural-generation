@@ -128,7 +128,7 @@ void create_scene() {
 
   global.shaders.enable();
 
-  global.texture_manager.load("./textures/face.png");
+  global.texture_manager.load("./textures/water.jpg");
   global.texture_manager.bind(0);
   global.shaders.set_color_texture_sampler(0);
 }

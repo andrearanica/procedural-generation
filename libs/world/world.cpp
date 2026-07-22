@@ -27,7 +27,8 @@ void World::render()
         // Terrain vertices
         for (int x = 0; x < (width + 1); x++)
         {
-            Vertex v(glm::vec3(x, 0, z), VERTEX_GRID, glm::vec2(0.5, 0.5));
+            glm::vec2 texture_coordinates = glm::vec2(x / float(width), z / float(height));
+            Vertex v(glm::vec3(x, 0, z), VERTEX_GRID, texture_coordinates);
 
             float vertex_noise = noise_generator.get_noise(x, z);
             float falloff = get_vertex_distance_from_world_center(v);
@@ -84,6 +85,10 @@ void World::render()
     glVertexAttribIPointer(2, 1, GL_INT, sizeof(Vertex),
                            (void *)(offsetof(struct Vertex, type)));
     glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, texture_coordinates)));
+    glEnableVertexAttribArray(3);
 
     // Finally I fill the EBO with the indices of the faces
     glGenBuffers(1, &EBO);

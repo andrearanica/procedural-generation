@@ -10,12 +10,8 @@ out vec4 color;
 
 void main()
 {
-	vec4 material_color = texture(ColorTextSampler, vertex_texture_coordinates);
-
-    color = material_color;
-    return;
-    // TODO use uniforms instead of constant value
     if (vertex_type == 0) {
+        // Grid vertex
         if (vertex_height >= 0.8) {
             // Grey mountain
             color = vec4(0.5, 0.5, 0.5, 1.0);
@@ -30,6 +26,10 @@ void main()
             color = vec4(1.0, 1.0, 0, 1.0);
         }
     } else if (vertex_type == 1) {
-        color = vec4(0.11, 0.63, 0.92, material_color.a);
+        // Water vertex
+        vec4 material_color = texture(ColorTextSampler, vertex_texture_coordinates);
+        color = material_color;
+        return;
+        color = vec4(0.11, 0.63, 0.92, 1);
     }
 }
