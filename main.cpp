@@ -132,23 +132,19 @@ void create_scene() {
 
   Texture2D water_texture_manager = Texture2D();
   water_texture_manager.load("./textures/water.jpg");
-  water_texture_manager.bind(0);
+  global.texture_managers.push_back(water_texture_manager);
 
   Texture2D grass_texture_manager = Texture2D();
   grass_texture_manager.load("./textures/grass.jpg");
-  grass_texture_manager.bind(1);
+  global.texture_managers.push_back(grass_texture_manager);
 
   Texture2D sand_texture_manager = Texture2D();
   sand_texture_manager.load("./textures/sand.jpg");
-  sand_texture_manager.bind(2);
-
-  global.texture_managers.push_back(water_texture_manager);
-  global.texture_managers.push_back(grass_texture_manager);
   global.texture_managers.push_back(sand_texture_manager);
 
-  global.shaders.set_water_texture_sampler(0);
-  global.shaders.set_grass_texture_sampler(1);
-  global.shaders.set_sand_texture_sampler(2);
+  global.shaders.set_texture_sampler("WaterSampler", 0);
+  global.shaders.set_texture_sampler("GrassSampler", 1);
+  global.shaders.set_texture_sampler("SandSampler", 2);
 }
 
 void MyRenderScene() {

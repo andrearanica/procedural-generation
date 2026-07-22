@@ -28,9 +28,7 @@ public:
 
   void set_time(float time);
   
-  void set_water_texture_sampler(int sampler_id);
-  void set_grass_texture_sampler(int sampler_id);
-  void set_sand_texture_sampler(int sampler_id);
+  void set_texture_sampler(char* location_name, int sampler_id);
 private:
 
   /**

@@ -13,16 +13,9 @@ void MyShaderClass::set_time(float time) {
   glUniform1f(_time_location, time);
 }
 
-void MyShaderClass::set_water_texture_sampler(int sampler_id) {
-  glUniform1i(_water_texture_sampler_location, sampler_id);
-}
-
-void MyShaderClass::set_grass_texture_sampler(int sampler_id) {
-  glUniform1i(_grass_texture_sampler_location, sampler_id);
-}
-
-void MyShaderClass::set_sand_texture_sampler(int sampler_id) {
-  glUniform1i(_sand_texture_sampler_location, sampler_id);
+void MyShaderClass::set_texture_sampler(char* uniform_name, int sampler_id) {
+  GLint location = get_uniform_location(uniform_name);
+  glUniform1i(location, sampler_id);
 }
 
 bool MyShaderClass::load_shaders() {
