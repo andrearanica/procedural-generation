@@ -2,6 +2,7 @@
 #include <sstream>
 #include <random>
 #include <vector>
+#include <string>
 
 #include "GL/glew.h"
 #include "GL/freeglut.h"
@@ -130,21 +131,21 @@ void create_scene() {
 
   global.shaders.enable();
 
-  Texture2D water_texture_manager = Texture2D();
-  water_texture_manager.load("./textures/water.jpg");
-  global.texture_managers.push_back(water_texture_manager);
+  std::vector<std::string> textures = {
+    "water.jpg", "grass.jpg", "sand.jpg", "mountain.jpg", "rock.jpg"
+  };
 
-  Texture2D grass_texture_manager = Texture2D();
-  grass_texture_manager.load("./textures/grass.jpg");
-  global.texture_managers.push_back(grass_texture_manager);
-
-  Texture2D sand_texture_manager = Texture2D();
-  sand_texture_manager.load("./textures/sand.jpg");
-  global.texture_managers.push_back(sand_texture_manager);
+  for (int i = 0; i < textures.size(); i++) {
+    Texture2D texture_manager = Texture2D();
+    texture_manager.load("./textures/" + textures[i]);
+    global.texture_managers.push_back(texture_manager);
+  }
 
   global.shaders.set_texture_sampler("WaterSampler", 0);
   global.shaders.set_texture_sampler("GrassSampler", 1);
   global.shaders.set_texture_sampler("SandSampler", 2);
+  global.shaders.set_texture_sampler("MountainSampler", 3);
+  global.shaders.set_texture_sampler("RockSampler", 4);
 }
 
 void MyRenderScene() {
