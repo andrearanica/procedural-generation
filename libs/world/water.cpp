@@ -1,25 +1,13 @@
+#include <vector>
 #include <iostream>
-#include <algorithm>
 
-#include "world.h"
-#include "../noise/noise_generator.h"
+#include "glm/glm.hpp"
+#include "GL/glew.h"
 
+#include "water.h"
+#include "vertex.h"
 
-float World::get_vertex_distance_from_world_center(Vertex vertex)
-{
-    glm::vec3 world_center = glm::vec3(width / 2, 0, height / 2);
-
-    float dx = vertex.position.x - world_center.x;
-    float dz = vertex.position.z - world_center.z;
-
-    float distance = std::sqrt(dx * dx + dz * dz);
-    float max_distance = glm::length(world_center);
-
-    float attenuation = pow(glm::clamp(distance / max_distance, 0.0f, 1.0f), 3);
-    return attenuation;
-}
-
-void World::render()
+void WaterGenerator::render()
 {
     std::vector<Vertex> vertices;
     for (int z = 0; z < (height + 1); z++)
@@ -27,12 +15,7 @@ void World::render()
         // Terrain vertices
         for (int x = 0; x < (width + 1); x++)
         {
-            Vertex v(glm::vec3(x, 0, z), VERTEX_GRID);
-
-            float vertex_noise = noise_generator.get_noise(x, z);
-            float falloff = get_vertex_distance_from_world_center(v);
-
-            v.position.y = vertex_noise - falloff;
+            Vertex v(glm::vec3(position.x + x, -0.05, position.z + z), VERTEX_WATER);
             vertices.push_back(v);
         }
     }
@@ -51,6 +34,7 @@ void World::render()
             indices.push_back(sw);
             indices.push_back(ne);
             indices.push_back(se);
+
             indices.push_back(sw);
             indices.push_back(nw);
             indices.push_back(ne);
@@ -93,12 +77,10 @@ void World::render()
         indices.size() * sizeof(unsigned int),
         &indices[0],
         GL_STATIC_DRAW);
-    
+
     glBindVertexArray(VAO);
 
-    glDrawElements(GL_TRIANGLES, 6 + 6 * width * height, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, 6 * width * height, GL_UNSIGNED_INT, nullptr);
 
     glBindVertexArray(0);
-
-    water_generator.render();
 }

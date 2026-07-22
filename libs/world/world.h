@@ -2,75 +2,40 @@
 #define WORLD_H
 
 #include <vector>
-#include <cstdlib> // For random function
 
 #include "glm/glm.hpp"
 #include "GL/glew.h"
+
 #include "../noise/noise_generator.h"
-
-#define VERTEX_BORDER_THRESHOLD 0.5f
-
-enum VertexType {
-    VERTEX_GRID, VERTEX_WATER
-};
-
-/**
-  Structure which contains the vertex attributes
-*/
-struct Vertex {
-  // Spatial coordinates
-  glm::vec3 position;
-
-  // Colour
-  glm::vec3 color;
-
-  // Type of the vertex
-  VertexType type;
-
-  Vertex(float x, float y, float z) {
-      position = glm::vec3(x,y,z);
-      color = glm::vec3(1, 1, 1);
-  }
-
-  Vertex(float x, float y, float z, float r, float g, float b) {
-      position = glm::vec3(x, y, z);
-      color = glm::vec3(r, g, b);
-  }
-
-  Vertex() : position(0), color(0, 0, 0), type(VERTEX_GRID) {}
-
-  Vertex(const glm::vec3 &xyz) : position(xyz), color(1, 1, 1), type(VERTEX_GRID) {}
-
-  Vertex(const glm::vec3 &xyz, VertexType type) : position(xyz), color(1, 1, 1), type(type) {}
-
-  Vertex(const glm::vec3 &xyz, const glm::vec3 &rgb) : position(xyz), color(rgb), type(VERTEX_GRID) {}
-};
+#include "vertex.h"
+#include "water.h"
 
 class World {
+    private:
+        WaterGenerator water_generator;
+        float get_vertex_distance_from_world_center(Vertex vertex);
+
     public:
         NoiseGenerator noise_generator;
         int width;
         int height;
 
-        World(int width, int height, float seed, float freq, float amp) : noise_generator(freq, amp, seed) {
+        World(int width, int height, float seed, float freq, float amp) : noise_generator(freq, amp, seed), water_generator(glm::vec3(-width / 2, 0, -height / 2), width * 2, height * 2) {
             this->width = width;
             this->height = height;
         }
 
-        World(int width, int height, float seed) : noise_generator(1.0, 1.0, seed) {
+        World(int width, int height, float seed) : noise_generator(1.0, 1.0, seed), water_generator(glm::vec3(-width / 2, 0, -height / 2), width * 2, height * 2) {
             this->width = width;
             this->height = height;
         }
 
-        World(int width, int height) : noise_generator(1.0, 1.0) {
+        World(int width, int height) : noise_generator(1.0, 1.0), water_generator(glm::vec3(-width / 2, 0, -height / 2), width * 2, height * 2) {
             this->width = width;
             this->height = height;
         }
 
-        void create_grid();
-
-    private:
-        float get_vertex_distance_from_world_center(Vertex vertex);
+        void render();
 };
 
 #endif

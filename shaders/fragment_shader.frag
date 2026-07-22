@@ -1,7 +1,7 @@
 #version 330
 
 in float vertex_height;
-flat in int  vertex_type;
+flat in int vertex_type;
 
 out vec4 color;
 

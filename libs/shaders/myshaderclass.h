@@ -15,9 +15,7 @@ class MyShaderClass : public ShaderClass {
 public:
 
   /**
-      Setta la matrice di trasformazione nel vertex shader
-
-      @param transform matrice 4x4 di trasformazione  
+    Setta la matrice di trasformazione nel vertex shader
   */
   void set_model_transform(const glm::mat4 &transform);
 
@@ -28,6 +26,10 @@ public:
   */
   void set_camera_transform(const glm::mat4 &transform);
 
+  /**
+   * Sets the 
+   */
+  void set_time(float time);
 private:
 
   /**
@@ -47,6 +49,6 @@ private:
 
   GLint _model_transform_location; ///<< Location della variabile Model2World
   GLint _camera_transform_location; ///<< Location della variabile World2Camera
-
+  GLint _time_location;             // Location della variabile Time
 };
 #endif
