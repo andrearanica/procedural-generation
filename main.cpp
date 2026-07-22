@@ -127,7 +127,6 @@ void create_scene() {
 }
 
 void MyRenderScene() {
-  std::cout << "Invoked render" << std::endl;
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
   LocalTransform modelT;
