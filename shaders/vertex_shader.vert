@@ -1,8 +1,8 @@
 #version 330
 
 #define PI             3.14159265359
-#define WAVE_LENGTH    5.0
-#define WAVE_AMPLITUDE 0.15
+#define WAVE_LENGTH    3.0
+#define WAVE_AMPLITUDE 0.05
 
 // Il vertex shader riceve in input gli attributi dei vertici
 layout (location = 0) in vec3 position;

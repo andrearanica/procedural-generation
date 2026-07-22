@@ -23,6 +23,6 @@ void main()
             color = vec4(1.0, 1.0, 0, 1.0);
         }
     } else if (vertex_type == 1) {
-        color = vec4(0, 0, 1, 1);
+        color = vec4(0.11, 0.63, 0.92, 1);
     }
 }
