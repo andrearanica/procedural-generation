@@ -12,6 +12,8 @@
 #include "./libs/shaders/myshaderclass.h"
 #include "./libs/world/world.h"
 
+#define WATER_SPEED 0.01
+
 
 /**
   Structure which stores all the global informations
@@ -31,6 +33,8 @@ struct global_struct {
   float gradY; 
 
   global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 0, 0.5, 2) {}
+
+  float time = 0;
 } global;
 
 
@@ -44,7 +48,8 @@ void MyClose(void);
 void MySpecialKeyboard(int Key, int x, int y);
 // Function invoked everytime a mouse event is generated
 void MyMouse(int x, int y);
-
+// Function invoked at each timer tick
+void Timer(int);
 
 // Initializes the OpenGL environment (GLUT + GLEW)
 void init(int argc, char*argv[]) {
@@ -70,6 +75,7 @@ void init(int argc, char*argv[]) {
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
   glutDisplayFunc(MyRenderScene);
+  glutTimerFunc(16, Timer, 0);
 
   glutKeyboardFunc(MyKeyboard);
 
@@ -121,7 +127,7 @@ void create_scene() {
 }
 
 void MyRenderScene() {
-
+  std::cout << "Invoked render" << std::endl;
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
   LocalTransform modelT;
@@ -130,10 +136,13 @@ void MyRenderScene() {
 
   global.shaders.set_model_transform(modelT.T());
   global.shaders.set_camera_transform(global.camera.CP());
+  global.shaders.set_time(global.time);
 
   global.world.render();
 
   glutSwapBuffers();
+
+  global.time += WATER_SPEED;
 }
 
 void MyKeyboard(unsigned char key, int x, int y) {
@@ -179,6 +188,11 @@ void MyClose(void) {
   std::cout << "Tearing down the system..." << std::endl;
 
   exit(0);
+}
+
+void Timer(int) {
+  glutPostRedisplay();
+  glutTimerFunc(16, Timer, 0);
 }
 
 int main(int argc, char* argv[])
