@@ -15,7 +15,9 @@ void WaterGenerator::render()
         // Terrain vertices
         for (int x = 0; x < (width + 1); x++)
         {
-            Vertex v(glm::vec3(position.x + x, -0.05, position.z + z), VERTEX_WATER);
+            glm::vec2 texture_coordinates = glm::vec2(x / float(width), z / float(height));
+            Vertex v(glm::vec3(position.x + x, -0.05, position.z + z), VERTEX_WATER, texture_coordinates);
+
             vertices.push_back(v);
         }
     }
@@ -68,6 +70,10 @@ void WaterGenerator::render()
     glVertexAttribIPointer(2, 1, GL_INT, sizeof(Vertex),
                            (void *)(offsetof(struct Vertex, type)));
     glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, texture_coordinates)));
+    glEnableVertexAttribArray(3);
 
     // Finally I fill the EBO with the indices of the faces
     glGenBuffers(1, &EBO);

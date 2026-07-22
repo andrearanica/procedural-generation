@@ -1,6 +1,9 @@
 #include <iostream>
 #include <sstream>
 #include <random>
+#include <vector>
+#include <string>
+
 #include "GL/glew.h"
 #include "GL/freeglut.h"
 #include "glm/glm.hpp"
@@ -11,6 +14,7 @@
 #include "./libs/shaders/shaderclass.h"
 #include "./libs/shaders/myshaderclass.h"
 #include "./libs/world/world.h"
+#include "./libs/texture/texture.h"
 
 #define WATER_SPEED 0.01
 
@@ -35,6 +39,8 @@ struct global_struct {
   global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 0, 0.5, 2) {}
 
   float time = 0;
+
+  std::vector<Texture2D> texture_managers;
 } global;
 
 
@@ -124,6 +130,22 @@ void create_scene() {
   }
 
   global.shaders.enable();
+
+  std::vector<std::string> textures = {
+    "water.jpg", "grass.jpg", "sand.jpg", "mountain.jpg", "rock.jpg"
+  };
+
+  for (int i = 0; i < textures.size(); i++) {
+    Texture2D texture_manager = Texture2D();
+    texture_manager.load("./textures/" + textures[i]);
+    global.texture_managers.push_back(texture_manager);
+  }
+
+  global.shaders.set_texture_sampler("WaterSampler", 0);
+  global.shaders.set_texture_sampler("GrassSampler", 1);
+  global.shaders.set_texture_sampler("SandSampler", 2);
+  global.shaders.set_texture_sampler("MountainSampler", 3);
+  global.shaders.set_texture_sampler("RockSampler", 4);
 }
 
 void MyRenderScene() {
@@ -136,6 +158,10 @@ void MyRenderScene() {
   global.shaders.set_model_transform(modelT.T());
   global.shaders.set_camera_transform(global.camera.CP());
   global.shaders.set_time(global.time);
+
+  for (int i = 0; i < global.texture_managers.size(); i++) {
+    global.texture_managers[i].bind(i);
+  }
 
   global.world.render();
 

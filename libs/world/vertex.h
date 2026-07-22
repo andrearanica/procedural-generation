@@ -20,6 +20,8 @@ struct Vertex {
   // Type of the vertex
   VertexType type;
 
+  glm::vec2 texture_coordinates;
+
   Vertex(float x, float y, float z) {
       position = glm::vec3(x,y,z);
       color = glm::vec3(1, 1, 1);
@@ -30,13 +32,17 @@ struct Vertex {
       color = glm::vec3(r, g, b);
   }
 
-  Vertex() : position(0), color(0, 0, 0), type(VERTEX_GRID) {}
+  Vertex() : position(0), color(0, 0, 0), type(VERTEX_GRID), texture_coordinates() {}
 
-  Vertex(const glm::vec3 &xyz) : position(xyz), color(1, 1, 1), type(VERTEX_GRID) {}
+  Vertex(const glm::vec3 &xyz) : position(xyz), color(1, 1, 1), type(VERTEX_GRID), texture_coordinates() {}
 
-  Vertex(const glm::vec3 &xyz, VertexType type) : position(xyz), color(1, 1, 1), type(type) {}
+  Vertex(const glm::vec3 &xyz, VertexType type) : position(xyz), color(1, 1, 1), type(type), texture_coordinates() {}
 
   Vertex(const glm::vec3 &xyz, const glm::vec3 &rgb) : position(xyz), color(rgb), type(VERTEX_GRID) {}
+
+  Vertex(const glm::vec3 &xyz, VertexType type, glm::vec2 texture_coordinates) : position(xyz), color(1, 1, 1), type(type), texture_coordinates(texture_coordinates) {}
+
+  Vertex(const glm::vec3 &xyz, const glm::vec3 &rgb, glm::vec2 texture_coordinates) : position(xyz), color(rgb), type(VERTEX_GRID), texture_coordinates(texture_coordinates) {}
 };
 
 #endif

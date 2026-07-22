@@ -26,10 +26,9 @@ public:
   */
   void set_camera_transform(const glm::mat4 &transform);
 
-  /**
-   * Sets the 
-   */
   void set_time(float time);
+  
+  void set_texture_sampler(char* location_name, int sampler_id);
 private:
 
   /**
@@ -50,5 +49,8 @@ private:
   GLint _model_transform_location; ///<< Location della variabile Model2World
   GLint _camera_transform_location; ///<< Location della variabile World2Camera
   GLint _time_location;             // Location della variabile Time
+  GLint _water_texture_sampler_location;
+  GLint _grass_texture_sampler_location;
+  GLint _sand_texture_sampler_location;
 };
 #endif
