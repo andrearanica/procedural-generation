@@ -28,7 +28,9 @@ public:
 
   void set_time(float time);
   
-  void set_color_texture_sampler(int sampler_id);
+  void set_water_texture_sampler(int sampler_id);
+  void set_grass_texture_sampler(int sampler_id);
+  void set_sand_texture_sampler(int sampler_id);
 private:
 
   /**
@@ -49,6 +51,8 @@ private:
   GLint _model_transform_location; ///<< Location della variabile Model2World
   GLint _camera_transform_location; ///<< Location della variabile World2Camera
   GLint _time_location;             // Location della variabile Time
-  GLint _color_texture_sampler_location;
+  GLint _water_texture_sampler_location;
+  GLint _grass_texture_sampler_location;
+  GLint _sand_texture_sampler_location;
 };
 #endif

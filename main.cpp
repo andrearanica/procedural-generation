@@ -1,6 +1,8 @@
 #include <iostream>
 #include <sstream>
 #include <random>
+#include <vector>
+
 #include "GL/glew.h"
 #include "GL/freeglut.h"
 #include "glm/glm.hpp"
@@ -37,7 +39,7 @@ struct global_struct {
 
   float time = 0;
 
-  Texture2D texture_manager;
+  std::vector<Texture2D> texture_managers;
 } global;
 
 
@@ -128,9 +130,25 @@ void create_scene() {
 
   global.shaders.enable();
 
-  global.texture_manager.load("./textures/water.jpg");
-  global.texture_manager.bind(0);
-  global.shaders.set_color_texture_sampler(0);
+  Texture2D water_texture_manager = Texture2D();
+  water_texture_manager.load("./textures/water.jpg");
+  water_texture_manager.bind(0);
+
+  Texture2D grass_texture_manager = Texture2D();
+  grass_texture_manager.load("./textures/grass.jpg");
+  grass_texture_manager.bind(1);
+
+  Texture2D sand_texture_manager = Texture2D();
+  sand_texture_manager.load("./textures/sand.jpg");
+  sand_texture_manager.bind(2);
+
+  global.texture_managers.push_back(water_texture_manager);
+  global.texture_managers.push_back(grass_texture_manager);
+  global.texture_managers.push_back(sand_texture_manager);
+
+  global.shaders.set_water_texture_sampler(0);
+  global.shaders.set_grass_texture_sampler(1);
+  global.shaders.set_sand_texture_sampler(2);
 }
 
 void MyRenderScene() {
@@ -143,6 +161,10 @@ void MyRenderScene() {
   global.shaders.set_model_transform(modelT.T());
   global.shaders.set_camera_transform(global.camera.CP());
   global.shaders.set_time(global.time);
+
+  for (int i = 0; i < global.texture_managers.size(); i++) {
+    global.texture_managers[i].bind(i);
+  }
 
   global.world.render();
 
