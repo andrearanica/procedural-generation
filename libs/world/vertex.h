@@ -22,6 +22,8 @@ struct Vertex {
 
   glm::vec2 texture_coordinates;
 
+  glm::vec3 normal;
+
   Vertex(float x, float y, float z) {
       position = glm::vec3(x,y,z);
       color = glm::vec3(1, 1, 1);

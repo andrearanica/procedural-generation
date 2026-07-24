@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include "glm/glm.hpp"
 
 /**
 	Semplici strutture che raprresnetano delle eccezioni
@@ -51,5 +52,7 @@ GLuint CreateShader(GLenum eShaderType, const std::string &strShaderFile);
 
 */
 GLuint CreateProgram(const Shaders &shaderList);
+
+glm::vec3 get_face_normal(glm::vec3 first_point, glm::vec3 second_point, glm::vec3 third_point);
 
 #endif

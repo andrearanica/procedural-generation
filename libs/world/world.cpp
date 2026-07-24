@@ -3,6 +3,7 @@
 
 #include "world.h"
 #include "../noise/noise_generator.h"
+#include "../utils/utils.h"
 
 
 float World::get_vertex_distance_from_world_center(Vertex vertex)
@@ -48,13 +49,49 @@ void World::render()
             int nw = (z + 1) * (width + 1) + x;
             int ne = nw + 1;
 
+            glm::vec3 normal;
+
             // CCW order: remember that Z+ is towards the camera
             indices.push_back(sw);
             indices.push_back(ne);
             indices.push_back(se);
+
+            normal = get_face_normal(vertices[sw].position, vertices[ne].position, vertices[se].position);
+
+            vertices[sw].normal += normal;
+            vertices[se].normal += normal;
+            vertices[nw].normal += normal;
+
             indices.push_back(sw);
             indices.push_back(nw);
             indices.push_back(ne);
+
+            normal = get_face_normal(vertices[sw].position, vertices[nw].position, vertices[ne].position);
+
+            vertices[sw].normal += normal;
+            vertices[nw].normal += normal;
+            vertices[ne].normal += normal;
+        }
+    }
+
+    for (int z = 0; z < height; z++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            int sw_index = z * (width + 1) + x;
+            int se_index = sw_index + 1;
+            int nw_index = (z + 1) * (width + 1) + x;
+            int ne_index = nw_index + 1;
+
+            Vertex sw = vertices[sw_index];
+            Vertex se = vertices[se_index];
+            Vertex nw = vertices[nw_index];
+            Vertex ne = vertices[ne_index];
+
+            sw.normal = glm::normalize(sw.normal);
+            se.normal = glm::normalize(se.normal);
+            nw.normal = glm::normalize(nw.normal);
+            ne.normal = glm::normalize(ne.normal);
         }
     }
 
@@ -89,6 +126,10 @@ void World::render()
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                           reinterpret_cast<GLvoid *>(offsetof(struct Vertex, texture_coordinates)));
     glEnableVertexAttribArray(3);
+
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, normal)));
+    glEnableVertexAttribArray(4);
 
     // Finally I fill the EBO with the indices of the faces
     glGenBuffers(1, &EBO);
