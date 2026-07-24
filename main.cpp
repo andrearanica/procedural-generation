@@ -16,7 +16,7 @@
 #include "./libs/world/world.h"
 #include "./libs/texture/texture.h"
 
-#define WATER_SPEED 0.01
+#define WATER_SPEED 0.005
 
 
 /**
@@ -36,7 +36,7 @@ struct global_struct {
   float gradX;
   float gradY; 
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 0, 0.5, 2) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 0, 0.05, 2) {}
 
   float time = 0;
 
@@ -112,7 +112,7 @@ void create_scene() {
   global.world.noise_generator.seed = distribution(range);
 
   global.camera.set_camera(
-      glm::vec3(0, global.world.width / 2, global.world.width * 1.5),
+      glm::vec3(0, 3, -global.world.height * 1.5),
       glm::vec3(0,0,0),
       glm::vec3(0,1,0)
   );
@@ -153,7 +153,7 @@ void MyRenderScene() {
 
   LocalTransform modelT;
   modelT.rotate(global.gradX, global.gradY, 0.0f);
-  modelT.translate(-global.world.width / 2, 0, -4);
+  modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
 
   global.shaders.set_model_transform(modelT.T());
   global.shaders.set_camera_transform(global.camera.CP());

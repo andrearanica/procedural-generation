@@ -28,7 +28,7 @@ public:
 
   void set_time(float time);
   
-  void set_texture_sampler(char* location_name, int sampler_id);
+  void set_texture_sampler(std::string location_name, int sampler_id);
 private:
 
   /**

@@ -13,7 +13,7 @@ void MyShaderClass::set_time(float time) {
   glUniform1f(_time_location, time);
 }
 
-void MyShaderClass::set_texture_sampler(char* uniform_name, int sampler_id) {
+void MyShaderClass::set_texture_sampler(std::string uniform_name, int sampler_id) {
   GLint location = get_uniform_location(uniform_name);
   glUniform1i(location, sampler_id);
 }

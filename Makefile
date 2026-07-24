@@ -11,7 +11,7 @@ ifeq ($(OS),Windows_NT)
 	LIBDIRS += -L$(BASEDIR)/glew/lib/Release/Win32
 
 	LIBS += -lfreeglut 
-	LIBS += -lopengl32 
+	LIBS += -lopengl32
 	LIBS += -lglew32
 
 else

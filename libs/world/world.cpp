@@ -27,7 +27,7 @@ void World::render()
         // Terrain vertices
         for (int x = 0; x < (width + 1); x++)
         {
-            glm::vec2 texture_coordinates = glm::vec2(x / float(width), z / float(height));
+            glm::vec2 texture_coordinates = glm::vec2(x, z);
             Vertex v(glm::vec3(x, 0, z), VERTEX_GRID, texture_coordinates);
 
             float vertex_noise = noise_generator.get_noise(x, z);
