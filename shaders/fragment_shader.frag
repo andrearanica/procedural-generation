@@ -3,7 +3,7 @@
 in float vertex_height;
 flat in int vertex_type;
 in vec2 vertex_texture_coordinates;
-in vec3 vertex_normal;
+flat in vec3 vertex_normal;
 
 uniform sampler2D WaterSampler;
 uniform sampler2D GrassSampler;
@@ -16,19 +16,22 @@ out vec4 color;
 void main()
 {
     if (vertex_type == 0) {
-        // Grid vertex
-        if (vertex_height >= 0.8) {
-            // Grey mountain
-            vec4 material_color = texture(RockSampler, vertex_texture_coordinates);
-            color = material_color;
-        } else if (vertex_height >= 0.5) {
-            // Brown mountain
-            vec4 material_color = texture(MountainSampler, vertex_texture_coordinates);
-            color = material_color;
-        } else if (vertex_height >= 0) {
-            // Green plains
-            vec4 material_color = texture(GrassSampler, vertex_texture_coordinates);
-            color = material_color;
+        if (vertex_height >= 0) {
+            if (vertex_normal.y >= 0.8) {
+                // Grey mountain
+                vec4 material_color = texture(RockSampler, vertex_texture_coordinates);
+                color = material_color;
+            } else if (vertex_normal.y >= 0.5) {
+                // Brown mountain
+                vec4 material_color = texture(MountainSampler, vertex_texture_coordinates);
+                color = material_color;
+            } else if (vertex_normal.y >= 0) {
+                // Green plains
+                vec4 material_color = texture(GrassSampler, vertex_texture_coordinates);
+                color = material_color;
+            } else {
+                color = vec4(0, 0, 0, 1);
+            }
         } else {
             // Yellow beach
             vec4 material_color = texture(SandSampler, vertex_texture_coordinates);
@@ -39,7 +42,5 @@ void main()
         vec4 material_color = texture(WaterSampler, vertex_texture_coordinates);
         color = material_color;
         return;
-
-        color = vec4(0.11, 0.63, 0.92, 1);
     }
 }
