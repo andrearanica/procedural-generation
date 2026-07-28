@@ -84,7 +84,7 @@ GLuint LoadShader(GLenum eShaderType, const std::string &FileName){
 glm::vec3 get_face_normal(glm::vec3 first_point, glm::vec3 second_point, glm::vec3 third_point)
 {
 	glm::vec3 u = second_point - first_point;
-	glm::vec3 v = third_point - second_point;
+	glm::vec3 v = third_point - first_point;
 
 	glm::vec3 normal = glm::cross(u, v);
 	normal = glm::normalize(normal);

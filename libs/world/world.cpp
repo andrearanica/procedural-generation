@@ -5,7 +5,6 @@
 #include "../noise/noise_generator.h"
 #include "../utils/utils.h"
 
-
 float World::get_vertex_distance_from_world_center(Vertex vertex)
 {
     glm::vec3 world_center = glm::vec3(width / 2, 0, height / 2);
@@ -139,7 +138,7 @@ void World::render()
         indices.size() * sizeof(unsigned int),
         &indices[0],
         GL_STATIC_DRAW);
-    
+
     glBindVertexArray(VAO);
 
     glDrawElements(GL_TRIANGLES, 6 + 6 * width * height, GL_UNSIGNED_INT, nullptr);

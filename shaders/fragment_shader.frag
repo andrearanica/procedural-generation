@@ -17,17 +17,17 @@ void main()
 {
     if (vertex_type == 0) {
         if (vertex_height >= 0) {
-            if (vertex_normal.y >= 0.8) {
-                // Grey mountain
-                vec4 material_color = texture(RockSampler, vertex_texture_coordinates);
+            if (abs(vertex_normal.y) >= 1) {
+                // Green plains
+                vec4 material_color = texture(GrassSampler, vertex_texture_coordinates);
                 color = material_color;
-            } else if (vertex_normal.y >= 0.5) {
+            } else if (abs(vertex_normal.y) >= 0.5) {
                 // Brown mountain
                 vec4 material_color = texture(MountainSampler, vertex_texture_coordinates);
                 color = material_color;
-            } else if (vertex_normal.y >= 0) {
-                // Green plains
-                vec4 material_color = texture(GrassSampler, vertex_texture_coordinates);
+            } else if (abs(vertex_normal.y) >= 0) {
+                // Grey mountain
+                vec4 material_color = texture(RockSampler, vertex_texture_coordinates);
                 color = material_color;
             } else {
                 color = vec4(0, 0, 0, 1);
