@@ -5,12 +5,12 @@
 #include "../noise/noise_generator.h"
 #include "../utils/utils.h"
 
-float World::get_vertex_distance_from_world_center(Vertex vertex)
+float World::get_vertex_distance_from_world_center(float x, float z)
 {
     glm::vec3 world_center = glm::vec3(width / 2, 0, height / 2);
 
-    float dx = vertex.position.x - world_center.x;
-    float dz = vertex.position.z - world_center.z;
+    float dx = x - world_center.x;
+    float dz = z - world_center.z;
 
     float distance = std::sqrt(dx * dx + dz * dz);
     float max_distance = glm::length(world_center);
@@ -19,57 +19,33 @@ float World::get_vertex_distance_from_world_center(Vertex vertex)
     return attenuation;
 }
 
+float World::get_point_height(float x, float z)
+{
+    float vertex_noise = noise_generator.get_noise(x, z);
+    float falloff = get_vertex_distance_from_world_center(x, z);
+
+    return vertex_noise - falloff;
+}
+
 void World::render()
 {
-    std::vector<Vertex> vertices;
-    for (int z = 0; z < (height + 1); z++)
+    Vertex vertices[6 * width * height];
+
+    for (int x = 0; x < height; x++)
     {
-        // Terrain vertices
-        for (int x = 0; x < (width + 1); x++)
+        for (int z = 0; z < width; z++)
         {
-            glm::vec2 texture_coordinates = glm::vec2(x, z);
-            Vertex v(glm::vec3(x, 0, z), VERTEX_GRID, texture_coordinates);
+            int base = 6 * (x * width + z);
 
-            float vertex_noise = noise_generator.get_noise(x, z);
-            float falloff = get_vertex_distance_from_world_center(v);
+            // First triangle
+            vertices[base + 0] = Vertex(glm::vec3(x,     get_point_height(x, z), z),             VERTEX_GRID, glm::vec2(x, z));
+            vertices[base + 1] = Vertex(glm::vec3(x + 1, get_point_height(x + 1, z), z),         VERTEX_GRID, glm::vec2(x + 1, z));
+            vertices[base + 2] = Vertex(glm::vec3(x + 1, get_point_height(x + 1, z - 1), z - 1), VERTEX_GRID, glm::vec2(x + 1, z - 1));
 
-            v.position.y = vertex_noise - falloff;
-            vertices.push_back(v);
-        }
-    }
-
-    std::vector<unsigned int> indices;
-    for (int z = 0; z < height; z++)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            int sw = z * (width + 1) + x;
-            int se = sw + 1;
-            int nw = (z + 1) * (width + 1) + x;
-            int ne = nw + 1;
-
-            glm::vec3 normal;
-
-            // CCW order: remember that Z+ is towards the camera
-            indices.push_back(sw);
-            indices.push_back(ne);
-            indices.push_back(se);
-
-            normal = get_face_normal(vertices[sw].position, vertices[ne].position, vertices[se].position);
-
-            vertices[sw].normal = normal;
-            vertices[ne].normal = normal;
-            vertices[se].normal = normal;
-
-            indices.push_back(sw);
-            indices.push_back(nw);
-            indices.push_back(ne);
-
-            normal = get_face_normal(vertices[sw].position, vertices[nw].position, vertices[ne].position);
-
-            vertices[sw].normal = normal;
-            vertices[nw].normal = normal;
-            vertices[ne].normal = normal;
+            // Second triangle
+            vertices[base + 3] = Vertex(glm::vec3(x + 1, get_point_height(x + 1, z - 1), z - 1), VERTEX_GRID, glm::vec2(x + 1, z - 1));
+            vertices[base + 4] = Vertex(glm::vec3(x,     get_point_height(x, z - 1), z - 1),     VERTEX_GRID, glm::vec2(x, z - 1));
+            vertices[base + 5] = Vertex(glm::vec3(x,     get_point_height(x, z), z),             VERTEX_GRID, glm::vec2(x, z));
         }
     }
 
@@ -78,15 +54,13 @@ void World::render()
     glBindVertexArray(VAO);
     // glDrawArrays(GL_TRIANGLES, 0, 6 * width * height);
 
-    GLuint VBO, EBO;
-
-    // First I fill the VBO with the vertices
+    GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(
         GL_ARRAY_BUFFER,
-        vertices.size() * sizeof(Vertex),
-        vertices.data(),
+        6 * width * height * sizeof(Vertex),
+        vertices,
         GL_STATIC_DRAW);
 
     // Then I set how to retrieve vertex attributes from the Vertex struct
@@ -111,17 +85,9 @@ void World::render()
     glEnableVertexAttribArray(4);
 
     // Finally I fill the EBO with the indices of the faces
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(
-        GL_ELEMENT_ARRAY_BUFFER,
-        indices.size() * sizeof(unsigned int),
-        &indices[0],
-        GL_STATIC_DRAW);
-
     glBindVertexArray(VAO);
 
-    glDrawElements(GL_TRIANGLES, 6 * width * height, GL_UNSIGNED_INT, nullptr);
+    glDrawArrays(GL_TRIANGLES, 0, 6 * width * height);
 
     glBindVertexArray(0);
 
