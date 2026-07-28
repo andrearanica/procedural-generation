@@ -58,8 +58,8 @@ void World::render()
             normal = get_face_normal(vertices[sw].position, vertices[ne].position, vertices[se].position);
 
             vertices[sw].normal = normal;
+            vertices[ne].normal = normal;
             vertices[se].normal = normal;
-            vertices[nw].normal = normal;
 
             indices.push_back(sw);
             indices.push_back(nw);
@@ -73,27 +73,10 @@ void World::render()
         }
     }
 
-    for (int z = 0; z < height; z++)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            int sw_index = z * (width + 1) + x;
-            int se_index = sw_index + 1;
-            int nw_index = (z + 1) * (width + 1) + x;
-            int ne_index = nw_index + 1;
-
-            Vertex sw = vertices[sw_index];
-            Vertex se = vertices[se_index];
-            Vertex nw = vertices[nw_index];
-            Vertex ne = vertices[ne_index];
-
-            std::cout << sw.normal.y << std::endl;
-        }
-    }
-
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
+    // glDrawArrays(GL_TRIANGLES, 0, 6 * width * height);
 
     GLuint VBO, EBO;
 
