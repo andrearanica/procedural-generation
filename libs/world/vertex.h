@@ -22,7 +22,7 @@ struct Vertex {
 
   glm::vec2 texture_coordinates;
 
-  glm::vec3 normal;
+  glm::vec3 normal = glm::vec3(0, 0, 0);
 
   Vertex(float x, float y, float z) {
       position = glm::vec3(x,y,z);

@@ -73,6 +73,7 @@ void World::render()
         }
     }
 
+    int n_inverted = 0;
     for (int z = 0; z < height; z++)
     {
         for (int x = 0; x < width; x++)
@@ -91,6 +92,11 @@ void World::render()
             se.normal = glm::normalize(se.normal);
             nw.normal = glm::normalize(nw.normal);
             ne.normal = glm::normalize(ne.normal);
+
+            if (sw.normal.y < 0) {
+                std::cout << "Normale invertita! Numero: " << n_inverted << std::endl;
+                n_inverted++;
+            }
         }
     }
 
