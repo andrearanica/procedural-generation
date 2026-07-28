@@ -57,9 +57,9 @@ void World::render()
 
             normal = get_face_normal(vertices[sw].position, vertices[ne].position, vertices[se].position);
 
-            vertices[sw].normal += normal;
-            vertices[se].normal += normal;
-            vertices[nw].normal += normal;
+            vertices[sw].normal = normal;
+            vertices[se].normal = normal;
+            vertices[nw].normal = normal;
 
             indices.push_back(sw);
             indices.push_back(nw);
@@ -67,9 +67,9 @@ void World::render()
 
             normal = get_face_normal(vertices[sw].position, vertices[nw].position, vertices[ne].position);
 
-            vertices[sw].normal += normal;
-            vertices[nw].normal += normal;
-            vertices[ne].normal += normal;
+            vertices[sw].normal = normal;
+            vertices[nw].normal = normal;
+            vertices[ne].normal = normal;
         }
     }
 
@@ -87,10 +87,7 @@ void World::render()
             Vertex nw = vertices[nw_index];
             Vertex ne = vertices[ne_index];
 
-            sw.normal = glm::normalize(sw.normal);
-            se.normal = glm::normalize(se.normal);
-            nw.normal = glm::normalize(nw.normal);
-            ne.normal = glm::normalize(ne.normal);
+            std::cout << sw.normal.y << std::endl;
         }
     }
 

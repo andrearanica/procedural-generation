@@ -17,11 +17,11 @@ void main()
 {
     if (vertex_type == 0) {
         if (vertex_height >= 0) {
-            if (vertex_normal.y >= 1) {
+            if (vertex_normal.y >= 0.9) {
                 // Green plains
                 vec4 material_color = texture(GrassSampler, vertex_texture_coordinates);
                 color = material_color;
-            } else if (vertex_normal.y >= 0.5) {
+            } else if (vertex_normal.y >= 0.8) {
                 // Brown mountain
                 vec4 material_color = texture(MountainSampler, vertex_texture_coordinates);
                 color = material_color;

@@ -15,7 +15,7 @@ void WaterGenerator::render()
         // Terrain vertices
         for (int x = 0; x < (width + 1); x++)
         {
-            glm::vec2 texture_coordinates = glm::vec2(x / float(width / 4), z / float(height / 4));
+            glm::vec2 texture_coordinates = glm::vec2(x / float(width / 10), z / float(height / 10));
             Vertex v(glm::vec3(position.x + x, -0.05, position.z + z), VERTEX_WATER, texture_coordinates);
 
             vertices.push_back(v);
