@@ -3,7 +3,7 @@
 in float vertex_height;
 flat in int vertex_type;
 in vec2 vertex_texture_coordinates;
-flat in vec3 vertex_normal;
+in vec3 vertex_normal;
 
 uniform sampler2D WaterSampler;
 uniform sampler2D GrassSampler;
@@ -16,18 +16,16 @@ out vec4 color;
 void main()
 {
     if (vertex_type == 0) {
-        if (vertex_height <= 1000) {
-            color = vec4(vertex_normal.y * 0.1, 0, 0, 1);
-        } else if (vertex_height >= 0) {
-            if (abs(vertex_normal.y) >= 0.98) {
+        if (vertex_height >= 0) {
+            if (vertex_normal.y >= 1) {
                 // Green plains
                 vec4 material_color = texture(GrassSampler, vertex_texture_coordinates);
                 color = material_color;
-            } else if (abs(vertex_normal.y) >= 0.5) {
+            } else if (vertex_normal.y >= 0.5) {
                 // Brown mountain
                 vec4 material_color = texture(MountainSampler, vertex_texture_coordinates);
                 color = material_color;
-            } else if (abs(vertex_normal.y) >= 0) {
+            } else if (vertex_normal.y >= 0) {
                 // Grey mountain
                 vec4 material_color = texture(RockSampler, vertex_texture_coordinates);
                 color = material_color;

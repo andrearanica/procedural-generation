@@ -73,7 +73,6 @@ void World::render()
         }
     }
 
-    int n_inverted = 0;
     for (int z = 0; z < height; z++)
     {
         for (int x = 0; x < width; x++)
@@ -92,11 +91,6 @@ void World::render()
             se.normal = glm::normalize(se.normal);
             nw.normal = glm::normalize(nw.normal);
             ne.normal = glm::normalize(ne.normal);
-
-            if (sw.normal.y < 0) {
-                std::cout << "Normale invertita! Numero: " << n_inverted << std::endl;
-                n_inverted++;
-            }
         }
     }
 
@@ -147,7 +141,7 @@ void World::render()
 
     glBindVertexArray(VAO);
 
-    glDrawElements(GL_TRIANGLES, 6 + 6 * width * height, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, 6 * width * height, GL_UNSIGNED_INT, nullptr);
 
     glBindVertexArray(0);
 
