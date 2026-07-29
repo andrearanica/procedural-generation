@@ -57,7 +57,7 @@ texture.o: ./libs/texture/texture.cpp
 
 .PHONY clean:
 clean:
-	rm *.o *.exe
+	rm -f *.o *.exe
 
 run:
 	./main.exe

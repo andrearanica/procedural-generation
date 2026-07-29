@@ -140,6 +140,7 @@ bool Camera::onSpecialKeyboard(int key) {
 }
 
 bool Camera::onMouse(int x, int y) {
+	/*
 	if (_first_mouse_call) {
 		_mouse_lastX = x;
 		_mouse_lastY = y;
@@ -180,7 +181,7 @@ bool Camera::onMouse(int x, int y) {
 
 	_view = camera_setting(_position, _position + _lookat_dir, _up);
 	update();
-
+	*/
 	return true;
 }
 

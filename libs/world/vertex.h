@@ -50,6 +50,8 @@ struct Vertex
 
   Vertex(const glm::vec3 &xyz, VertexType type, glm::vec3 normal, glm::vec2 texture_coordinates) : position(xyz), normal(normal), color(1, 1, 1), type(type), texture_coordinates(texture_coordinates) {}
 
+  Vertex(const glm::vec3 &xyz, VertexType type, glm::vec2 texture_coordinates) : position(xyz), color(1, 1, 1), type(type), texture_coordinates(texture_coordinates) {}
+
   Vertex(const glm::vec3 &xyz, glm::vec2 texture_coordinates) : position(xyz), color(1, 1, 1), type(VERTEX_GRID), texture_coordinates(texture_coordinates) {}
 };
 
