@@ -24,7 +24,13 @@ float World::get_point_height(float x, float z)
     float vertex_noise = noise_generator.get_noise(x, z);
     float falloff = get_vertex_distance_from_world_center(x, z);
 
-    return vertex_noise - falloff;
+    float vertex_height = vertex_noise - falloff;
+    if (vertex_height > 0 && (x < 1 || z < 1))
+    {
+        vertex_height = -1;
+    }
+
+    return vertex_height;
 }
 
 void World::render()
