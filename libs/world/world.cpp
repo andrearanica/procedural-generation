@@ -37,15 +37,23 @@ void World::render()
         {
             int base = 6 * (x * width + z);
 
+            glm::vec3 sw(x, get_point_height(x, z), z);
+            glm::vec3 se(x + 1, get_point_height(x + 1, z), z);
+            glm::vec3 ne(x + 1, get_point_height(x + 1, z - 1), z - 1);
+            glm::vec3 nw(x,     get_point_height(x, z - 1), z - 1);
+
+            glm::vec3 first_face_normal = get_face_normal(sw, se, ne);
+            glm::vec3 second_face_normal = get_face_normal(ne, nw, sw);
+
             // First triangle
-            vertices[base + 0] = Vertex(glm::vec3(x,     get_point_height(x, z), z),             VERTEX_GRID, glm::vec2(x, z));
-            vertices[base + 1] = Vertex(glm::vec3(x + 1, get_point_height(x + 1, z), z),         VERTEX_GRID, glm::vec2(x + 1, z));
-            vertices[base + 2] = Vertex(glm::vec3(x + 1, get_point_height(x + 1, z - 1), z - 1), VERTEX_GRID, glm::vec2(x + 1, z - 1));
+            vertices[base + 0] = Vertex(sw, VERTEX_GRID, first_face_normal, glm::vec2(x, z));
+            vertices[base + 1] = Vertex(se, VERTEX_GRID, first_face_normal, glm::vec2(x + 1, z));
+            vertices[base + 2] = Vertex(ne, VERTEX_GRID, first_face_normal, glm::vec2(x + 1, z - 1));
 
             // Second triangle
-            vertices[base + 3] = Vertex(glm::vec3(x + 1, get_point_height(x + 1, z - 1), z - 1), VERTEX_GRID, glm::vec2(x + 1, z - 1));
-            vertices[base + 4] = Vertex(glm::vec3(x,     get_point_height(x, z - 1), z - 1),     VERTEX_GRID, glm::vec2(x, z - 1));
-            vertices[base + 5] = Vertex(glm::vec3(x,     get_point_height(x, z), z),             VERTEX_GRID, glm::vec2(x, z));
+            vertices[base + 3] = Vertex(ne, VERTEX_GRID, second_face_normal, glm::vec2(x + 1, z - 1));
+            vertices[base + 4] = Vertex(nw, VERTEX_GRID, second_face_normal, glm::vec2(x, z - 1));
+            vertices[base + 5] = Vertex(sw, VERTEX_GRID, second_face_normal, glm::vec2(x, z));
         }
     }
 
