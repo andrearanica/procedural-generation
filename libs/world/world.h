@@ -12,10 +12,10 @@
 
 class World {
     private:
-        WaterGenerator water_generator;
         float get_vertex_distance_from_world_center(float x, float z);
 
     public:
+        WaterGenerator water_generator;
         NoiseGenerator noise_generator;
         int width;
         int height;

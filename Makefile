@@ -20,7 +20,7 @@ else
 	LIBS += -lGL
 endif
 
-OBJS = main.o utils.o transform.o camera.o shaderclass.o myshaderclass.o world.o noise.o water.o texture.o
+OBJS = main.o utils.o transform.o camera.o shaderclass.o world_shader.o water_shader.o world.o noise.o water.o texture.o
 
 main.exe : $(OBJS)
 	$(CC) $(CCFLAGS) $^ $(LIBDIRS) $(LIBS) -o $@
@@ -40,7 +40,10 @@ camera.o : ./libs/camera/camera.cpp
 shaderclass.o : ./libs/shaders/shaderclass.cpp
 	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
 
-myshaderclass.o : ./libs/shaders/myshaderclass.cpp
+world_shader.o : ./libs/shaders/world_shader.cpp
+	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
+
+water_shader.o : ./libs/shaders/water_shader.cpp
 	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
 
 world.o: ./libs/world/world.cpp

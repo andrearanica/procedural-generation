@@ -12,7 +12,7 @@
 #include "./libs/transform/transform.h"
 #include "./libs/camera/camera.h"
 #include "./libs/shaders/shaderclass.h"
-#include "./libs/shaders/myshaderclass.h"
+#include "./libs/shaders/world_shader.h"
 #include "./libs/world/world.h"
 #include "./libs/texture/texture.h"
 
@@ -30,7 +30,8 @@ struct global_struct {
 
   World world;
 
-  MyShaderClass shaders;
+  WorldShader world_shader;
+  WorldShader water_shader;
 
   const float SPEED = 10;
   float gradX;
@@ -124,12 +125,10 @@ void create_scene() {
       0.1,
       100);
 
-  if (!global.shaders.init()) {
+  if (!global.world_shader.init()) {
       std::cerr << "Error initializing shaders..." << std::endl;
       exit(0);
   }
-
-  global.shaders.enable();
 
   std::vector<std::string> textures = {
     "water.jpg", "grass.jpg", "sand.jpg", "mountain.jpg", "rock.jpg"
@@ -141,11 +140,22 @@ void create_scene() {
     global.texture_managers.push_back(texture_manager);
   }
 
-  global.shaders.set_texture_sampler("WaterSampler", 0);
-  global.shaders.set_texture_sampler("GrassSampler", 1);
-  global.shaders.set_texture_sampler("SandSampler", 2);
-  global.shaders.set_texture_sampler("MountainSampler", 3);
-  global.shaders.set_texture_sampler("RockSampler", 4);
+  global.world_shader.set_texture_sampler("WaterSampler", 0);
+  global.world_shader.set_texture_sampler("GrassSampler", 1);
+  global.world_shader.set_texture_sampler("SandSampler", 2);
+  global.world_shader.set_texture_sampler("MountainSampler", 3);
+  global.world_shader.set_texture_sampler("RockSampler", 4);
+
+  if (!global.water_shader.init()) {
+      std::cerr << "Error initializing shaders..." << std::endl;
+      exit(0);
+  }
+
+  global.water_shader.set_texture_sampler("WaterSampler", 0);
+  global.water_shader.set_texture_sampler("GrassSampler", 1);
+  global.water_shader.set_texture_sampler("SandSampler", 2);
+  global.water_shader.set_texture_sampler("MountainSampler", 3);
+  global.water_shader.set_texture_sampler("RockSampler", 4);
 }
 
 void MyRenderScene() {
@@ -155,15 +165,21 @@ void MyRenderScene() {
   modelT.rotate(global.gradX, global.gradY, 0.0f);
   modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
 
-  global.shaders.set_model_transform(modelT.T());
-  global.shaders.set_camera_transform(global.camera.CP());
-  global.shaders.set_time(global.time);
+  global.world_shader.set_model_transform(modelT.T());
+  global.world_shader.set_camera_transform(global.camera.CP());
+  global.world_shader.set_time(global.time);
 
   for (int i = 0; i < global.texture_managers.size(); i++) {
     global.texture_managers[i].bind(i);
   }
 
+  global.world_shader.enable();
   global.world.render();
+
+  global.water_shader.enable();
+  global.world.water_generator.render();
+
+  std::cout << global.time << std::endl;
 
   glutSwapBuffers();
 
