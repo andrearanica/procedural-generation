@@ -18,7 +18,7 @@ uniform float Time;
 out float vertex_height;
 flat out int   vertex_type;
 out vec2 vertex_texture_coordinates;
-out vec3 vertex_normal;
+flat out vec3 vertex_normal;
 
 float generate_offset(float x, float z)
 {

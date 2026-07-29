@@ -3,7 +3,7 @@
 in float vertex_height;
 flat in int vertex_type;
 in vec2 vertex_texture_coordinates;
-in vec3 vertex_normal;
+flat in vec3 vertex_normal;
 
 uniform sampler2D WaterSampler;
 uniform sampler2D GrassSampler;
