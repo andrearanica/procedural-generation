@@ -1,5 +1,5 @@
-#ifndef WorldShader_H
-#define WorldShader_H
+#ifndef WaterShader_H
+#define WaterShader_H
 
 #include "shaderclass.h"
 #include "glm/glm.hpp"

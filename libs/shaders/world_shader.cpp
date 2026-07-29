@@ -26,14 +26,12 @@ bool WorldShader::load_shaders() {
 bool WorldShader::load_done() {
   _model_transform_location  =      get_uniform_location("Model2World");
   _camera_transform_location =      get_uniform_location("World2Camera");
-  _time_location             =      get_uniform_location("Time");
   _water_texture_sampler_location = get_uniform_location("WaterSampler");
   _grass_texture_sampler_location = get_uniform_location("GrassSampler");
   _sand_texture_sampler_location  = get_uniform_location("SandSampler");
 
   return  (_model_transform_location  !=      INVALID_UNIFORM_LOCATION) &&
           (_camera_transform_location !=      INVALID_UNIFORM_LOCATION) &&
-          (_time_location             !=      INVALID_UNIFORM_LOCATION) &&
           (_water_texture_sampler_location != INVALID_UNIFORM_LOCATION) &&
           (_grass_texture_sampler_location != INVALID_UNIFORM_LOCATION) &&
           (_sand_texture_sampler_location  != INVALID_UNIFORM_LOCATION);

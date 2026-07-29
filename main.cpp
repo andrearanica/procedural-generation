@@ -13,6 +13,7 @@
 #include "./libs/camera/camera.h"
 #include "./libs/shaders/shaderclass.h"
 #include "./libs/shaders/world_shader.h"
+#include "./libs/shaders/water_shader.h"
 #include "./libs/world/world.h"
 #include "./libs/texture/texture.h"
 
@@ -31,7 +32,7 @@ struct global_struct {
   World world;
 
   WorldShader world_shader;
-  WorldShader water_shader;
+  WaterShader water_shader;
 
   const float SPEED = 10;
   float gradX;
@@ -167,7 +168,10 @@ void MyRenderScene() {
 
   global.world_shader.set_model_transform(modelT.T());
   global.world_shader.set_camera_transform(global.camera.CP());
-  global.world_shader.set_time(global.time);
+
+  global.water_shader.set_model_transform(modelT.T());
+  global.water_shader.set_camera_transform(global.camera.CP());
+  global.water_shader.set_time(global.time);
 
   for (int i = 0; i < global.texture_managers.size(); i++) {
     global.texture_managers[i].bind(i);
@@ -178,8 +182,6 @@ void MyRenderScene() {
 
   global.water_shader.enable();
   global.world.water_generator.render();
-
-  std::cout << global.time << std::endl;
 
   glutSwapBuffers();
 
