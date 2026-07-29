@@ -9,6 +9,7 @@ layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 color;
 layout (location = 2) in int  type;
 layout (location = 3) in vec2 texture_coordinates;
+layout (location = 4) in vec3 normal;
 
 uniform mat4  Model2World;
 uniform mat4  World2Camera;
@@ -17,6 +18,7 @@ uniform float Time;
 out float vertex_height;
 flat out int   vertex_type;
 out vec2 vertex_texture_coordinates;
+flat out vec3 vertex_normal;
 
 float generate_offset(float x, float z)
 {
@@ -48,4 +50,5 @@ void main()
 
     vertex_height = p.y;
     vertex_texture_coordinates = texture_coordinates;
+    vertex_normal = normal;
 }

@@ -13,7 +13,7 @@
 class World {
     private:
         WaterGenerator water_generator;
-        float get_vertex_distance_from_world_center(Vertex vertex);
+        float get_vertex_distance_from_world_center(float x, float z);
 
     public:
         NoiseGenerator noise_generator;
@@ -36,6 +36,7 @@ class World {
         }
 
         void render();
+        float get_point_height(float x, float z);
 };
 
 #endif
