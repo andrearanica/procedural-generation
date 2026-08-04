@@ -14,8 +14,10 @@
 #include "./libs/shaders/shaderclass.h"
 #include "./libs/shaders/world_shader.h"
 #include "./libs/shaders/water_shader.h"
+#include "./libs/shaders/gui_shader.h"
 #include "./libs/world/world.h"
 #include "./libs/texture/texture.h"
+#include "./libs/gui/gui.h"
 
 #define WATER_SPEED 0.005
 
@@ -30,9 +32,11 @@ struct global_struct
   Camera camera;
 
   World world;
+  Gui gui;
 
   WorldShader world_shader;
   WaterShader water_shader;
+  GuiShader gui_shader;
 
   const float SPEED = 10;
   float gradX;
@@ -133,6 +137,18 @@ void create_scene()
     exit(0);
   }
 
+  if (!global.water_shader.init())
+  {
+    std::cerr << "Error initializing shaders..." << std::endl;
+    exit(0);
+  }
+
+  if (!global.gui_shader.init())
+  {
+    std::cerr << "Error initializing shaders..." << std::endl;
+    exit(0);
+  }
+
   std::vector<std::string> textures = {
       "water.jpg", "grass.jpg", "sand.jpg", "mountain.jpg", "rock.jpg"};
 
@@ -141,12 +157,6 @@ void create_scene()
     Texture2D texture_manager = Texture2D();
     texture_manager.load("./textures/" + textures[i]);
     global.texture_managers.push_back(texture_manager);
-  }
-
-  if (!global.water_shader.init())
-  {
-    std::cerr << "Error initializing shaders..." << std::endl;
-    exit(0);
   }
 }
 
@@ -178,6 +188,13 @@ void render_water(LocalTransform modelT)
   global.world.water_generator.render();
 }
 
+void render_gui()
+{
+  global.gui_shader.enable();
+
+  global.gui.render();
+}
+
 void MyRenderScene()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -193,6 +210,7 @@ void MyRenderScene()
 
   render_world(modelT);
   render_water(modelT);
+  render_gui();
  
   glutSwapBuffers();
 
