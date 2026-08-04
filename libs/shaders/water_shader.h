@@ -50,7 +50,5 @@ private:
   GLint _camera_transform_location; ///<< Location della variabile World2Camera
   GLint _time_location;             // Location della variabile Time
   GLint _water_texture_sampler_location;
-  GLint _grass_texture_sampler_location;
-  GLint _sand_texture_sampler_location;
 };
 #endif
