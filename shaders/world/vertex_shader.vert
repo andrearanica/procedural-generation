@@ -24,7 +24,7 @@ void main()
     gl_Position = World2Camera * Model2World * vec4(position, 1.0);
 
     vertex_type = type;
-    vertex_height = gl_Position.y;
+    vertex_height = position.y;
     vertex_texture_coordinates = texture_coordinates;
     vertex_normal = normal;
 }

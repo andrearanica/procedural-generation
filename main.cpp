@@ -185,10 +185,10 @@ void MyRenderScene()
   global.water_shader.set_time(global.time);
   global.water_shader.enable();
 
-  global.world_shader.set_texture_sampler("WaterSampler", 1);
-
   global.world.water_generator.render();
+  global.world_shader.set_texture_sampler("WaterSampler", 0);
   */
+ 
   glutSwapBuffers();
 
   global.time += WATER_SPEED;
