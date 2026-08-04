@@ -3,22 +3,37 @@
 #include "glm/glm.hpp"
 #include "GL/glew.h"
 
-#include "../world/vertex.h"
+#include <vector>
 
-Gui::Gui()
+void Gui::add_quad(glm::vec2 start_point, glm::vec2 end_point)
 {
+    // FIXME use window coordinates instead of canonical view volume ones
+    Vertex sw = Vertex(glm::vec3(start_point.x, start_point.y, 0));
+    Vertex se = Vertex(glm::vec3(end_point.x, start_point.y, 0));
+    Vertex ne = Vertex(glm::vec3(end_point.x, end_point.y, 0));
+    Vertex nw = Vertex(glm::vec3(start_point.x, end_point.y, 0));
 
+    vertices.push_back(sw);
+    vertices.push_back(se);
+    vertices.push_back(ne);
+    vertices.push_back(nw);
+}
+
+void Gui::add_label(glm::vec2 start_point, std::string text)
+{
+    float letter_quad_dim = 0.2;
+    for (int i = 0; i < text.size(); i++)
+    {
+        char letter = text[i];
+        glm::vec2 quad_start_position = start_point + glm::vec2(letter_quad_dim * i, 0);
+        glm::vec2 quad_end_position = quad_start_position + glm::vec2(letter_quad_dim, 0.3);
+
+        add_quad(quad_start_position, quad_end_position);
+    }
 }
 
 void Gui::render()
 {
-    Vertex vertices[4];
-
-    vertices[0] = Vertex(glm::vec3(0.8, -0.8, 0));
-    vertices[1] = Vertex(glm::vec3(1, -0.8, 0));
-    vertices[2] = Vertex(glm::vec3(1, -0.5, 0));
-    vertices[3] = Vertex(glm::vec3(0.8, -0.5, 0));
-
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -28,8 +43,8 @@ void Gui::render()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(
         GL_ARRAY_BUFFER,
-        4 * sizeof(Vertex),
-        vertices,
+        vertices.size() * sizeof(Vertex),
+        vertices.data(),
         GL_STATIC_DRAW);
 
     // Then I set how to retrieve vertex attributes from the Vertex struct
@@ -56,7 +71,7 @@ void Gui::render()
     // Finally I fill the EBO with the indices of the faces
     glBindVertexArray(VAO);
 
-    glDrawArrays(GL_QUADS, 0, 4);
+    glDrawArrays(GL_QUADS, 0, vertices.size());
 
     glBindVertexArray(0);
 }

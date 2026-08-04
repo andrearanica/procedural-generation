@@ -192,6 +192,8 @@ void render_gui()
 {
   global.gui_shader.enable();
 
+  global.gui.add_label(glm::vec2(-1, -1), "TEST");
+
   global.gui.render();
 }
 

@@ -9,5 +9,12 @@ out vec4 color;
 
 void main()
 {
-    color = vec4(1, 1, 1, 1);
+    if (vertex_type == 0)
+    {
+        color = vec4(1, 1, 1, 1);
+    }
+    else if (vertex_type == 1)
+    {
+        color = vec4(1, 0, 0, 1);
+    }
 }
