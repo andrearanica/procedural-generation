@@ -4,7 +4,6 @@
 #define WAVE_LENGTH    3.0
 #define WAVE_AMPLITUDE 0.05
 
-// Il vertex shader riceve in input gli attributi dei vertici
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 color;
 layout (location = 2) in int  type;

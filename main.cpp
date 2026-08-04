@@ -143,15 +143,39 @@ void create_scene()
     global.texture_managers.push_back(texture_manager);
   }
 
-  /*
   if (!global.water_shader.init())
   {
     std::cerr << "Error initializing shaders..." << std::endl;
     exit(0);
   }
+}
+
+void render_world(LocalTransform modelT)
+{
+  global.world_shader.enable();
+
+  global.world_shader.set_model_transform(modelT.T());
+  global.world_shader.set_camera_transform(global.camera.CP());
+
+  global.world_shader.set_texture_sampler("GrassSampler", 1);
+  global.world_shader.set_texture_sampler("SandSampler", 2);
+  global.world_shader.set_texture_sampler("MountainSampler", 3);
+  global.world_shader.set_texture_sampler("RockSampler", 4);
+
+  global.world.render();
+}
+
+void render_water(LocalTransform modelT)
+{
+  global.water_shader.enable();
+
+  global.water_shader.set_model_transform(modelT.T());
+  global.water_shader.set_camera_transform(global.camera.CP());
+  global.water_shader.set_time(global.time);
 
   global.water_shader.set_texture_sampler("WaterSampler", 0);
-  */
+
+  global.world.water_generator.render();
 }
 
 void MyRenderScene()
@@ -167,27 +191,8 @@ void MyRenderScene()
     global.texture_managers[i].bind(i);
   }
 
-  global.world_shader.set_model_transform(modelT.T());
-  global.world_shader.set_camera_transform(global.camera.CP());
-
-  global.world_shader.enable();
-
-  global.world_shader.set_texture_sampler("GrassSampler", 1);
-  global.world_shader.set_texture_sampler("SandSampler", 2);
-  global.world_shader.set_texture_sampler("MountainSampler", 3);
-  global.world_shader.set_texture_sampler("RockSampler", 4);
-
-  global.world.render();
-
-  /*
-  global.water_shader.set_model_transform(modelT.T());
-  global.water_shader.set_camera_transform(global.camera.CP());
-  global.water_shader.set_time(global.time);
-  global.water_shader.enable();
-
-  global.world.water_generator.render();
-  global.world_shader.set_texture_sampler("WaterSampler", 0);
-  */
+  render_world(modelT);
+  render_water(modelT);
  
   glutSwapBuffers();
 

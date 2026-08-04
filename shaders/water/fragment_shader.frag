@@ -6,7 +6,6 @@ in vec2 vertex_texture_coordinates;
 flat in vec3 vertex_normal;
 
 uniform sampler2D WaterSampler;
-
 out vec4 color;
 
 void main()
