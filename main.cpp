@@ -150,7 +150,7 @@ void create_scene()
   }
 
   std::vector<std::string> textures = {
-      "water.jpg", "grass.jpg", "sand.jpg", "mountain.jpg", "rock.jpg", "bitmap_font.png"};
+      "water.jpg", "grass.jpg", "sand.jpg", "mountain.jpg", "rock.jpg", "font.png"};
 
   for (int i = 0; i < textures.size(); i++)
   {
@@ -193,7 +193,7 @@ void render_gui()
   global.gui_shader.enable();
   global.gui_shader.set_texture_sampler("BitmapFontSampler", 5);
 
-  global.gui.add_label(glm::vec2(-1, -1), "AAAA");
+  global.gui.add_label(glm::vec2(-1, -1), "ABC");
 
   global.gui.render();
 }

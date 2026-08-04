@@ -21,20 +21,23 @@ void Gui::add_quad(glm::vec2 start_point, glm::vec2 end_point, glm::vec2 uv_min,
 
 void Gui::add_label(glm::vec2 start_point, std::string text)
 {
-    // 36 caratteri
     float letter_quad_dim = 0.2;
     for (int i = 0; i < text.size(); i++)
     {
         char letter = text[i];
         glm::vec2 quad_start_position = start_point + glm::vec2(letter_quad_dim * i, 0);
-        glm::vec2 quad_end_position = quad_start_position + glm::vec2(letter_quad_dim, 0.3);
+        glm::vec2 quad_end_position = quad_start_position + glm::vec2(letter_quad_dim, letter_quad_dim);
 
         glm::vec2 uv_min, uv_max;
-        if (letter >= 65 && letter <= 90)
+        if (letter >= 32 && letter <= 126)
         {
-            // Upper letters
-            uv_min = glm::vec2((float)(letter - 65) / 36, 0);
-            uv_max = glm::vec2((float)(letter - 65 + 1) / 36, 1);
+            int position = letter - 32;
+
+            float row = (int)(position / 19);
+            float column = position % 19;
+
+            uv_min = glm::vec2(column / 19, (row + 1) / 5);
+            uv_max = glm::vec2((column + 1) / 19, row / 5);    
         }
 
         add_quad(quad_start_position, quad_end_position, uv_min, uv_max);
