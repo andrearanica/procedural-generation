@@ -5,13 +5,13 @@
 
 #include <vector>
 
-void Gui::add_quad(glm::vec2 start_point, glm::vec2 end_point)
+void Gui::add_quad(glm::vec2 start_point, glm::vec2 end_point, glm::vec2 uv_min, glm::vec2 uv_max)
 {
     // FIXME use window coordinates instead of canonical view volume ones
-    Vertex sw = Vertex(glm::vec3(start_point.x, start_point.y, 0));
-    Vertex se = Vertex(glm::vec3(end_point.x, start_point.y, 0));
-    Vertex ne = Vertex(glm::vec3(end_point.x, end_point.y, 0));
-    Vertex nw = Vertex(glm::vec3(start_point.x, end_point.y, 0));
+    Vertex sw = Vertex(glm::vec3(start_point.x, start_point.y, 0), uv_min);
+    Vertex se = Vertex(glm::vec3(end_point.x, start_point.y, 0), glm::vec2(uv_max.x, uv_min.y));
+    Vertex ne = Vertex(glm::vec3(end_point.x, end_point.y, 0), uv_max);
+    Vertex nw = Vertex(glm::vec3(start_point.x, end_point.y, 0), glm::vec2(uv_min.x, uv_max.y));
 
     vertices.push_back(sw);
     vertices.push_back(se);
@@ -21,6 +21,7 @@ void Gui::add_quad(glm::vec2 start_point, glm::vec2 end_point)
 
 void Gui::add_label(glm::vec2 start_point, std::string text)
 {
+    // 36 caratteri
     float letter_quad_dim = 0.2;
     for (int i = 0; i < text.size(); i++)
     {
@@ -28,7 +29,15 @@ void Gui::add_label(glm::vec2 start_point, std::string text)
         glm::vec2 quad_start_position = start_point + glm::vec2(letter_quad_dim * i, 0);
         glm::vec2 quad_end_position = quad_start_position + glm::vec2(letter_quad_dim, 0.3);
 
-        add_quad(quad_start_position, quad_end_position);
+        glm::vec2 uv_min, uv_max;
+        if (letter >= 65 && letter <= 90)
+        {
+            // Upper letters
+            uv_min = glm::vec2((float)(letter - 65) / 36, 0);
+            uv_max = glm::vec2((float)(letter - 65 + 1) / 36, 1);
+        }
+
+        add_quad(quad_start_position, quad_end_position, uv_min, uv_max);
     }
 }
 

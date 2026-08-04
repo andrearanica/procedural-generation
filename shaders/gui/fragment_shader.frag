@@ -7,14 +7,10 @@ flat in vec3 vertex_normal;
 
 out vec4 color;
 
+uniform sampler2D BitmapFontSampler;
+
 void main()
 {
-    if (vertex_type == 0)
-    {
-        color = vec4(1, 1, 1, 1);
-    }
-    else if (vertex_type == 1)
-    {
-        color = vec4(1, 0, 0, 1);
-    }
+    vec4 material_color = texture(BitmapFontSampler, vertex_texture_coordinates);
+    color = material_color;
 }

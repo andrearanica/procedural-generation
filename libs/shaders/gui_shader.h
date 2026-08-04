@@ -12,43 +12,26 @@
   delle coordinate dei vertici. 
 */
 class GuiShader : public ShaderClass {
-public:
+  public:
+    void set_texture_sampler(std::string location_name, int sampler_id);
 
-  /**
-    Setta la matrice di trasformazione nel vertex shader
-  */
-  void set_model_transform(const glm::mat4 &transform);
+  private:
 
-  /**
-      Setta la matrice di trasformazione di camera completa
+    /**
+        Metodo per il caricamento degli shader
 
-      @param transform matrice 4x4 di trasformazione  
-  */
-  void set_camera_transform(const glm::mat4 &transform);
+        @return true se il caricamento è andato a buon fine
+    */
+    virtual bool load_shaders();
 
-  void set_time(float time);
-  
-  void set_texture_sampler(std::string location_name, int sampler_id);
-private:
+    /**
+        Metodo che recupera tutte le location delle variabili uniform 
+        negli shader caricati.  
 
-  /**
-      Metodo per il caricamento degli shader
+        @return se le operazioni post-load sono andate a buon fine
+    */
+    virtual bool load_done();
 
-      @return true se il caricamento è andato a buon fine
-  */
-  virtual bool load_shaders();
-
-  /**
-      Metodo che recupera tutte le location delle variabili uniform 
-      negli shader caricati.  
-
-      @return se le operazioni post-load sono andate a buon fine
-  */
-  virtual bool load_done();
-
-  GLint _model_transform_location; ///<< Location della variabile Model2World
-  GLint _camera_transform_location; ///<< Location della variabile World2Camera
-  GLint _time_location;             // Location della variabile Time
-  GLint _water_texture_sampler_location;
+    GLint _bitmap_font_sampler_location;
 };
 #endif
