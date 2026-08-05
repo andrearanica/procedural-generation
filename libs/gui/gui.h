@@ -1,0 +1,32 @@
+#ifndef __GUI_H
+#define __GUI_H
+
+#include "../world/vertex.h"
+#include "./widgets/widget.h"
+#include "font.h"
+
+#include <memory>
+#include <string>
+
+enum WidgetType {
+    BUTTON, LABEL
+};
+
+class Gui
+{
+    private:
+        Font font;
+        std::vector<std::unique_ptr<Widget>> widgets;
+
+    public:
+        Gui() : font(5, 19) {}
+
+        void clear();
+        void add_label(glm::vec2 position, std::string text, float text_size);
+        void add_label(glm::vec2 position, std::string text, float text_size, void (*onclick_function)(int));
+
+        void render();
+        void handle_mouse_click(float x, float y, int button_type);
+};
+
+#endif

@@ -1,5 +1,5 @@
-#ifndef MYSHADERCLASS_H
-#define MYSHADERCLASS_H
+#ifndef WorldShader_H
+#define WorldShader_H
 
 #include "shaderclass.h"
 #include "glm/glm.hpp"
@@ -11,7 +11,7 @@
   Sono stati inseriti due metodi pubblici per settare la matrice di trasformazione
   delle coordinate dei vertici. 
 */
-class MyShaderClass : public ShaderClass {
+class WorldShader : public ShaderClass {
 public:
 
   /**

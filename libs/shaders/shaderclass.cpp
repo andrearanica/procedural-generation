@@ -40,7 +40,7 @@ bool ShaderClass::init() {
        glDeleteShader(*s);
  	}
 	_shaders.clear();
-	
+
 	return load_done();
 }
 

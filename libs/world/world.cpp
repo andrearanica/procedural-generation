@@ -104,6 +104,4 @@ void World::render()
     glDrawArrays(GL_TRIANGLES, 0, 6 * width * height);
 
     glBindVertexArray(0);
-
-    water_generator.render();
 }

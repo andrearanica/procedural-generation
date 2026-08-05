@@ -4,7 +4,6 @@
 #define WAVE_LENGTH    3.0
 #define WAVE_AMPLITUDE 0.05
 
-// Il vertex shader riceve in input gli attributi dei vertici
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 color;
 layout (location = 2) in int  type;
@@ -40,14 +39,11 @@ vec3 apply_distortion(vec3 vertex)
 void main()
 {
     vec3 p = position;
-    // If the vertex is water I simulate wave effect
-    vertex_type = type;
-    if (vertex_type == 1) {
-        p = apply_distortion(p);
-    }
+    p = apply_distortion(p);
 
     gl_Position = World2Camera * Model2World * vec4(p, 1.0);
 
+    vertex_type = type;
     vertex_height = p.y;
     vertex_texture_coordinates = texture_coordinates;
     vertex_normal = normal;

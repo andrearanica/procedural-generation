@@ -12,29 +12,35 @@
 #include "./libs/transform/transform.h"
 #include "./libs/camera/camera.h"
 #include "./libs/shaders/shaderclass.h"
-#include "./libs/shaders/myshaderclass.h"
+#include "./libs/shaders/world_shader.h"
+#include "./libs/shaders/water_shader.h"
+#include "./libs/shaders/gui_shader.h"
 #include "./libs/world/world.h"
 #include "./libs/texture/texture.h"
+#include "./libs/gui/gui.h"
 
 #define WATER_SPEED 0.005
-
 
 /**
   Structure which stores all the global informations
 */
-struct global_struct {
-  int WINDOW_WIDTH  = 1024; 
-  int WINDOW_HEIGHT = 768;
+struct global_struct
+{
+  float WINDOW_WIDTH = 1024;
+  float WINDOW_HEIGHT = 768;
 
   Camera camera;
 
   World world;
+  Gui gui;
 
-  MyShaderClass shaders;
+  WorldShader world_shader;
+  WaterShader water_shader;
+  GuiShader gui_shader;
 
   const float SPEED = 10;
   float gradX;
-  float gradY; 
+  float gradY;
 
   global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 0, 0.1, 2) {}
 
@@ -42,7 +48,6 @@ struct global_struct {
 
   std::vector<Texture2D> texture_managers;
 } global;
-
 
 // Function invoked from the main loop that computes the transformation matrix
 void MyRenderScene(void);
@@ -54,27 +59,31 @@ void MyClose(void);
 void MySpecialKeyboard(int Key, int x, int y);
 // Function invoked everytime a mouse event is generated
 void MyMouse(int x, int y);
+// Function invoked everytime a mouse click event is generated
+void MyMouseClick(int button, int state, int x, int y);
 // Function invoked at each timer tick
 void Timer(int);
 
 // Initializes the OpenGL environment (GLUT + GLEW)
-void init(int argc, char*argv[]) {
+void init(int argc, char *argv[])
+{
   glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 
   glutInitWindowSize(global.WINDOW_WIDTH, global.WINDOW_HEIGHT);
   glutInitWindowPosition(100, 100);
   glutCreateWindow("Informatica Grafica");
 
-  glutSetCursor(GLUT_CURSOR_NONE);
+  glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
 
-  global.camera.set_mouse_init_position(global.WINDOW_WIDTH/2, global.WINDOW_HEIGHT/2);
+  global.camera.set_mouse_init_position(global.WINDOW_WIDTH / 2, global.WINDOW_HEIGHT / 2);
   global.camera.lock_mouse_position(true);
-  glutWarpPointer(global.WINDOW_WIDTH/2, global.WINDOW_HEIGHT/2);
+  glutWarpPointer(global.WINDOW_WIDTH / 2, global.WINDOW_HEIGHT / 2);
 
   GLenum res = glewInit();
-  if (res != GLEW_OK) {
-      std::cerr<<"Error : "<<glewGetErrorString(res)<<std::endl;
+  if (res != GLEW_OK)
+  {
+    std::cerr << "Error : " << glewGetErrorString(res) << std::endl;
     exit(1);
   }
 
@@ -89,7 +98,8 @@ void init(int argc, char*argv[]) {
 
   glutSpecialFunc(MySpecialKeyboard);
 
-  glutPassiveMotionFunc(MyMouse);
+  // glutPassiveMotionFunc(MyMouse);
+  glutMouseFunc(MyMouseClick);
 
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
@@ -100,22 +110,27 @@ void init(int argc, char*argv[]) {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-/**
- * Function that creates the scene by defining objects, setting camera data
- * and loading shaders
- */
-void create_scene() {
+int get_random_seed()
+{
   std::random_device random;
   std::mt19937 range(random());
   std::uniform_int_distribution<int> distribution(1, 100);
 
-  global.world.noise_generator.seed = distribution(range);
+  return distribution(range);
+}
+
+/**
+ * Function that creates the scene by defining objects, setting camera data
+ * and loading shaders
+ */
+void create_scene()
+{
+  global.world.noise_generator.seed = get_random_seed();
 
   global.camera.set_camera(
       glm::vec3(0, 3, -global.world.height * 1.5),
-      glm::vec3(0,0,0),
-      glm::vec3(0,1,0)
-  );
+      glm::vec3(0, 0, 0),
+      glm::vec3(0, 1, 0));
 
   global.camera.set_perspective(
       45.0f,
@@ -124,106 +139,218 @@ void create_scene() {
       0.1,
       100);
 
-  if (!global.shaders.init()) {
-      std::cerr << "Error initializing shaders..." << std::endl;
-      exit(0);
+  if (!global.world_shader.init())
+  {
+    std::cerr << "Error initializing shaders..." << std::endl;
+    exit(0);
   }
 
-  global.shaders.enable();
+  if (!global.water_shader.init())
+  {
+    std::cerr << "Error initializing shaders..." << std::endl;
+    exit(0);
+  }
+
+  if (!global.gui_shader.init())
+  {
+    std::cerr << "Error initializing shaders..." << std::endl;
+    exit(0);
+  }
 
   std::vector<std::string> textures = {
-    "water.jpg", "grass.jpg", "sand.jpg", "mountain.jpg", "rock.jpg"
-  };
+      "water.jpg", "grass.jpg", "sand.jpg", "mountain.jpg", "rock.jpg", "font.png"};
 
-  for (int i = 0; i < textures.size(); i++) {
+  for (int i = 0; i < textures.size(); i++)
+  {
     Texture2D texture_manager = Texture2D();
     texture_manager.load("./textures/" + textures[i]);
     global.texture_managers.push_back(texture_manager);
   }
-
-  global.shaders.set_texture_sampler("WaterSampler", 0);
-  global.shaders.set_texture_sampler("GrassSampler", 1);
-  global.shaders.set_texture_sampler("SandSampler", 2);
-  global.shaders.set_texture_sampler("MountainSampler", 3);
-  global.shaders.set_texture_sampler("RockSampler", 4);
 }
 
-void MyRenderScene() {
-  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void render_world(LocalTransform modelT)
+{
+  global.world_shader.enable();
+
+  global.world_shader.set_model_transform(modelT.T());
+  global.world_shader.set_camera_transform(global.camera.CP());
+
+  global.world_shader.set_texture_sampler("GrassSampler", 1);
+  global.world_shader.set_texture_sampler("SandSampler", 2);
+  global.world_shader.set_texture_sampler("MountainSampler", 3);
+  global.world_shader.set_texture_sampler("RockSampler", 4);
+
+  global.world.render();
+}
+
+void render_water(LocalTransform modelT)
+{
+  global.water_shader.enable();
+
+  global.water_shader.set_model_transform(modelT.T());
+  global.water_shader.set_camera_transform(global.camera.CP());
+  global.water_shader.set_time(global.time);
+
+  global.water_shader.set_texture_sampler("WaterSampler", 0);
+
+  global.world.water_generator.render();
+}
+
+void handle_seed_click(int button_type)
+{
+  global.world.noise_generator.seed = get_random_seed();
+}
+
+void handle_frequency_click(int button_type)
+{
+  if (button_type == 0 && global.world.noise_generator.freq < 1)
+  {
+    global.world.noise_generator.freq += 0.1;
+  }
+  else if (button_type == 2 && global.world.noise_generator.freq > 0)
+  {
+    global.world.noise_generator.freq -= 0.1;
+  }
+}
+
+void handle_amplitude_click(int button_type)
+{
+  if (button_type == 0)
+  {
+    global.world.noise_generator.amp += 0.1;
+  }
+  else if (button_type == 2 && global.world.noise_generator.amp > 0)
+  {
+    global.world.noise_generator.amp -= 0.1;
+  }
+}
+
+void render_gui()
+{
+  global.gui_shader.enable();
+  global.gui_shader.set_texture_sampler("BitmapFontSampler", 5);
+
+  global.gui.clear();
+
+  // Draw widgets
+  std::string seed_label = "Seed: " +
+                           std::to_string((int)global.world.noise_generator.seed);
+  global.gui.add_label(glm::vec2(-1, 0.95), seed_label, 0.05, handle_seed_click);
+
+  std::string width_label = "Width: " +
+                            std::to_string((int)global.world.width);
+  global.gui.add_label(glm::vec2(-1, 0.85), width_label, 0.05);
+
+  std::string height_label = "Height: " +
+                             std::to_string((int)global.world.height);
+  global.gui.add_label(glm::vec2(-1, 0.75), height_label, 0.05);
+
+  std::string frequency = "Frequency: " +
+                          std::to_string((float)global.world.noise_generator.freq);
+  global.gui.add_label(glm::vec2(-1, 0.65), frequency, 0.05, handle_frequency_click);
+
+  std::string amplitude = "Amplitude: " +
+                          std::to_string((float)global.world.noise_generator.amp);
+  global.gui.add_label(glm::vec2(-1, 0.55), amplitude, 0.05, handle_amplitude_click);
+
+  global.gui.render();
+}
+
+void MyRenderScene()
+{
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   LocalTransform modelT;
   modelT.rotate(global.gradX, global.gradY, 0.0f);
   modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
 
-  global.shaders.set_model_transform(modelT.T());
-  global.shaders.set_camera_transform(global.camera.CP());
-  global.shaders.set_time(global.time);
-
-  for (int i = 0; i < global.texture_managers.size(); i++) {
+  for (int i = 0; i < global.texture_managers.size(); i++)
+  {
     global.texture_managers[i].bind(i);
   }
 
-  global.world.render();
+  render_world(modelT);
+  render_water(modelT);
+  render_gui();
 
   glutSwapBuffers();
 
   global.time += WATER_SPEED;
 }
 
-void MyKeyboard(unsigned char key, int x, int y) {
-  switch ( key )
+void MyKeyboard(unsigned char key, int x, int y)
+{
+  switch (key)
   {
-      case 27: // Escape key
-          glutDestroyWindow(glutGetWindow());
-          return;
-      break;
+  case 27: // Escape key
+    glutDestroyWindow(glutGetWindow());
+    return;
+    break;
 
-      case 'a':
-          global.gradY -= global.SPEED;
-      break;
-      case 'd':
-          global.gradY += global.SPEED;
-      break;
-      case 'w':
-          global.gradX -= global.SPEED;
-      break;
-      case 's':
-          global.gradX += global.SPEED;
-      break;
-
+  case 'a':
+    global.gradY -= global.SPEED;
+    break;
+  case 'd':
+    global.gradY += global.SPEED;
+    break;
+  case 'w':
+    global.gradX -= global.SPEED;
+    break;
+  case 's':
+    global.gradX += global.SPEED;
+    break;
   }
 
   glutPostRedisplay();
 }
 
-void MySpecialKeyboard(int Key, int x, int y) {
+void MySpecialKeyboard(int Key, int x, int y)
+{
   global.camera.onSpecialKeyboard(Key);
   glutPostRedisplay();
 }
 
-void MyMouse(int x, int y) {
-  if (global.camera.onMouse(x,y)) {
+void MyMouse(int x, int y)
+{
+  /*
+  if (global.camera.onMouse(x, y))
+  {
     // Risposto il mouse al centro della finestra
-    glutWarpPointer(global.WINDOW_WIDTH/2, global.WINDOW_HEIGHT/2);
+    glutWarpPointer(global.WINDOW_WIDTH / 2, global.WINDOW_HEIGHT / 2);
+  }
+  */
+}
+
+void MyMouseClick(int button, int state, int x, int y)
+{
+  if (state == 0)
+  {
+    // FIXME apply transformation to widget coordinates
+    float new_x = 2 * (float)x / global.WINDOW_WIDTH - 1;
+    float new_y = 2 * (1 - (float)y / global.WINDOW_HEIGHT) - 1;
+
+    global.gui.handle_mouse_click(new_x, new_y, button);
   }
   glutPostRedisplay();
 }
 
-void MyClose(void) {
+void MyClose(void)
+{
   std::cout << "Tearing down the system..." << std::endl;
 
   exit(0);
 }
 
-void Timer(int) {
+void Timer(int)
+{
   glutPostRedisplay();
   glutTimerFunc(16, Timer, 0);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
   srand(time(NULL));
-  init(argc,argv);
+  init(argc, argv);
 
   create_scene();
 

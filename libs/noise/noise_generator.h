@@ -12,8 +12,8 @@ class NoiseGenerator {
         float interpolate(float a0, float a1, float w);
         float perlin(float x, float z);
 
-        float freq, amp;
     public:
+        float freq, amp;
         float seed;
         NoiseGenerator(float freq, float amp, float seed) : freq(freq), amp(amp), seed(seed) {}
         NoiseGenerator(float freq, float amp) : freq(freq), amp(amp) {
