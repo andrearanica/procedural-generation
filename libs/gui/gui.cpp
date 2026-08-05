@@ -7,7 +7,6 @@
 #include "GL/glew.h"
 #include "./widgets/label.h"
 
-
 void Gui::clear()
 {
     widgets.clear();
@@ -26,12 +25,12 @@ void Gui::add_label(glm::vec2 position, std::string text, float text_size, void 
 void Gui::render()
 {
     std::vector<Vertex> vertices;
-    for (const auto& widget : widgets)
+    for (const auto &widget : widgets)
     {
-        const auto& widget_vertices = widget->get_vertices();
+        const auto &widget_vertices = widget->get_vertices();
         vertices.insert(vertices.end(), widget_vertices.begin(), widget_vertices.end());
     }
-    
+
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -74,11 +73,15 @@ void Gui::render()
     glBindVertexArray(0);
 }
 
-void Gui::handle_mouse_click(int x, int y)
+void Gui::handle_mouse_click(float x, float y)
 {
-    for (const auto& widget : widgets)
+    for (const auto &widget : widgets)
     {
-        if (widget->onclick_function)
+        std::tuple<glm::vec2, glm::vec2> widget_extension = widget->get_box();
+        glm::vec2 widget_min = std::get<0>(widget_extension);
+        glm::vec2 widget_max = std::get<1>(widget_extension);
+
+        if (widget->onclick_function && widget_min.x <= x && x <= widget_max.x && widget_min.y <= y && y <= widget_max.y)
         {
             widget->onclick_function();
         }

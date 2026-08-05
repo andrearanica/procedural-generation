@@ -23,6 +23,9 @@ class Widget
         {
             return vertices;
         }
+
+        // Returns min and max point of the widget
+        std::tuple<glm::vec2, glm::vec2> get_box();
 };
 
 #endif

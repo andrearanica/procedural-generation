@@ -26,8 +26,8 @@
 */
 struct global_struct
 {
-  int WINDOW_WIDTH = 1024;
-  int WINDOW_HEIGHT = 768;
+  float WINDOW_WIDTH = 1024;
+  float WINDOW_HEIGHT = 768;
 
   Camera camera;
 
@@ -74,7 +74,7 @@ void init(int argc, char *argv[])
   glutInitWindowPosition(100, 100);
   glutCreateWindow("Informatica Grafica");
 
-  glutSetCursor(GLUT_CURSOR_NONE);
+  glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
 
   global.camera.set_mouse_init_position(global.WINDOW_WIDTH / 2, global.WINDOW_HEIGHT / 2);
   global.camera.lock_mouse_position(true);
@@ -284,7 +284,11 @@ void MyMouseClick(int button, int state, int x, int y)
 {
   if (state == 0)
   {
-    global.gui.handle_mouse_click(x, y);
+    // FIXME apply transformation to widget coordinates
+    float new_x = 2 * (float)x / global.WINDOW_WIDTH - 1;
+    float new_y = 2 * (1 - (float)y / global.WINDOW_HEIGHT) - 1;
+
+    global.gui.handle_mouse_click(new_x, new_y);
   }
   glutPostRedisplay();
 }
