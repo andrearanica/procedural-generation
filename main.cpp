@@ -59,6 +59,8 @@ void MyClose(void);
 void MySpecialKeyboard(int Key, int x, int y);
 // Function invoked everytime a mouse event is generated
 void MyMouse(int x, int y);
+// Function invoked everytime a mouse click event is generated
+void MyMouseClick(int button, int state, int x, int y);
 // Function invoked at each timer tick
 void Timer(int);
 
@@ -96,7 +98,8 @@ void init(int argc, char *argv[])
 
   glutSpecialFunc(MySpecialKeyboard);
 
-  glutPassiveMotionFunc(MyMouse);
+  // glutPassiveMotionFunc(MyMouse);
+  glutMouseFunc(MyMouseClick);
 
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
@@ -193,8 +196,9 @@ void render_gui()
   global.gui_shader.enable();
   global.gui_shader.set_texture_sampler("BitmapFontSampler", 5);
 
-  std::string seed_label = "Seed: " + std::to_string((int)global.world.noise_generator.seed);
-  global.gui.add_label(glm::vec2(-1, -1), seed_label);
+  std::string seed_label = "Seed: " +
+                           std::to_string((int)global.world.noise_generator.seed);
+  global.gui.add_label(glm::vec2(-1, -1), seed_label, 0.1);
 
   global.gui.render();
 }
@@ -202,11 +206,11 @@ void render_gui()
 void MyRenderScene()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
+
   LocalTransform modelT;
   modelT.rotate(global.gradX, global.gradY, 0.0f);
   modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
-  
+
   for (int i = 0; i < global.texture_managers.size(); i++)
   {
     global.texture_managers[i].bind(i);
@@ -215,7 +219,7 @@ void MyRenderScene()
   render_world(modelT);
   render_water(modelT);
   render_gui();
- 
+
   glutSwapBuffers();
 
   global.time += WATER_SPEED;
@@ -255,10 +259,20 @@ void MySpecialKeyboard(int Key, int x, int y)
 
 void MyMouse(int x, int y)
 {
+  /*
   if (global.camera.onMouse(x, y))
   {
     // Risposto il mouse al centro della finestra
     glutWarpPointer(global.WINDOW_WIDTH / 2, global.WINDOW_HEIGHT / 2);
+  }
+  */
+}
+
+void MyMouseClick(int button, int state, int x, int y)
+{
+  if (state == 0)
+  {
+    global.gui.handle_mouse_click(x, y);
   }
   glutPostRedisplay();
 }

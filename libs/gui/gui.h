@@ -2,7 +2,10 @@
 #define __GUI_H
 
 #include "../world/vertex.h"
+#include "./widgets/widget.h"
+#include "font.h"
 
+#include <memory>
 #include <string>
 
 enum WidgetType {
@@ -12,19 +15,20 @@ enum WidgetType {
 class Gui
 {
     private:
+        Font font;
+        std::vector<std::unique_ptr<Widget>> widgets;
         std::vector<Vertex> vertices;
-        // Creates the vertices to draw the given quad
-        void add_quad(glm::vec2 start_point, glm::vec2 end_point, glm::vec2 uv_min, glm::vec2 uv_max);
 
     public:
-        Gui()
+        Gui() : font(5, 19)
         {
             vertices = std::vector<Vertex>();
         }
 
-        void add_label(glm::vec2 point, std::string text);
+        void add_label(glm::vec2 position, std::string text, float text_size);
 
         void render();
+        void handle_mouse_click(int x, int y);
 };
 
 #endif

@@ -1,53 +1,15 @@
+#include <vector>
+#include <tuple>
+
 #include "gui.h"
 
 #include "glm/glm.hpp"
 #include "GL/glew.h"
+#include "./widgets/label.h"
 
-#include <vector>
-
-void Gui::add_quad(glm::vec2 start_point, glm::vec2 end_point, glm::vec2 uv_min, glm::vec2 uv_max)
+void Gui::add_label(glm::vec2 position, std::string text, float text_size)
 {
-    // FIXME use window coordinates instead of canonical view volume ones
-    Vertex sw = Vertex(glm::vec3(start_point.x, start_point.y, 0), uv_min);
-    Vertex se = Vertex(glm::vec3(end_point.x, start_point.y, 0), glm::vec2(uv_max.x, uv_min.y));
-    Vertex ne = Vertex(glm::vec3(end_point.x, end_point.y, 0), uv_max);
-    Vertex nw = Vertex(glm::vec3(start_point.x, end_point.y, 0), glm::vec2(uv_min.x, uv_max.y));
-
-    vertices.push_back(sw);
-    vertices.push_back(se);
-    vertices.push_back(ne);
-    vertices.push_back(nw);
-}
-
-void Gui::add_label(glm::vec2 start_point, std::string text)
-{
-    float letter_quad_dim = 0.2;
-    for (int i = 0; i < text.size(); i++)
-    {
-        char letter = text[i];
-        glm::vec2 quad_start_position = start_point + glm::vec2(letter_quad_dim * i, 0);
-        glm::vec2 quad_end_position = quad_start_position + glm::vec2(letter_quad_dim, letter_quad_dim);
-
-        glm::vec2 uv_min, uv_max;
-        if (letter >= 32 && letter <= 126)
-        {
-            int position = letter - 32;
-
-            float row = (int)(position / 19);
-            float column = (int)(position % 19);
-
-            float u_min = column / 19;
-            float v_min = 1 - ((row + 1) / 5);
-
-            float u_max = (column + 1) / 19;
-            float v_max = 1 - (row / 5);
-
-            uv_min = glm::vec2(u_min, v_min);
-            uv_max = glm::vec2(u_max, v_max);
-        }
-
-        add_quad(quad_start_position, quad_end_position, uv_min, uv_max);
-    }
+    widgets.push_back(std::make_unique<Label>(position, text, text_size, font));
 }
 
 void Gui::render()
@@ -92,4 +54,8 @@ void Gui::render()
     glDrawArrays(GL_QUADS, 0, vertices.size());
 
     glBindVertexArray(0);
+}
+
+void Gui::handle_mouse_click(int x, int y)
+{
 }
