@@ -14,6 +14,13 @@ void Gui::add_label(glm::vec2 position, std::string text, float text_size)
 
 void Gui::render()
 {
+    std::vector<Vertex> vertices;
+    for (const auto& widget : widgets)
+    {
+        const auto& widget_vertices = widget->get_vertices();
+        vertices.insert(vertices.end(), widget_vertices.begin(), widget_vertices.end());
+    }
+    
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);

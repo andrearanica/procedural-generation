@@ -17,13 +17,9 @@ class Gui
     private:
         Font font;
         std::vector<std::unique_ptr<Widget>> widgets;
-        std::vector<Vertex> vertices;
 
     public:
-        Gui() : font(5, 19)
-        {
-            vertices = std::vector<Vertex>();
-        }
+        Gui() : font(5, 19) {}
 
         void add_label(glm::vec2 position, std::string text, float text_size);
 
