@@ -193,7 +193,8 @@ void render_gui()
   global.gui_shader.enable();
   global.gui_shader.set_texture_sampler("BitmapFontSampler", 5);
 
-  global.gui.add_label(glm::vec2(-1, -1), "ABC");
+  std::string seed_label = "Seed: " + std::to_string((int)global.world.noise_generator.seed);
+  global.gui.add_label(glm::vec2(-1, -1), seed_label);
 
   global.gui.render();
 }

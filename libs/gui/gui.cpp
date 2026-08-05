@@ -34,10 +34,16 @@ void Gui::add_label(glm::vec2 start_point, std::string text)
             int position = letter - 32;
 
             float row = (int)(position / 19);
-            float column = position % 19;
+            float column = (int)(position % 19);
 
-            uv_min = glm::vec2(column / 19, (row + 1) / 5);
-            uv_max = glm::vec2((column + 1) / 19, row / 5);    
+            float u_min = column / 19;
+            float v_min = 1 - ((row + 1) / 5);
+
+            float u_max = (column + 1) / 19;
+            float v_max = 1 - (row / 5);
+
+            uv_min = glm::vec2(u_min, v_min);
+            uv_max = glm::vec2(u_max, v_max);
         }
 
         add_quad(quad_start_position, quad_end_position, uv_min, uv_max);
