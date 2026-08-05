@@ -23,10 +23,10 @@ class Gui
 
         void clear();
         void add_label(glm::vec2 position, std::string text, float text_size);
-        void add_label(glm::vec2 position, std::string text, float text_size, void (*onclick_function)());
+        void add_label(glm::vec2 position, std::string text, float text_size, void (*onclick_function)(int));
 
         void render();
-        void handle_mouse_click(float x, float y);
+        void handle_mouse_click(float x, float y, int button_type);
 };
 
 #endif

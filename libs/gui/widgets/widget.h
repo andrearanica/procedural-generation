@@ -18,7 +18,7 @@ class Widget
         void add_quad_with_texture(glm::vec2 start_point, glm::vec2 end_point, glm::vec2 uv_min, glm::vec2 uv_max);
         
     public:
-        void (*onclick_function)() = 0;
+        void (*onclick_function)(int) = 0;
         std::vector<Vertex> get_vertices()
         {
             return vertices;

@@ -17,7 +17,7 @@ void Gui::add_label(glm::vec2 position, std::string text, float text_size)
     widgets.push_back(std::make_unique<Label>(position, text, text_size, font));
 }
 
-void Gui::add_label(glm::vec2 position, std::string text, float text_size, void (*onclick_function)())
+void Gui::add_label(glm::vec2 position, std::string text, float text_size, void (*onclick_function)(int))
 {
     widgets.push_back(std::make_unique<Label>(position, text, text_size, font, onclick_function));
 }
@@ -73,7 +73,7 @@ void Gui::render()
     glBindVertexArray(0);
 }
 
-void Gui::handle_mouse_click(float x, float y)
+void Gui::handle_mouse_click(float x, float y, int button_type)
 {
     for (const auto &widget : widgets)
     {
@@ -83,7 +83,7 @@ void Gui::handle_mouse_click(float x, float y)
 
         if (widget->onclick_function && widget_min.x <= x && x <= widget_max.x && widget_min.y <= y && y <= widget_max.y)
         {
-            widget->onclick_function();
+            widget->onclick_function(button_type);
         }
     }
 }

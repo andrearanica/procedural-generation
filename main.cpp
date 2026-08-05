@@ -196,9 +196,33 @@ void render_water(LocalTransform modelT)
   global.world.water_generator.render();
 }
 
-void handle_seed_click()
+void handle_seed_click(int button_type)
 {
   global.world.noise_generator.seed = get_random_seed();
+}
+
+void handle_frequency_click(int button_type)
+{
+  if (button_type == 0 && global.world.noise_generator.freq < 1)
+  {
+    global.world.noise_generator.freq += 0.1;
+  }
+  else if (button_type == 2 && global.world.noise_generator.freq > 0)
+  {
+    global.world.noise_generator.freq -= 0.1;
+  }
+}
+
+void handle_amplitude_click(int button_type)
+{
+  if (button_type == 0)
+  {
+    global.world.noise_generator.amp += 0.1;
+  }
+  else if (button_type == 2 && global.world.noise_generator.amp > 0)
+  {
+    global.world.noise_generator.amp -= 0.1;
+  }
 }
 
 void render_gui()
@@ -223,11 +247,11 @@ void render_gui()
 
   std::string frequency = "Frequency: " +
                           std::to_string((float)global.world.noise_generator.freq);
-  global.gui.add_label(glm::vec2(-1, 0.65), frequency, 0.05);
+  global.gui.add_label(glm::vec2(-1, 0.65), frequency, 0.05, handle_frequency_click);
 
   std::string amplitude = "Amplitude: " +
                           std::to_string((float)global.world.noise_generator.amp);
-  global.gui.add_label(glm::vec2(-1, 0.55), amplitude, 0.05);
+  global.gui.add_label(glm::vec2(-1, 0.55), amplitude, 0.05, handle_amplitude_click);
 
   global.gui.render();
 }
@@ -305,7 +329,7 @@ void MyMouseClick(int button, int state, int x, int y)
     float new_x = 2 * (float)x / global.WINDOW_WIDTH - 1;
     float new_y = 2 * (1 - (float)y / global.WINDOW_HEIGHT) - 1;
 
-    global.gui.handle_mouse_click(new_x, new_y);
+    global.gui.handle_mouse_click(new_x, new_y, button);
   }
   glutPostRedisplay();
 }
