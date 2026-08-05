@@ -7,9 +7,20 @@
 #include "GL/glew.h"
 #include "./widgets/label.h"
 
+
+void Gui::clear()
+{
+    widgets.clear();
+}
+
 void Gui::add_label(glm::vec2 position, std::string text, float text_size)
 {
     widgets.push_back(std::make_unique<Label>(position, text, text_size, font));
+}
+
+void Gui::add_label(glm::vec2 position, std::string text, float text_size, void (*onclick_function)())
+{
+    widgets.push_back(std::make_unique<Label>(position, text, text_size, font, onclick_function));
 }
 
 void Gui::render()
@@ -65,4 +76,11 @@ void Gui::render()
 
 void Gui::handle_mouse_click(int x, int y)
 {
+    for (const auto& widget : widgets)
+    {
+        if (widget->onclick_function)
+        {
+            widget->onclick_function();
+        }
+    }
 }

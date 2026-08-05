@@ -24,6 +24,17 @@ class Label : public Widget
 
             update_vertices();
         }
+
+        Label(glm::vec2 position, std::string text, float text_size, Font font_manager, void (*onclick_function)())
+        {
+            this->position = position;
+            this->text = text;
+            this->text_size = text_size;
+            this->font_manager = font_manager;
+            this->onclick_function = onclick_function;
+
+            update_vertices();
+        }
 };
 
 #endif

@@ -21,7 +21,9 @@ class Gui
     public:
         Gui() : font(5, 19) {}
 
+        void clear();
         void add_label(glm::vec2 position, std::string text, float text_size);
+        void add_label(glm::vec2 position, std::string text, float text_size, void (*onclick_function)());
 
         void render();
         void handle_mouse_click(int x, int y);

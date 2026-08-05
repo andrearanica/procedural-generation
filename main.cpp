@@ -110,17 +110,22 @@ void init(int argc, char *argv[])
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
+int get_random_seed()
+{
+  std::random_device random;
+  std::mt19937 range(random());
+  std::uniform_int_distribution<int> distribution(1, 100);
+
+  return distribution(range);
+}
+
 /**
  * Function that creates the scene by defining objects, setting camera data
  * and loading shaders
  */
 void create_scene()
 {
-  std::random_device random;
-  std::mt19937 range(random());
-  std::uniform_int_distribution<int> distribution(1, 100);
-
-  global.world.noise_generator.seed = distribution(range);
+  global.world.noise_generator.seed = get_random_seed();
 
   global.camera.set_camera(
       glm::vec3(0, 3, -global.world.height * 1.5),
@@ -191,14 +196,21 @@ void render_water(LocalTransform modelT)
   global.world.water_generator.render();
 }
 
+void handle_seed_click()
+{
+  global.world.noise_generator.seed = get_random_seed();
+}
+
 void render_gui()
 {
   global.gui_shader.enable();
   global.gui_shader.set_texture_sampler("BitmapFontSampler", 5);
 
+  global.gui.clear();
+
   std::string seed_label = "Seed: " +
                            std::to_string((int)global.world.noise_generator.seed);
-  global.gui.add_label(glm::vec2(-1, -1), seed_label, 0.1);
+  global.gui.add_label(glm::vec2(-1, -1), seed_label, 0.1, handle_seed_click);
 
   global.gui.render();
 }
