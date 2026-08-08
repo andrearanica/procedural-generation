@@ -39,10 +39,9 @@ struct global_struct
   GuiShader gui_shader;
 
   const float SPEED = 10;
-  float gradX;
-  float gradY;
+  float grad;
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 0, 0.1, 2) {}
+  global_struct() : grad(0.0f), world(15, 15, 0, 0.1, 2) {}
 
   float time = 0;
 
@@ -261,7 +260,7 @@ void MyRenderScene()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   LocalTransform modelT;
-  modelT.rotate(global.gradX, global.gradY, 0.0f);
+  modelT.rotate(0.0f, global.grad, 0.0f);
   modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
 
   for (int i = 0; i < global.texture_managers.size(); i++)
@@ -288,16 +287,10 @@ void MyKeyboard(unsigned char key, int x, int y)
     break;
 
   case 'a':
-    global.gradY -= global.SPEED;
+    global.grad -= global.SPEED;
     break;
   case 'd':
-    global.gradY += global.SPEED;
-    break;
-  case 'w':
-    global.gradX -= global.SPEED;
-    break;
-  case 's':
-    global.gradX += global.SPEED;
+    global.grad += global.SPEED;
     break;
   }
 

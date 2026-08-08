@@ -49,7 +49,7 @@ LocalTransform::LocalTransform() {
 }
 
 void LocalTransform::update() {
-	_combined = _translation * _rotation * _scaling;
+	_combined = _rotation * _translation * _scaling;
 }
 
 void LocalTransform::rotate(float degX, float degY, float degZ) {
