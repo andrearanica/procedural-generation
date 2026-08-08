@@ -29,9 +29,12 @@ struct global_struct
   float WINDOW_WIDTH = 1024;
   float WINDOW_HEIGHT = 768;
 
+  int world_width = 15, world_height = 15;
+
   Camera camera;
 
   World world;
+  WaterGenerator water;
   Gui gui;
 
   WorldShader world_shader;
@@ -41,7 +44,7 @@ struct global_struct
   const float SPEED = 10;
   float gradX, gradY;
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(15, 15, 0, 0.1, 2) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(world_width, world_height, 0, 0.1, 2), water(glm::vec3(-world_width / 2, 0, -world_height / 2), world_width * 2, world_height * 2) {}
 
   float time = 0;
 
@@ -192,7 +195,7 @@ void render_water(LocalTransform modelT)
 
   global.water_shader.set_texture_sampler("WaterSampler", 0);
 
-  global.world.water_generator.render();
+  global.water.render();
 }
 
 void handle_seed_click(int button_type)
@@ -307,6 +310,7 @@ void MyKeyboard(unsigned char key, int x, int y)
   case ' ':
     global.gradX = 0.0f;
     global.gradY = 0.0f;
+    break;
   }
 
   glutPostRedisplay();
