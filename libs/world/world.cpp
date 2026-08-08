@@ -25,7 +25,7 @@ float World::get_point_height(float x, float z)
     float falloff = get_vertex_distance_from_world_center(x, z);
 
     float vertex_height = vertex_noise - falloff;
-    if (vertex_height > 0 && (x < 1 || z < 1))
+    if (vertex_height > 0 && (x < 1 || z < 1 || x > width - 2 || z > height - 2))
     {
         vertex_height = -1;
     }
@@ -43,7 +43,7 @@ void World::render()
         {
             int base = 6 * (x * width + z);
 
-            glm::vec3 sw(x, get_point_height(x, z), z);
+            glm::vec3 sw(x,     get_point_height(x, z), z);
             glm::vec3 se(x + 1, get_point_height(x + 1, z), z);
             glm::vec3 ne(x + 1, get_point_height(x + 1, z - 1), z - 1);
             glm::vec3 nw(x,     get_point_height(x, z - 1), z - 1);
@@ -66,7 +66,6 @@ void World::render()
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-    // glDrawArrays(GL_TRIANGLES, 0, 6 * width * height);
 
     GLuint VBO;
     glGenBuffers(1, &VBO);
@@ -98,7 +97,6 @@ void World::render()
                           reinterpret_cast<GLvoid *>(offsetof(struct Vertex, normal)));
     glEnableVertexAttribArray(4);
 
-    // Finally I fill the EBO with the indices of the faces
     glBindVertexArray(VAO);
 
     glDrawArrays(GL_TRIANGLES, 0, 6 * width * height);
