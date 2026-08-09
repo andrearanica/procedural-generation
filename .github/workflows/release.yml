@@ -24,8 +24,9 @@ jobs:
       - name: Prepare for the release
         run: |
           mkdir build_output
-          cp main build_output/
+          cp main.exe build_output/
           # Add other assets (es. shader, texture)
+          cp -r ./textures build_output/ 2>/dev/null || true
           cp -r ./libs/shaders build_output/ 2>/dev/null || true
           tar -czvf app-linux-x86_64.tar.gz -C build_output .
 
