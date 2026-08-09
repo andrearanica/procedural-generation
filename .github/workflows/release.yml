@@ -1,0 +1,37 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout codice
+        uses: actions/checkout@v4
+
+      - name: Install C++ and OpenGL dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y freeglut3-dev libglew-dev libgl1-mesa-dev libglm-dev build-essential
+
+      - name: Compile the project
+        run: make
+
+      - name: Prepare for the release
+        run: |
+          mkdir build_output
+          cp main build_output/
+          # Add other assets (es. shader, texture)
+          cp -r ./libs/shaders build_output/ 2>/dev/null || true
+          tar -czvf app-linux-x86_64.tar.gz -C build_output .
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app-linux-x86_64.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
