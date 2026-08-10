@@ -35,7 +35,7 @@ float World::get_point_height(float x, float z)
 
 void World::render()
 {
-    unsigned long n_vertices = 6 * width * height;
+    unsigned long n_vertices = static_cast<unsigned long>(6) * width * height;
     Vertex vertices[n_vertices];
 
     for (int x = 0; x < height; x++)
