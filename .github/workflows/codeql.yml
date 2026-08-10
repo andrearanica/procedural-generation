@@ -1,0 +1,37 @@
+name: "CodeQL Analysis"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install C++ and OpenGL dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y freeglut3-dev libglew-dev libgl1-mesa-dev libglm-dev build-essential
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: c-cpp
+        queries: security-extended,security-and-quality 
+
+    - name: Compile the project
+      run: make
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3

@@ -5,12 +5,13 @@ on:
     tags:
       - 'v*'
 
+
 jobs:
   build-linux:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout codice
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install C++ and OpenGL dependencies
