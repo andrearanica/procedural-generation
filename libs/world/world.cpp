@@ -35,7 +35,8 @@ float World::get_point_height(float x, float z)
 
 void World::render()
 {
-    Vertex vertices[6 * width * height];
+    unsigned long n_vertices = 6 * width * height;
+    Vertex vertices[n_vertices];
 
     for (int x = 0; x < height; x++)
     {
@@ -72,7 +73,7 @@ void World::render()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(
         GL_ARRAY_BUFFER,
-        6 * width * height * sizeof(Vertex),
+        n_vertices * sizeof(Vertex),
         vertices,
         GL_STATIC_DRAW);
 
@@ -99,7 +100,7 @@ void World::render()
 
     glBindVertexArray(VAO);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6 * width * height);
+    glDrawArrays(GL_TRIANGLES, 0, n_vertices);
 
     glBindVertexArray(0);
 }

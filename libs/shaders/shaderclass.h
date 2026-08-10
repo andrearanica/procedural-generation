@@ -22,7 +22,7 @@ public:
 	/**
 		Distruttore
 	*/	
-	~ShaderClass();
+	virtual ~ShaderClass();
 
 	/**
 		Metodo di inizializzazione della classe. Vengono chiamati automaticamente i metodi

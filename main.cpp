@@ -59,8 +59,6 @@ void MyKeyboard(unsigned char key, int x, int y);
 void MyClose(void);
 // Function invoked everytime a special key is pressed on the keyboard
 void MySpecialKeyboard(int Key, int x, int y);
-// Function invoked everytime a mouse event is generated
-void MyMouse(int x, int y);
 // Function invoked everytime a mouse click event is generated
 void MyMouseClick(int button, int state, int x, int y);
 // Function invoked at each timer tick
@@ -100,7 +98,6 @@ void init(int argc, char *argv[])
 
   glutSpecialFunc(MySpecialKeyboard);
 
-  // glutPassiveMotionFunc(MyMouse);
   glutMouseFunc(MyMouseClick);
 
   glEnable(GL_CULL_FACE);
@@ -170,11 +167,11 @@ void create_scene()
   }
 }
 
-void render_world(LocalTransform modelT)
+void render_world(LocalTransform* modelT)
 {
   global.world_shader.enable();
 
-  global.world_shader.set_model_transform(modelT.T());
+  global.world_shader.set_model_transform(modelT->T());
   global.world_shader.set_camera_transform(global.camera.CP());
 
   global.world_shader.set_texture_sampler("GrassSampler", 1);
@@ -185,11 +182,11 @@ void render_world(LocalTransform modelT)
   global.world.render();
 }
 
-void render_water(LocalTransform modelT)
+void render_water(LocalTransform* modelT)
 {
   global.water_shader.enable();
 
-  global.water_shader.set_model_transform(modelT.T());
+  global.water_shader.set_model_transform(modelT->T());
   global.water_shader.set_camera_transform(global.camera.CP());
   global.water_shader.set_time(global.time);
 
@@ -271,8 +268,8 @@ void MyRenderScene()
     global.texture_managers[i].bind(i);
   }
 
-  render_world(modelT);
-  render_water(modelT);
+  render_world(&modelT);
+  render_water(&modelT);
   render_gui();
 
   glutSwapBuffers();
@@ -320,17 +317,6 @@ void MySpecialKeyboard(int Key, int x, int y)
 {
   global.camera.onSpecialKeyboard(Key);
   glutPostRedisplay();
-}
-
-void MyMouse(int x, int y)
-{
-  /*
-  if (global.camera.onMouse(x, y))
-  {
-    // Risposto il mouse al centro della finestra
-    glutWarpPointer(global.WINDOW_WIDTH / 2, global.WINDOW_HEIGHT / 2);
-  }
-  */
 }
 
 void MyMouseClick(int button, int state, int x, int y)
