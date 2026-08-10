@@ -17,8 +17,6 @@ bool Texture2D::load(const std::string& FileName) {
 
   stbi_set_flip_vertically_on_load(false);
 
-  //std::cout<<width << " " << height << " " << channels<<std::endl;
-
   if (image==nullptr) {
     std::cerr<<" Failed to load texture " << FileName << std::endl;
     exit(0);

@@ -106,13 +106,6 @@ public:
 	*/
 	bool onSpecialKeyboard(int key);
 
-	/**
-		Funzione che gestisce gli spostamenti del mouse.
-		@param x coordinata x del mouse
-		@param y coordinata y del mouse
-	*/
-	bool onMouse(int x, int y);
-
 	void set_mouse_init_position(int x, int y);
 	void lock_mouse_position(bool lock);
 

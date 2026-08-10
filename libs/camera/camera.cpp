@@ -10,13 +10,6 @@
 
 #include <iostream>
 
-static std::ostream &operator<<(std::ostream &os, const glm::vec3 &v) {
-	for(int y=0; y<3; ++y) {
-		os<<v[y]<<" ";
-	}
-	return os;
-}
-
 Camera::Camera() {
 	reset();
 }
@@ -136,52 +129,6 @@ bool Camera::onSpecialKeyboard(int key) {
 	_view = camera_setting(_position, _position + _lookat_dir, _up);
 	update();
 
-	return true;
-}
-
-bool Camera::onMouse(int x, int y) {
-	/*
-	if (_first_mouse_call) {
-		_mouse_lastX = x;
-		_mouse_lastY = y;
-		_first_mouse_call = false;
-	}
-
-	float xoffset = x - _mouse_lastX;
-	float yoffset = _mouse_lastY - y;
-
-	if (xoffset + yoffset == 0) {
-		return false;
-	}
-
-	if (!_lock_mouse_position) { 
-		_mouse_lastX = x;
-		_mouse_lastY = y;
-	}
-
-	float sensitivity = 0.001f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-
-	_yaw_deg   += xoffset;
-	_pitch_deg += yoffset;
-
-	if(_pitch_deg > 89.0f) {
-		_pitch_deg = 89.0f;
-	}
-	if(_pitch_deg < -89.0f) {
-		_pitch_deg = -89.0f;
-	}
-
-	glm::vec3 direction;
-	direction.x = cos(glm::radians(_yaw_deg)) * cos(glm::radians(_pitch_deg));
-	direction.y = sin(glm::radians(_pitch_deg));
-	direction.z = sin(glm::radians(_yaw_deg)) * cos(glm::radians(_pitch_deg));
-	_lookat_dir = glm::normalize(direction);
-
-	_view = camera_setting(_position, _position + _lookat_dir, _up);
-	update();
-	*/
 	return true;
 }
 
