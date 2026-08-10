@@ -843,8 +843,6 @@ static void stbi__start_file(stbi__context *s, FILE *f)
    stbi__start_callbacks(s, &stbi__stdio_callbacks, (void *) f);
 }
 
-//static void stop_file(stbi__context *s) { }
-
 #endif // !STBI_NO_STDIO
 
 static void stbi__rewind(stbi__context *s)
@@ -4307,7 +4305,6 @@ static int stbi__parse_zlib_header(stbi__zbuf *a)
 {
    int cmf   = stbi__zget8(a);
    int cm    = cmf & 15;
-   /* int cinfo = cmf >> 4; */
    int flg   = stbi__zget8(a);
    if (stbi__zeof(a)) return stbi__err("bad zlib header","Corrupt PNG"); // zlib spec
    if ((cmf*256+flg) % 31 != 0) return stbi__err("bad zlib header","Corrupt PNG"); // zlib spec
@@ -4333,18 +4330,6 @@ static const stbi_uc stbi__zdefault_distance[32] =
 {
    5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5
 };
-/*
-Init algorithm:
-{
-   int i;   // use <= to match clearly with spec
-   for (i=0; i <= 143; ++i)     stbi__zdefault_length[i]   = 8;
-   for (   ; i <= 255; ++i)     stbi__zdefault_length[i]   = 9;
-   for (   ; i <= 279; ++i)     stbi__zdefault_length[i]   = 7;
-   for (   ; i <= 287; ++i)     stbi__zdefault_length[i]   = 8;
-
-   for (i=0; i <=  31; ++i)     stbi__zdefault_distance[i] = 5;
-}
-*/
 
 static int stbi__parse_zlib(stbi__zbuf *a, int parse_header)
 {

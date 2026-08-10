@@ -4,7 +4,6 @@
 
 void Widget::add_quad(glm::vec2 start_point, glm::vec2 end_point)
 {
-    // FIXME use window coordinates instead of canonical view volume ones
     Vertex sw = Vertex(glm::vec3(start_point.x, start_point.y, 0));
     Vertex se = Vertex(glm::vec3(end_point.x, start_point.y, 0));
     Vertex ne = Vertex(glm::vec3(end_point.x, end_point.y, 0));

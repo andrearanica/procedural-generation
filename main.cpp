@@ -323,7 +323,6 @@ void MyMouseClick(int button, int state, int x, int y)
 {
   if (state == 0)
   {
-    // FIXME apply transformation to widget coordinates
     float new_x = 2 * (float)x / global.WINDOW_WIDTH - 1;
     float new_y = 2 * (1 - (float)y / global.WINDOW_HEIGHT) - 1;
 
