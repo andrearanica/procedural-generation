@@ -224,9 +224,10 @@ void handle_amplitude_click(int button_type)
   }
 }
 
-void render_gui()
+void render_gui(LocalTransform* modelT)
 {
   global.gui_shader.enable();
+  global.gui_shader.set_model_transform(modelT->T());
   global.gui_shader.set_texture_sampler("BitmapFontSampler", 5);
 
   global.gui.clear();
@@ -234,23 +235,23 @@ void render_gui()
   // Draw widgets
   std::string seed_label = "Seed: " +
                            std::to_string((int)global.world.noise_generator.seed);
-  global.gui.add_label(glm::vec2(-1, 0.95), seed_label, 0.05, handle_seed_click);
+  global.gui.add_label(glm::vec2(0, 0), seed_label, 0.05, handle_seed_click);
 
   std::string width_label = "Width: " +
                             std::to_string((int)global.world.width);
-  global.gui.add_label(glm::vec2(-1, 0.85), width_label, 0.05);
+  global.gui.add_label(glm::vec2(0, 0.05), width_label, 0.05);
 
   std::string height_label = "Height: " +
                              std::to_string((int)global.world.height);
-  global.gui.add_label(glm::vec2(-1, 0.75), height_label, 0.05);
+  global.gui.add_label(glm::vec2(0, 0.1), height_label, 0.05);
 
   std::string frequency = "Frequency: " +
                           std::to_string((float)global.world.noise_generator.freq);
-  global.gui.add_label(glm::vec2(-1, 0.65), frequency, 0.05, handle_frequency_click);
+  global.gui.add_label(glm::vec2(0, 0.15), frequency, 0.05, handle_frequency_click);
 
   std::string amplitude = "Amplitude: " +
                           std::to_string((float)global.world.noise_generator.amp);
-  global.gui.add_label(glm::vec2(-1, 0.55), amplitude, 0.05, handle_amplitude_click);
+  global.gui.add_label(glm::vec2(0, 0.2), amplitude, 0.05, handle_amplitude_click);
 
   global.gui.render();
 }
@@ -270,7 +271,10 @@ void MyRenderScene()
 
   render_world(&modelT);
   render_water(&modelT);
-  render_gui();
+
+  LocalTransform guiModelT;
+  guiModelT.translate(glm::vec3(-1, -1, 0));
+  render_gui(&guiModelT);
 
   glutSwapBuffers();
 
