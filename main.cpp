@@ -7,6 +7,7 @@
 #include "GL/glew.h"
 #include "GL/freeglut.h"
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 #include "./libs/utils/utils.h"
 #include "./libs/transform/transform.h"
@@ -26,8 +27,8 @@
 */
 struct global_struct
 {
-  float WINDOW_WIDTH = 1024;
-  float WINDOW_HEIGHT = 768;
+  float WINDOW_WIDTH = 1024.0f;
+  float WINDOW_HEIGHT = 768.0f;
 
   int world_width = 15, world_height = 15;
 
@@ -100,7 +101,7 @@ void init(int argc, char *argv[])
 
   glutMouseFunc(MyMouseClick);
 
-  glEnable(GL_CULL_FACE);
+  // glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
   glEnable(GL_DEPTH_TEST);
@@ -224,10 +225,14 @@ void handle_amplitude_click(int button_type)
   }
 }
 
-void render_gui(LocalTransform* modelT)
+void render_gui()
 {
   global.gui_shader.enable();
-  global.gui_shader.set_model_transform(modelT->T());
+
+  // FIXME non si chiama model ma projection; nel world la projection è inclusa in quella di camera
+  glm::mat4 projection_matrix = glm::ortho(0.0f, global.WINDOW_WIDTH, global.WINDOW_HEIGHT, 0.0f, 1.0f, -1.0f);
+  global.gui_shader.set_model_transform(projection_matrix);
+
   global.gui_shader.set_texture_sampler("BitmapFontSampler", 5);
 
   global.gui.clear();
@@ -235,23 +240,23 @@ void render_gui(LocalTransform* modelT)
   // Draw widgets
   std::string seed_label = "Seed: " +
                            std::to_string((int)global.world.noise_generator.seed);
-  global.gui.add_label(glm::vec2(0, 0), seed_label, 0.05, handle_seed_click);
+  global.gui.add_label(glm::vec2(0, 0), seed_label, 10, handle_seed_click);
 
   std::string width_label = "Width: " +
                             std::to_string((int)global.world.width);
-  global.gui.add_label(glm::vec2(0, 0.05), width_label, 0.05);
+  global.gui.add_label(glm::vec2(0, 15), width_label, 10);
 
   std::string height_label = "Height: " +
                              std::to_string((int)global.world.height);
-  global.gui.add_label(glm::vec2(0, 0.1), height_label, 0.05);
+  global.gui.add_label(glm::vec2(0, 30), height_label, 10);
 
   std::string frequency = "Frequency: " +
                           std::to_string((float)global.world.noise_generator.freq);
-  global.gui.add_label(glm::vec2(0, 0.15), frequency, 0.05, handle_frequency_click);
+  global.gui.add_label(glm::vec2(0, 45), frequency, 10, handle_frequency_click);
 
   std::string amplitude = "Amplitude: " +
                           std::to_string((float)global.world.noise_generator.amp);
-  global.gui.add_label(glm::vec2(0, 0.2), amplitude, 0.05, handle_amplitude_click);
+  global.gui.add_label(glm::vec2(0, 60), amplitude, 10, handle_amplitude_click);
 
   global.gui.render();
 }
@@ -272,9 +277,7 @@ void MyRenderScene()
   render_world(&modelT);
   render_water(&modelT);
 
-  LocalTransform guiModelT;
-  guiModelT.translate(glm::vec3(-1, -1, 0));
-  render_gui(&guiModelT);
+  render_gui();
 
   glutSwapBuffers();
 

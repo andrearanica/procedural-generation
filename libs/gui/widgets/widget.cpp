@@ -23,9 +23,9 @@ void Widget::add_quad_with_texture(glm::vec2 start_point, glm::vec2 end_point, g
     Vertex nw = Vertex(glm::vec3(start_point.x, end_point.y, 0), glm::vec2(uv_min.x, uv_max.y));
 
     vertices.push_back(sw);
-    vertices.push_back(se);
-    vertices.push_back(ne);
     vertices.push_back(nw);
+    vertices.push_back(ne);
+    vertices.push_back(se);
 }
 
 std::tuple<glm::vec2, glm::vec2> Widget::get_box()

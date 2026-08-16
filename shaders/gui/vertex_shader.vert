@@ -10,7 +10,7 @@ layout (location = 2) in int  type;
 layout (location = 3) in vec2 texture_coordinates;
 layout (location = 4) in vec3 normal;
 
-uniform mat4  Model2World;
+uniform mat4 Model2World;
 
 flat out int vertex_type;
 out vec2 vertex_texture_coordinates;
