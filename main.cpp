@@ -231,7 +231,7 @@ void render_gui()
 
   // FIXME non si chiama model ma projection; nel world la projection è inclusa in quella di camera
   glm::mat4 projection_matrix = glm::ortho(0.0f, global.WINDOW_WIDTH, global.WINDOW_HEIGHT, 0.0f, 1.0f, -1.0f);
-  global.gui_shader.set_model_transform(projection_matrix);
+  global.gui_shader.set_projection_transform(projection_matrix);
 
   global.gui_shader.set_texture_sampler("BitmapFontSampler", 5);
 

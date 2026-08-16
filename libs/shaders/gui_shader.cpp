@@ -1,8 +1,8 @@
 #include "gui_shader.h"
 #include "../utils/utils.h"
 
-void GuiShader::set_model_transform(const glm::mat4 &transform) {
-  glUniformMatrix4fv(_model_transform_location, 1, GL_FALSE, const_cast<float *>(&transform[0][0]));       
+void GuiShader::set_projection_transform(const glm::mat4 &transform) {
+  glUniformMatrix4fv(_projection_transform_location, 1, GL_FALSE, const_cast<float *>(&transform[0][0]));       
 }
 
 void GuiShader::set_texture_sampler(std::string uniform_name, int sampler_id) {
@@ -16,9 +16,9 @@ bool GuiShader::load_shaders() {
 }
 
 bool GuiShader::load_done() {
-  _bitmap_font_sampler_location = get_uniform_location("BitmapFontSampler");
-  _model_transform_location     = get_uniform_location("Model2World");
+  _bitmap_font_sampler_location  = get_uniform_location("BitmapFontSampler");
+  _projection_transform_location = get_uniform_location("Projection");
 
-  return (_bitmap_font_sampler_location != INVALID_UNIFORM_LOCATION) &&
-         (_model_transform_location     != INVALID_UNIFORM_LOCATION);
+  return (_bitmap_font_sampler_location   != INVALID_UNIFORM_LOCATION) &&
+         (_projection_transform_location  != INVALID_UNIFORM_LOCATION);
 }

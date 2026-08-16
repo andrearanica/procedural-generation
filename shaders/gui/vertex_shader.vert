@@ -10,14 +10,14 @@ layout (location = 2) in int  type;
 layout (location = 3) in vec2 texture_coordinates;
 layout (location = 4) in vec3 normal;
 
-uniform mat4 Model2World;
+uniform mat4 Projection;
 
 flat out int vertex_type;
 out vec2 vertex_texture_coordinates;
 
 void main()
 {
-    gl_Position = Model2World * vec4(position, 1);
+    gl_Position = Projection * vec4(position, 1);
     vertex_type = type;
     vertex_texture_coordinates = texture_coordinates;
 }
