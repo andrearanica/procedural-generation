@@ -3,6 +3,8 @@
 #include <random>
 #include <vector>
 #include <string>
+#include <iomanip>
+#include <sstream>
 
 #include "GL/glew.h"
 #include "GL/freeglut.h"
@@ -62,6 +64,8 @@ void MyClose(void);
 void MySpecialKeyboard(int Key, int x, int y);
 // Function invoked everytime a mouse click event is generated
 void MyMouseClick(int button, int state, int x, int y);
+// Function invoked everytime the window is resized
+void MyReshape(int w, int h);
 // Function invoked at each timer tick
 void Timer(int);
 
@@ -92,14 +96,11 @@ void init(int argc, char *argv[])
 
   glutDisplayFunc(MyRenderScene);
   glutTimerFunc(16, Timer, 0);
-
   glutKeyboardFunc(MyKeyboard);
-
   glutCloseFunc(MyClose);
-
   glutSpecialFunc(MySpecialKeyboard);
-
   glutMouseFunc(MyMouseClick);
+  glutReshapeFunc(MyReshape);
 
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
@@ -251,12 +252,16 @@ void render_gui()
                              std::to_string((int)global.world.height);
   global.gui.add_label(glm::vec2(0, 40), height_label, text_size);
 
-  std::string frequency = "Frequency: " +
-                          std::to_string((float)global.world.noise_generator.freq);
+  std::stringstream frequency_ss;
+  frequency_ss << std::fixed << std::setprecision(1) << (float)global.world.noise_generator.freq;
+  std::string frequency_str = frequency_ss.str();
+  std::string frequency = "Frequency: " + frequency_str;
   global.gui.add_label(glm::vec2(0, 60), frequency, text_size, handle_frequency_click);
 
-  std::string amplitude = "Amplitude: " +
-                          std::to_string((float)global.world.noise_generator.amp);
+  std::stringstream amplidute_ss;
+  amplidute_ss << std::fixed << std::setprecision(1) << (float)global.world.noise_generator.amp;
+  std::string amplitude_str = amplidute_ss.str();
+  std::string amplitude = "Amplitude: " + amplitude_str;
   global.gui.add_label(glm::vec2(0, 80), amplitude, text_size, handle_amplitude_click);
 
   global.gui.render();
@@ -334,6 +339,14 @@ void MyMouseClick(int button, int state, int x, int y)
     global.gui.handle_mouse_click(x, y, button);
   }
   glutPostRedisplay();
+}
+
+void MyReshape(int w, int h)
+{
+  glViewport(0, 0, w, h);
+
+  global.WINDOW_WIDTH = w;
+  global.WINDOW_HEIGHT = h;
 }
 
 void MyClose(void)
