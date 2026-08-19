@@ -236,26 +236,28 @@ void render_gui()
 
   global.gui.clear();
 
+  const int text_size = 20;
+
   // Draw widgets
   std::string seed_label = "Seed: " +
                            std::to_string((int)global.world.noise_generator.seed);
-  global.gui.add_label(glm::vec2(0, 0), seed_label, 10, handle_seed_click);
+  global.gui.add_label(glm::vec2(0, 0), seed_label, text_size, handle_seed_click);
 
   std::string width_label = "Width: " +
                             std::to_string((int)global.world.width);
-  global.gui.add_label(glm::vec2(0, 15), width_label, 10);
+  global.gui.add_label(glm::vec2(0, 20), width_label, text_size);
 
   std::string height_label = "Height: " +
                              std::to_string((int)global.world.height);
-  global.gui.add_label(glm::vec2(0, 30), height_label, 10);
+  global.gui.add_label(glm::vec2(0, 40), height_label, text_size);
 
   std::string frequency = "Frequency: " +
                           std::to_string((float)global.world.noise_generator.freq);
-  global.gui.add_label(glm::vec2(0, 45), frequency, 10, handle_frequency_click);
+  global.gui.add_label(glm::vec2(0, 60), frequency, text_size, handle_frequency_click);
 
   std::string amplitude = "Amplitude: " +
                           std::to_string((float)global.world.noise_generator.amp);
-  global.gui.add_label(glm::vec2(0, 60), amplitude, 10, handle_amplitude_click);
+  global.gui.add_label(glm::vec2(0, 80), amplitude, text_size, handle_amplitude_click);
 
   global.gui.render();
 }
@@ -329,10 +331,7 @@ void MyMouseClick(int button, int state, int x, int y)
 {
   if (state == 0)
   {
-    float new_x = 2 * (float)x / global.WINDOW_WIDTH - 1;
-    float new_y = 2 * (1 - (float)y / global.WINDOW_HEIGHT) - 1;
-
-    global.gui.handle_mouse_click(new_x, new_y, button);
+    global.gui.handle_mouse_click(x, y, button);
   }
   glutPostRedisplay();
 }
