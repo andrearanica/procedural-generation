@@ -101,7 +101,7 @@ void init(int argc, char *argv[])
 
   glutMouseFunc(MyMouseClick);
 
-  // glEnable(GL_CULL_FACE);
+  glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
   glEnable(GL_DEPTH_TEST);
@@ -229,7 +229,6 @@ void render_gui()
 {
   global.gui_shader.enable();
 
-  // FIXME non si chiama model ma projection; nel world la projection è inclusa in quella di camera
   glm::mat4 projection_matrix = glm::ortho(0.0f, global.WINDOW_WIDTH, global.WINDOW_HEIGHT, 0.0f, 1.0f, -1.0f);
   global.gui_shader.set_projection_transform(projection_matrix);
 
