@@ -13,6 +13,7 @@
 */
 class GuiShader : public ShaderClass {
   public:
+    void set_projection_transform(const glm::mat4 &transform);
     void set_texture_sampler(std::string location_name, int sampler_id);
 
   private:
@@ -32,6 +33,7 @@ class GuiShader : public ShaderClass {
     */
     virtual bool load_done();
 
+    GLint _projection_transform_location;
     GLint _bitmap_font_sampler_location;
 };
 #endif
