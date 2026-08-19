@@ -6,6 +6,40 @@ The program renders a pseudo-random island using Perlin noise and allows the use
 
 ![alt text](assets/screenshot.png)
 
+## Build
+
+If you are running a Debian-based distro, you can download the [latest release](https://github.com/andrearanica/procedural-generation/releases/) from the releases page. 
+
+Otherwise, you can build the project on your machine:
+
+1. Clone the repository
+
+    ``` bash
+    git clone https://github.com/andrearanica/procedural-generation
+    ```
+
+2. Install the compiler: if you are using Windows you can install [MinGW32](https://github.com/brechtsanders/winlibs_mingw/releases/download/10.2.0-11.0.0-8.0.0-r7/winlibs-i686-posix-dwarf-gcc-10.2.0-llvm-11.0.0-mingw-w64-8.0.0-r7.7z). On Linux you can use the default compiler which can be installed with the following command. 
+
+    ``` bash
+    sudo apt install build-essential
+    ```
+
+3. Libraries: on Windows you don't need to install anything manually, since libraries are stored inside the `base/` subfolder; on Linux you need to run the following commands. 
+
+    ``` bash
+    sudo apt install mesa-utils
+    sudo apt install freeglut3-dev
+    sudo apt install libglew-dev
+    sudo apt install libglm-dev
+    sudo apt install assimp-utils
+    ```
+
+4. Compile: once everything is installed, you can compile and run the project
+    ``` bash
+    make
+    make run
+    ```
+
 ## Structure
 
 The rendering process is divided in three phases:

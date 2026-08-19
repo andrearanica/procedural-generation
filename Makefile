@@ -14,12 +14,7 @@ ifeq ($(OS),Windows_NT)
 	LIBS += -lopengl32
 	LIBS += -lglew32
 
-	ifneq ($(findstring sh,$(SHELL)),)
-        COPY_DLLS = cp base/freeglut/bin/freeglut.dll . 2>/dev/null || true; cp base/glew/bin/Release/Win32/glew32.dll . 2>/dev/null || true
-    else
-        # Se stiamo usando cmd.exe standard su Windows
-        COPY_DLLS = -copy /Y base\freeglut\bin\freeglut.dll .\ >nul & -copy /Y base\glew\bin\Release\Win32\glew32.dll .\ >nul
-    endif
+	COPY_DLLS = copy /Y base\freeglut\bin\freeglut.dll .\ >nul & copy /Y base\glew\bin\Release\Win32\glew32.dll .\ >nul
 else
 	LIBS += -lglut
 	LIBS += -lGLEW
