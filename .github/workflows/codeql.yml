@@ -21,7 +21,6 @@ jobs:
 
     - name: Install C++ and OpenGL dependencies
       run: |
-        sudo apt-get update
         sudo apt-get install -y freeglut3-dev libglew-dev libgl1-mesa-dev libglm-dev build-essential
 
     - name: Initialize CodeQL
