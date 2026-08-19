@@ -20,7 +20,7 @@ else
 	LIBS += -lglut
 	LIBS += -lGLEW
 	LIBS += -lGL
-	COPY_DLLS
+	COPY_DLLS = 
 endif
 
 OBJS = main.o utils.o transform.o camera.o shaderclass.o world_shader.o water_shader.o world.o noise.o water.o texture.o gui.o gui_shader.o font.o label.o widget.o
