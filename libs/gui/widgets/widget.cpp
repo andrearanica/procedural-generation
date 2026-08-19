@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <tuple>
 
 #include "widget.h"
 

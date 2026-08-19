@@ -77,7 +77,7 @@ void init(int argc, char *argv[])
 
   glutInitWindowSize(global.WINDOW_WIDTH, global.WINDOW_HEIGHT);
   glutInitWindowPosition(100, 100);
-  glutCreateWindow("Informatica Grafica");
+  glutCreateWindow("Procedural Terrain Generation");
 
   glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
 

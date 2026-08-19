@@ -2,7 +2,7 @@ CC = g++
 CCFLAGS = -O3 -s -DNDEBUG
 
 ifeq ($(OS),Windows_NT)
-	BASEDIR = ../base
+	BASEDIR = ./base
 	INCLUDEDIRS += -I$(BASEDIR)/freeglut/include
 	INCLUDEDIRS += -I$(BASEDIR)/glew/include
 	INCLUDEDIRS += -I$(BASEDIR)/glm
@@ -75,7 +75,11 @@ widget.o: ./libs/gui/widgets/widget.cpp
 
 .PHONY clean:
 clean:
-	rm -f *.o *.exe
+ifeq ($(OS),Windows_NT) 
+		del *.o *.exe
+else
+		rm -f *.o *.exe
+endif
 
 run:
 	./main.exe
