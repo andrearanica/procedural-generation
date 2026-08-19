@@ -14,16 +14,20 @@ ifeq ($(OS),Windows_NT)
 	LIBS += -lopengl32
 	LIBS += -lglew32
 
+	DLLS = $(BASEDIR)/freeglut/bin/freeglut.dll $(BASEDIR)/glew/bin/Release/Win32/glew32.dll
+	COPY_DLLS = copy /Y base\freeglut\bin\freeglut.dll .\ >nul & copy /Y base\glew\bin\Release\Win32\glew32.dll .\ >nul
 else
 	LIBS += -lglut
 	LIBS += -lGLEW
 	LIBS += -lGL
+	COPY_DLLS
 endif
 
 OBJS = main.o utils.o transform.o camera.o shaderclass.o world_shader.o water_shader.o world.o noise.o water.o texture.o gui.o gui_shader.o font.o label.o widget.o
 
 main.exe : $(OBJS)
 	$(CC) $(CCFLAGS) $^ $(LIBDIRS) $(LIBS) -o $@
+	$(COPY_DLLS)
 
 main.o : main.cpp
 	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
