@@ -9,12 +9,12 @@
 #include "../transform/transform.h"
 #include "../camera/camera.h"
 
-bool WaterGenerator::init()
+bool Water::init()
 {
     return shader.init();
 }
 
-void WaterGenerator::render(LocalTransform* modelT, Camera* camera, float time)
+void Water::render(LocalTransform* modelT, Camera* camera, float time)
 {  
     shader.enable();
 

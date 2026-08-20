@@ -1,7 +1,38 @@
 #include <math.h>
 #include <iostream>
+#include <algorithm>
 
 #include "noise_generator.h"
+
+float NoiseGenerator::get_seed()
+{
+    return seed;
+}
+
+void NoiseGenerator::set_seed(float s)
+{
+    seed = s;
+}
+
+float NoiseGenerator::get_amplitude()
+{
+    return amp;
+}
+
+void NoiseGenerator::adjust_amplitude(float delta)
+{
+    amp = std::max(0.1f, amp + delta);
+}
+
+float NoiseGenerator::get_frequency()
+{
+    return freq;
+}
+
+void NoiseGenerator::adjust_frequency(float delta)
+{
+    freq = std::clamp(freq + delta, 0.1f, 1.0f);
+}
 
 // Pseudorandom and deterministic hashing function
 vector2 NoiseGenerator::randomGradient(int ix, int iz) {

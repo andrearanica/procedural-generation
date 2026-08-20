@@ -5,14 +5,14 @@
 #include "../transform/transform.h"
 #include "../camera/camera.h"
 
-class WaterGenerator {
+class Water {
     private:
         glm::vec3 position;
         float width, height;
         WaterShader shader;
 
     public:
-        WaterGenerator(glm::vec3 position, float width, float height) {
+        Water(glm::vec3 position, float width, float height) {
             this->position = position;
             this->width = width;
             this->height = height;
