@@ -25,9 +25,9 @@ float World::get_vertex_distance_from_world_center(float x, float z)
     return attenuation;
 }
 
-float World::get_point_height(float x, float z)
+float World::get_point_height(float x, float z, NoiseGenerator* noise_generator)
 {
-    float vertex_noise = noise_generator.get_noise(x, z);
+    float vertex_noise = noise_generator->get_noise(x, z);
     float falloff = get_vertex_distance_from_world_center(x, z);
 
     float vertex_height = vertex_noise - falloff;
@@ -39,7 +39,7 @@ float World::get_point_height(float x, float z)
     return vertex_height;
 }
 
-void World::render(LocalTransform* modelT, Camera* camera)
+void World::render(LocalTransform* modelT, Camera* camera, NoiseGenerator* noise_generator)
 {
     shader.enable();
 
@@ -60,10 +60,10 @@ void World::render(LocalTransform* modelT, Camera* camera)
         {
             int base = 6 * (x * width + z);
 
-            glm::vec3 sw(x,     get_point_height(x, z), z);
-            glm::vec3 se(x + 1, get_point_height(x + 1, z), z);
-            glm::vec3 ne(x + 1, get_point_height(x + 1, z - 1), z - 1);
-            glm::vec3 nw(x,     get_point_height(x, z - 1), z - 1);
+            glm::vec3 sw(x,     get_point_height(x, z, noise_generator), z);
+            glm::vec3 se(x + 1, get_point_height(x + 1, z, noise_generator), z);
+            glm::vec3 ne(x + 1, get_point_height(x + 1, z - 1, noise_generator), z - 1);
+            glm::vec3 nw(x,     get_point_height(x, z - 1, noise_generator), z - 1);
 
             glm::vec3 first_face_normal = get_face_normal(sw, se, ne);
             glm::vec3 second_face_normal = get_face_normal(ne, nw, sw);

@@ -23,6 +23,15 @@
 
 #define WATER_SPEED 0.005
 
+int get_random_seed()
+{
+  std::random_device random;
+  std::mt19937 range(random());
+  std::uniform_int_distribution<int> distribution(1, 100);
+
+  return distribution(range);
+}
+
 /**
   Structure which stores all the global informations
 */
@@ -35,6 +44,7 @@ struct global_struct
 
   Camera camera;
 
+  NoiseGenerator noise_generator;
   World world;
   Water water;
   Gui gui;
@@ -42,7 +52,7 @@ struct global_struct
   const float SPEED = 10;
   float gradX, gradY;
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(world_width, world_height, 0, 0.1, 2), water(glm::vec3(-world_width / 2, 0, -world_height / 2), world_width * 2, world_height * 2) {}
+  global_struct() : gradX(0.0f), gradY(0.0f), world(world_width, world_height), water(glm::vec3(-world_width / 2, 0, -world_height / 2), world_width * 2, world_height * 2), noise_generator(0.1, 2.0, get_random_seed()) {}
 
   float time = 0;
 
@@ -106,22 +116,13 @@ void init(int argc, char *argv[])
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-int get_random_seed()
-{
-  std::random_device random;
-  std::mt19937 range(random());
-  std::uniform_int_distribution<int> distribution(1, 100);
-
-  return distribution(range);
-}
-
 /**
  * Function that creates the scene by defining objects, setting camera data
  * and loading shaders
  */
 void create_scene()
 {
-  global.world.noise_generator.set_seed(get_random_seed());
+  global.noise_generator.set_seed(get_random_seed());
 
   global.camera.set_camera(
       glm::vec3(0, 3, -global.world.height * 1.5),
@@ -134,7 +135,6 @@ void create_scene()
       global.WINDOW_HEIGHT,
       0.1,
       100);
-
 
   if (!global.world.init())
   {
@@ -167,18 +167,18 @@ void create_scene()
 
 void handle_seed_click(int button_type)
 {
-  global.world.noise_generator.set_seed(get_random_seed());
+  global.noise_generator.set_seed(get_random_seed());
 }
 
 void handle_frequency_click(int button_type)
 {
-  if (button_type == 0 && global.world.noise_generator.get_frequency() < 1)
+  if (button_type == 0 && global.noise_generator.get_frequency() < 1)
   {
-    global.world.noise_generator.adjust_frequency(0.1);
+    global.noise_generator.adjust_frequency(0.1);
   }
-  else if (button_type == 2 && global.world.noise_generator.get_frequency() > 0)
+  else if (button_type == 2 && global.noise_generator.get_frequency() > 0)
   {
-    global.world.noise_generator.adjust_frequency(-0.1);
+    global.noise_generator.adjust_frequency(-0.1);
   }
 }
 
@@ -186,11 +186,11 @@ void handle_amplitude_click(int button_type)
 {
   if (button_type == 0)
   {
-    global.world.noise_generator.adjust_amplitude(0.1);
+    global.noise_generator.adjust_amplitude(0.1);
   }
-  else if (button_type == 2 && global.world.noise_generator.get_amplitude() > 0)
+  else if (button_type == 2 && global.noise_generator.get_amplitude() > 0)
   {
-    global.world.noise_generator.adjust_amplitude(-0.1);
+    global.noise_generator.adjust_amplitude(-0.1);
   }
 }
 
@@ -201,7 +201,7 @@ void render_gui()
 
   // Draw widgets
   std::string seed_label = "Seed: " +
-                           std::to_string((int)global.world.noise_generator.get_seed());
+                           std::to_string((int)global.noise_generator.get_seed());
   global.gui.add_label(glm::vec2(0, 0), seed_label, text_size, handle_seed_click);
 
   std::string width_label = "Width: " +
@@ -213,13 +213,13 @@ void render_gui()
   global.gui.add_label(glm::vec2(0, 40), height_label, text_size);
 
   std::stringstream frequency_ss;
-  frequency_ss << std::fixed << std::setprecision(1) << (float)global.world.noise_generator.get_frequency();
+  frequency_ss << std::fixed << std::setprecision(1) << (float)global.noise_generator.get_frequency();
   std::string frequency_str = frequency_ss.str();
   std::string frequency = "Frequency: " + frequency_str;
   global.gui.add_label(glm::vec2(0, 60), frequency, text_size, handle_frequency_click);
 
   std::stringstream amplidute_ss;
-  amplidute_ss << std::fixed << std::setprecision(1) << (float)global.world.noise_generator.get_amplitude();
+  amplidute_ss << std::fixed << std::setprecision(1) << (float)global.noise_generator.get_amplitude();
   std::string amplitude_str = amplidute_ss.str();
   std::string amplitude = "Amplitude: " + amplitude_str;
   global.gui.add_label(glm::vec2(0, 80), amplitude, text_size, handle_amplitude_click);
@@ -241,7 +241,7 @@ void MyRenderScene()
   modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
 
   global.water.render(&modelT, &global.camera, global.time);
-  global.world.render(&modelT, &global.camera);
+  global.world.render(&modelT, &global.camera, &global.noise_generator);
   render_gui();
 
   glutSwapBuffers();

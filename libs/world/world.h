@@ -19,29 +19,18 @@ class World {
         WorldShader shader;
     
     public:
-        NoiseGenerator noise_generator;
         int width;
         int height;
 
-        World(int width, int height, float seed, float freq, float amp) : noise_generator(freq, amp, seed) {
-            this->width = width;
-            this->height = height;
-        }
-
-        World(int width, int height, float seed) : noise_generator(1.0, 1.0, seed) {
-            this->width = width;
-            this->height = height;
-        }
-
-        World(int width, int height) : noise_generator(1.0, 1.0) {
+        World(int width, int height) {
             this->width = width;
             this->height = height;
         }
 
         // Initializes the world shader
         bool init();
-        void render(LocalTransform* modelT, Camera* camera);
-        float get_point_height(float x, float z);
+        void render(LocalTransform* modelT, Camera* camera, NoiseGenerator* noise_generator);
+        float get_point_height(float x, float z, NoiseGenerator* noise_generator);
 };
 
 #endif
