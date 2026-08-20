@@ -40,8 +40,6 @@ struct global_struct
   WaterGenerator water;
   Gui gui;
 
-  WorldShader world_shader;
-  WaterShader water_shader;
   GuiShader gui_shader;
 
   const float SPEED = 10;
@@ -140,15 +138,16 @@ void create_scene()
       0.1,
       100);
 
-  if (!global.world_shader.init())
+
+  if (!global.world.init())
   {
-    std::cerr << "Error initializing shaders..." << std::endl;
+    std::cerr << "Error initializing world shaders..." << std::endl;
     exit(0);
   }
 
-  if (!global.water_shader.init())
+  if (!global.water.init())
   {
-    std::cerr << "Error initializing shaders..." << std::endl;
+    std::cerr << "Error initializing water shaders..." << std::endl;
     exit(0);
   }
 
@@ -167,34 +166,6 @@ void create_scene()
     texture_manager.load("./textures/" + textures[i]);
     global.texture_managers.push_back(texture_manager);
   }
-}
-
-void render_world(LocalTransform* modelT)
-{
-  global.world_shader.enable();
-
-  global.world_shader.set_model_transform(modelT->T());
-  global.world_shader.set_camera_transform(global.camera.CP());
-
-  global.world_shader.set_texture_sampler("GrassSampler", 1);
-  global.world_shader.set_texture_sampler("SandSampler", 2);
-  global.world_shader.set_texture_sampler("MountainSampler", 3);
-  global.world_shader.set_texture_sampler("RockSampler", 4);
-
-  global.world.render();
-}
-
-void render_water(LocalTransform* modelT)
-{
-  global.water_shader.enable();
-
-  global.water_shader.set_model_transform(modelT->T());
-  global.water_shader.set_camera_transform(global.camera.CP());
-  global.water_shader.set_time(global.time);
-
-  global.water_shader.set_texture_sampler("WaterSampler", 0);
-
-  global.water.render();
 }
 
 void handle_seed_click(int button_type)
@@ -271,17 +242,17 @@ void MyRenderScene()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  LocalTransform modelT;
-  modelT.rotate(global.gradX, global.gradY, 0.0f);
-  modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
-
   for (int i = 0; i < global.texture_managers.size(); i++)
   {
     global.texture_managers[i].bind(i);
   }
 
-  render_world(&modelT);
-  render_water(&modelT);
+  LocalTransform modelT;
+  modelT.rotate(global.gradX, global.gradY, 0.0f);
+  modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
+
+  global.world.render(&modelT, &global.camera);
+  global.water.render(&modelT, &global.camera, global.time);
 
   render_gui();
 

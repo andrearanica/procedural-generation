@@ -6,9 +6,25 @@
 
 #include "water.h"
 #include "vertex.h"
+#include "../transform/transform.h"
+#include "../camera/camera.h"
 
-void WaterGenerator::render()
+bool WaterGenerator::init()
 {
+    return shader.init();
+}
+
+void WaterGenerator::render(LocalTransform* modelT, Camera* camera, float time)
+{  
+    shader.enable();
+
+    shader.set_model_transform(modelT->T());
+    shader.set_camera_transform(camera->CP());
+    shader.set_time(time);
+
+    shader.set_texture_sampler("WaterSampler", 0);
+
+
     std::vector<Vertex> vertices;
     for (int z = 0; z < (height + 1); z++)
     {

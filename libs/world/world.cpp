@@ -4,6 +4,12 @@
 #include "world.h"
 #include "../noise/noise_generator.h"
 #include "../utils/utils.h"
+#include "../transform/transform.h"
+
+bool World::init()
+{
+    return shader.init();
+}
 
 float World::get_vertex_distance_from_world_center(float x, float z)
 {
@@ -33,8 +39,18 @@ float World::get_point_height(float x, float z)
     return vertex_height;
 }
 
-void World::render()
+void World::render(LocalTransform* modelT, Camera* camera)
 {
+    shader.enable();
+
+    shader.set_model_transform(modelT->T());
+    shader.set_camera_transform(camera->CP());
+
+    shader.set_texture_sampler("GrassSampler", 1);
+    shader.set_texture_sampler("SandSampler", 2);
+    shader.set_texture_sampler("MountainSampler", 3);
+    shader.set_texture_sampler("RockSampler", 4);
+
     unsigned long n_vertices = static_cast<unsigned long>(6) * width * height;
     Vertex vertices[n_vertices];
 
