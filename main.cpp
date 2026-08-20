@@ -9,7 +9,6 @@
 #include "GL/glew.h"
 #include "GL/freeglut.h"
 #include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 
 #include "./libs/utils/utils.h"
 #include "./libs/transform/transform.h"
@@ -39,8 +38,6 @@ struct global_struct
   World world;
   WaterGenerator water;
   Gui gui;
-
-  GuiShader gui_shader;
 
   const float SPEED = 10;
   float gradX, gradY;
@@ -151,9 +148,9 @@ void create_scene()
     exit(0);
   }
 
-  if (!global.gui_shader.init())
+  if (!global.gui.init())
   {
-    std::cerr << "Error initializing shaders..." << std::endl;
+    std::cerr << "Error initializing GUI shaders..." << std::endl;
     exit(0);
   }
 
@@ -199,15 +196,7 @@ void handle_amplitude_click(int button_type)
 
 void render_gui()
 {
-  global.gui_shader.enable();
-
-  glm::mat4 projection_matrix = glm::ortho(0.0f, global.WINDOW_WIDTH, global.WINDOW_HEIGHT, 0.0f, 1.0f, -1.0f);
-  global.gui_shader.set_projection_transform(projection_matrix);
-
-  global.gui_shader.set_texture_sampler("BitmapFontSampler", 5);
-
   global.gui.clear();
-
   const int text_size = 20;
 
   // Draw widgets
@@ -235,7 +224,7 @@ void render_gui()
   std::string amplitude = "Amplitude: " + amplitude_str;
   global.gui.add_label(glm::vec2(0, 80), amplitude, text_size, handle_amplitude_click);
 
-  global.gui.render();
+  global.gui.render(global.WINDOW_WIDTH, global.WINDOW_HEIGHT);
 }
 
 void MyRenderScene()
