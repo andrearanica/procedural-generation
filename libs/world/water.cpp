@@ -6,8 +6,44 @@
 
 #include "water.h"
 #include "vertex.h"
+#include "../transform/transform.h"
+#include "../camera/camera.h"
 
-void WaterGenerator::render()
+bool Water::init()
+{
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+
+    // First I fill the VBO with the vertices
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    
+    // Then I set how to retrieve vertex attributes from the Vertex struct
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, position)));
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, color)));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribIPointer(2, 1, GL_INT, sizeof(Vertex),
+                           (void *)(offsetof(struct Vertex, type)));
+    glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, texture_coordinates)));
+    glEnableVertexAttribArray(3);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    return shader.init();
+}
+
+void Water::regenerate_mesh()
 {
     std::vector<Vertex> vertices;
     for (int z = 0; z < (height + 1); z++)
@@ -43,14 +79,9 @@ void WaterGenerator::render()
         }
     }
 
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    GLuint VBO, EBO;
-
     // First I fill the VBO with the vertices
-    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(
         GL_ARRAY_BUFFER,
@@ -58,31 +89,24 @@ void WaterGenerator::render()
         vertices.data(),
         GL_STATIC_DRAW);
 
-    // Then I set how to retrieve vertex attributes from the Vertex struct
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, position)));
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, color)));
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribIPointer(2, 1, GL_INT, sizeof(Vertex),
-                           (void *)(offsetof(struct Vertex, type)));
-    glEnableVertexAttribArray(2);
-
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, texture_coordinates)));
-    glEnableVertexAttribArray(3);
-
     // Finally I fill the EBO with the indices of the faces
-    glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER,
         indices.size() * sizeof(unsigned int),
         &indices[0],
         GL_STATIC_DRAW);
+}
+
+void Water::render(LocalTransform* modelT, Camera* camera, float time)
+{  
+    shader.enable();
+
+    shader.set_model_transform(modelT->T());
+    shader.set_camera_transform(camera->CP());
+    shader.set_time(time);
+
+    shader.set_texture_sampler("WaterSampler", 0);
 
     glBindVertexArray(VAO);
 

@@ -1,19 +1,28 @@
 #ifndef WATER_H
 #define WATER_H
 
-class WaterGenerator {
+#include "../shaders/water_shader.h"
+#include "../transform/transform.h"
+#include "../camera/camera.h"
+
+class Water {
     private:
         glm::vec3 position;
         float width, height;
+        WaterShader shader;
+        GLuint VAO, VBO, EBO;
+
 
     public:
-        WaterGenerator(glm::vec3 position, float width, float height) {
+        Water(glm::vec3 position, float width, float height) {
             this->position = position;
             this->width = width;
             this->height = height;
         }
 
-        void render();
+        bool init();
+        void regenerate_mesh();
+        void render(LocalTransform* modelT, Camera* camera, float time);
 };
 
 #endif

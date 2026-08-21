@@ -21,8 +21,9 @@ flat out vec3 vertex_normal;
 
 float generate_offset(float x, float z)
 {
-    float radians_x = (x / WAVE_LENGTH + Time) * 2.0 * PI;
-    float radians_z = (z / WAVE_LENGTH + Time) * 2.0 * PI;
+    float time = Time * 0.005;
+    float radians_x = (x / WAVE_LENGTH + time) * 2.0 * PI;
+    float radians_z = (z / WAVE_LENGTH + time) * 2.0 * PI;
 
     return WAVE_AMPLITUDE * 0.5 * (sin(radians_z) + cos(radians_x));
 }

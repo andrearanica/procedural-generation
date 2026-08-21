@@ -1,11 +1,20 @@
 #include <vector>
 #include <tuple>
 
-#include "gui.h"
+#include "glm/gtc/matrix_transform.hpp"
 
+#include "gui.h"
 #include "glm/glm.hpp"
 #include "GL/glew.h"
 #include "./widgets/label.h"
+
+bool Gui::init()
+{
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    return shader.init();
+}
 
 void Gui::clear()
 {
@@ -22,8 +31,15 @@ void Gui::add_label(glm::vec2 position, std::string text, float text_size, void 
     widgets.push_back(std::make_unique<Label>(position, text, text_size, font, onclick_function));
 }
 
-void Gui::render()
+void Gui::render(int window_width, int window_height)
 {
+    shader.enable();
+
+    glm::mat4 projection_matrix = glm::ortho(0.0f, (float)window_width, (float)window_height, 0.0f, 1.0f, -1.0f);
+    shader.set_projection_transform(projection_matrix);
+
+    shader.set_texture_sampler("BitmapFontSampler", 5);
+
     std::vector<Vertex> vertices;
     for (const auto &widget : widgets)
     {
@@ -31,12 +47,7 @@ void Gui::render()
         vertices.insert(vertices.end(), widget_vertices.begin(), widget_vertices.end());
     }
 
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-
-    GLuint VBO;
-    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(
         GL_ARRAY_BUFFER,
