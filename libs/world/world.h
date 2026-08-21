@@ -17,6 +17,7 @@ class World {
     private:
         float get_vertex_distance_from_world_center(float x, float z);
         WorldShader shader;
+        GLuint VAO, VBO;
     
     public:
         int width;
@@ -29,7 +30,8 @@ class World {
 
         // Initializes the world shader
         bool init();
-        void render(LocalTransform* modelT, Camera* camera, NoiseGenerator* noise_generator);
+        void regenerate_mesh(NoiseGenerator* noise_generator);
+        void render(LocalTransform* modelT, Camera* camera);
         float get_point_height(float x, float z, NoiseGenerator* noise_generator);
 };
 

@@ -10,6 +10,8 @@ class Water {
         glm::vec3 position;
         float width, height;
         WaterShader shader;
+        GLuint VAO, VBO, EBO;
+
 
     public:
         Water(glm::vec3 position, float width, float height) {
@@ -19,6 +21,7 @@ class Water {
         }
 
         bool init();
+        void regenerate_mesh();
         void render(LocalTransform* modelT, Camera* camera, float time);
 };
 

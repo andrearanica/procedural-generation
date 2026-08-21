@@ -8,6 +8,37 @@
 
 bool World::init()
 {
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // Then I set how to retrieve vertex attributes from the Vertex struct
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, position)));
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, color)));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribIPointer(2, 1, GL_INT, sizeof(Vertex),
+                           (void *)(offsetof(struct Vertex, type)));
+    glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, texture_coordinates)));
+    glEnableVertexAttribArray(3);
+
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, normal)));
+    glEnableVertexAttribArray(4);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     return shader.init();
 }
 
@@ -39,18 +70,8 @@ float World::get_point_height(float x, float z, NoiseGenerator* noise_generator)
     return vertex_height;
 }
 
-void World::render(LocalTransform* modelT, Camera* camera, NoiseGenerator* noise_generator)
+void World::regenerate_mesh(NoiseGenerator* noise_generator)
 {
-    shader.enable();
-
-    shader.set_model_transform(modelT->T());
-    shader.set_camera_transform(camera->CP());
-
-    shader.set_texture_sampler("GrassSampler", 1);
-    shader.set_texture_sampler("SandSampler", 2);
-    shader.set_texture_sampler("MountainSampler", 3);
-    shader.set_texture_sampler("RockSampler", 4);
-
     unsigned long n_vertices = static_cast<unsigned long>(6) * width * height;
     Vertex vertices[n_vertices];
 
@@ -80,42 +101,30 @@ void World::render(LocalTransform* modelT, Camera* camera, NoiseGenerator* noise
         }
     }
 
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    GLuint VBO;
-    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(
         GL_ARRAY_BUFFER,
         n_vertices * sizeof(Vertex),
         vertices,
         GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
-    // Then I set how to retrieve vertex attributes from the Vertex struct
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, position)));
-    glEnableVertexAttribArray(0);
+void World::render(LocalTransform* modelT, Camera* camera)
+{
+    shader.enable();
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, color)));
-    glEnableVertexAttribArray(1);
+    shader.set_model_transform(modelT->T());
+    shader.set_camera_transform(camera->CP());
 
-    glVertexAttribIPointer(2, 1, GL_INT, sizeof(Vertex),
-                           (void *)(offsetof(struct Vertex, type)));
-    glEnableVertexAttribArray(2);
+    shader.set_texture_sampler("GrassSampler", 1);
+    shader.set_texture_sampler("SandSampler", 2);
+    shader.set_texture_sampler("MountainSampler", 3);
+    shader.set_texture_sampler("RockSampler", 4);
 
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, texture_coordinates)));
-    glEnableVertexAttribArray(3);
-
-    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          reinterpret_cast<GLvoid *>(offsetof(struct Vertex, normal)));
-    glEnableVertexAttribArray(4);
-
+    unsigned long n_vertices = static_cast<unsigned long>(6) * width * height;
+    
     glBindVertexArray(VAO);
-
     glDrawArrays(GL_TRIANGLES, 0, n_vertices);
 
     glBindVertexArray(0);

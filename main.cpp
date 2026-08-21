@@ -52,7 +52,13 @@ struct global_struct
   const float SPEED = 10;
   float gradX, gradY;
 
-  global_struct() : gradX(0.0f), gradY(0.0f), world(world_width, world_height), water(glm::vec3(-world_width / 2, 0, -world_height / 2), world_width * 2, world_height * 2), noise_generator(0.1, 2.0, get_random_seed()) {}
+  global_struct() : gradX(0.0f),
+                    gradY(0.0f),
+                    world(world_width, world_height),
+                    water(glm::vec3(-world_width / 2, 0, -world_height / 2), world_width * 2, world_height * 2),
+                    noise_generator(0.1, 2.0, get_random_seed())
+  {
+  }
 
   float time = 0;
 
@@ -240,8 +246,10 @@ void MyRenderScene()
   modelT.rotate(global.gradX, global.gradY, 0.0f);
   modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
 
+  std::cout << "Time " << global.time << std::endl;
   global.water.render(&modelT, &global.camera, global.time);
-  global.world.render(&modelT, &global.camera, &global.noise_generator);
+  global.world.regenerate_mesh(&global.noise_generator);
+  global.world.render(&modelT, &global.camera);
   render_gui();
 
   glutSwapBuffers();
@@ -306,6 +314,13 @@ void MyReshape(int w, int h)
 
   global.WINDOW_WIDTH = w;
   global.WINDOW_HEIGHT = h;
+
+  global.camera.set_perspective(
+      45.0f,
+      global.WINDOW_WIDTH,
+      global.WINDOW_HEIGHT,
+      0.1,
+      100);
 }
 
 void MyClose(void)
