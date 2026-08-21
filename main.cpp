@@ -247,6 +247,7 @@ void MyRenderScene()
   modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
 
   std::cout << "Time " << global.time << std::endl;
+  global.water.regenerate_mesh();
   global.water.render(&modelT, &global.camera, global.time);
   global.world.regenerate_mesh(&global.noise_generator);
   global.world.render(&modelT, &global.camera);
