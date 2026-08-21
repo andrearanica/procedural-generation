@@ -19,6 +19,7 @@ class Gui
         Font font;
         std::vector<std::unique_ptr<Widget>> widgets;
         GuiShader shader;
+        GLuint VAO, VBO;
 
     public:
         Gui() : font(5, 19) {}

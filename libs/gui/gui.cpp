@@ -10,6 +10,9 @@
 
 bool Gui::init()
 {
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
     return shader.init();
 }
 
@@ -36,7 +39,7 @@ void Gui::render(int window_width, int window_height)
     shader.set_projection_transform(projection_matrix);
 
     shader.set_texture_sampler("BitmapFontSampler", 5);
-    
+
     std::vector<Vertex> vertices;
     for (const auto &widget : widgets)
     {
@@ -44,12 +47,7 @@ void Gui::render(int window_width, int window_height)
         vertices.insert(vertices.end(), widget_vertices.begin(), widget_vertices.end());
     }
 
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-
-    GLuint VBO;
-    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(
         GL_ARRAY_BUFFER,

@@ -125,8 +125,6 @@ void init(int argc, char *argv[])
  */
 void create_scene()
 {
-  global.noise_generator.set_seed(get_random_seed());
-
   global.camera.set_camera(
       glm::vec3(0, 3, -global.world.height * 1.5),
       glm::vec3(0, 0, 0),
@@ -167,6 +165,7 @@ void create_scene()
     global.texture_managers.push_back(texture_manager);
   }
 
+  global.noise_generator.set_seed(get_random_seed());
   global.world.regenerate_mesh(&global.noise_generator);
   global.water.regenerate_mesh();
 }
@@ -214,6 +213,7 @@ void handle_amplitude_click(int button_type)
 void render_gui()
 {
   global.gui.clear();
+
   const int text_size = 20;
 
   // Draw widgets
