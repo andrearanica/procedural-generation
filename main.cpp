@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include <iomanip>
-#include <sstream>
 
 #include "GL/glew.h"
 #include "GL/freeglut.h"
@@ -20,8 +19,6 @@
 #include "./libs/world/world.h"
 #include "./libs/texture/texture.h"
 #include "./libs/gui/gui.h"
-
-#define WATER_SPEED 0.005
 
 int get_random_seed()
 {
@@ -169,11 +166,15 @@ void create_scene()
     texture_manager.load("./textures/" + textures[i]);
     global.texture_managers.push_back(texture_manager);
   }
+
+  global.world.regenerate_mesh(&global.noise_generator);
+  global.water.regenerate_mesh();
 }
 
 void handle_seed_click(int button_type)
 {
   global.noise_generator.set_seed(get_random_seed());
+  global.world.regenerate_mesh(&global.noise_generator);
 }
 
 void handle_frequency_click(int button_type)
@@ -186,6 +187,11 @@ void handle_frequency_click(int button_type)
   {
     global.noise_generator.adjust_frequency(-0.1);
   }
+  else
+  {
+    return;
+  }
+  global.world.regenerate_mesh(&global.noise_generator);
 }
 
 void handle_amplitude_click(int button_type)
@@ -198,6 +204,11 @@ void handle_amplitude_click(int button_type)
   {
     global.noise_generator.adjust_amplitude(-0.1);
   }
+  else
+  {
+    return;
+  }
+  global.world.regenerate_mesh(&global.noise_generator);
 }
 
 void render_gui()
@@ -246,16 +257,13 @@ void MyRenderScene()
   modelT.rotate(global.gradX, global.gradY, 0.0f);
   modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
 
-  std::cout << "Time " << global.time << std::endl;
-  global.water.regenerate_mesh();
   global.water.render(&modelT, &global.camera, global.time);
-  global.world.regenerate_mesh(&global.noise_generator);
   global.world.render(&modelT, &global.camera);
   render_gui();
 
   glutSwapBuffers();
 
-  global.time += WATER_SPEED;
+  global.time += 1;
 }
 
 void MyKeyboard(unsigned char key, int x, int y)
