@@ -37,7 +37,7 @@ struct global_struct
   float WINDOW_WIDTH = 1024.0f;
   float WINDOW_HEIGHT = 768.0f;
 
-  int world_width = 15, world_height = 15;
+  int world_width = 50, world_height = 50;
 
   Camera camera;
 
@@ -52,7 +52,7 @@ struct global_struct
   global_struct() : gradX(0.0f),
                     gradY(0.0f),
                     world(world_width, world_height),
-                    water(glm::vec3(-world_width / 2, 0, -world_height / 2), world_width * 2, world_height * 2),
+                    water(glm::vec3(0, 0, 0), world_width, world_height),
                     noise_generator(0.1, 2.0, get_random_seed())
   {
   }
@@ -100,7 +100,7 @@ void init(int argc, char *argv[])
     exit(1);
   }
 
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClearColor(0.25f, 0.40f, 0.49f, 1.0f);
 
   glutDisplayFunc(MyRenderScene);
   glutTimerFunc(16, Timer, 0);
@@ -125,10 +125,19 @@ void init(int argc, char *argv[])
  */
 void create_scene()
 {
+  float max_dim = std::max(global.world.width, global.world.height);
+  glm::vec3 target = glm::vec3(0, 0, 0);
+  glm::vec3 position = glm::vec3(
+    0.0f,
+    max_dim * 1.0f,
+    -max_dim * 1.1f
+  );
+  glm::vec3 up = glm::vec3(0, 1, 0);
+
   global.camera.set_camera(
-      glm::vec3(0, 3, -global.world.height * 1.5),
-      glm::vec3(0, 0, 0),
-      glm::vec3(0, 1, 0));
+      position,
+      target,
+      up);
 
   global.camera.set_perspective(
       45.0f,
@@ -178,11 +187,11 @@ void handle_seed_click(int button_type)
 
 void handle_frequency_click(int button_type)
 {
-  if (button_type == 0 && global.noise_generator.get_frequency() < 1)
+  if (button_type == 0)
   {
     global.noise_generator.adjust_frequency(0.1);
   }
-  else if (button_type == 2 && global.noise_generator.get_frequency() > 0)
+  else if (button_type == 2)
   {
     global.noise_generator.adjust_frequency(-0.1);
   }
@@ -199,7 +208,7 @@ void handle_amplitude_click(int button_type)
   {
     global.noise_generator.adjust_amplitude(0.1);
   }
-  else if (button_type == 2 && global.noise_generator.get_amplitude() > 0)
+  else if (button_type == 2)
   {
     global.noise_generator.adjust_amplitude(-0.1);
   }
@@ -207,6 +216,12 @@ void handle_amplitude_click(int button_type)
   {
     return;
   }
+  global.world.regenerate_mesh(&global.noise_generator);
+}
+
+void handle_falloff_click(int button_type)
+{
+  global.world.set_falloff(!global.world.is_falloff_enabled());
   global.world.regenerate_mesh(&global.noise_generator);
 }
 
@@ -240,6 +255,10 @@ void render_gui()
   std::string amplitude_str = amplidute_ss.str();
   std::string amplitude = "Amplitude: " + amplitude_str;
   global.gui.add_label(glm::vec2(0, 80), amplitude, text_size, handle_amplitude_click);
+
+  std::string falloff_label = "Falloff: " +
+                              std::to_string(global.world.is_falloff_enabled());
+  global.gui.add_label(glm::vec2(0, 100), falloff_label, text_size, handle_falloff_click);
 
   global.gui.render(global.WINDOW_WIDTH, global.WINDOW_HEIGHT);
 }
@@ -276,16 +295,10 @@ void MyKeyboard(unsigned char key, int x, int y)
     break;
 
   case 'w':
-    if (global.gradX > -90)
-    {
-      global.gradX -= global.SPEED;
-    }
+    global.gradX -= global.SPEED;
     break;
   case 's':
-    if (global.gradX < 0)
-    {
-      global.gradX += global.SPEED;
-    }
+    global.gradX += global.SPEED;
     break;
   case 'a':
     global.gradY -= global.SPEED;
