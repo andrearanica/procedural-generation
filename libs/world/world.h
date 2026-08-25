@@ -15,9 +15,10 @@
 
 class World {
     private:
-        float get_vertex_distance_from_world_center(float x, float z);
+        float get_vertex_falloff(float x, float z);
         WorldShader shader;
         GLuint VAO, VBO;
+        bool enable_falloff;
     
     public:
         int width;
@@ -26,7 +27,11 @@ class World {
         World(int width, int height) {
             this->width = width;
             this->height = height;
+            enable_falloff = true;
         }
+
+        bool is_falloff_enabled();
+        void set_falloff(bool falloff);
 
         // Initializes the world shader
         bool init();

@@ -165,7 +165,7 @@ void create_scene()
     global.texture_managers.push_back(texture_manager);
   }
 
-  global.noise_generator.set_seed(get_random_seed());
+  global.noise_generator.set_seed(42);
   global.world.regenerate_mesh(&global.noise_generator);
   global.water.regenerate_mesh();
 }
@@ -178,11 +178,11 @@ void handle_seed_click(int button_type)
 
 void handle_frequency_click(int button_type)
 {
-  if (button_type == 0 && global.noise_generator.get_frequency() < 1)
+  if (button_type == 0)
   {
     global.noise_generator.adjust_frequency(0.1);
   }
-  else if (button_type == 2 && global.noise_generator.get_frequency() > 0)
+  else if (button_type == 2)
   {
     global.noise_generator.adjust_frequency(-0.1);
   }
@@ -199,7 +199,7 @@ void handle_amplitude_click(int button_type)
   {
     global.noise_generator.adjust_amplitude(0.1);
   }
-  else if (button_type == 2 && global.noise_generator.get_amplitude() > 0)
+  else if (button_type == 2)
   {
     global.noise_generator.adjust_amplitude(-0.1);
   }
@@ -207,6 +207,12 @@ void handle_amplitude_click(int button_type)
   {
     return;
   }
+  global.world.regenerate_mesh(&global.noise_generator);
+}
+
+void handle_falloff_click(int button_type)
+{
+  global.world.set_falloff(!global.world.is_falloff_enabled());
   global.world.regenerate_mesh(&global.noise_generator);
 }
 
@@ -240,6 +246,10 @@ void render_gui()
   std::string amplitude_str = amplidute_ss.str();
   std::string amplitude = "Amplitude: " + amplitude_str;
   global.gui.add_label(glm::vec2(0, 80), amplitude, text_size, handle_amplitude_click);
+
+  std::string falloff_label = "Falloff: " +
+                              std::to_string(global.world.is_falloff_enabled());
+  global.gui.add_label(glm::vec2(0, 100), falloff_label, text_size, handle_falloff_click);
 
   global.gui.render(global.WINDOW_WIDTH, global.WINDOW_HEIGHT);
 }
