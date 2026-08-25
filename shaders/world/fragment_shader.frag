@@ -14,7 +14,7 @@ out vec4 color;
 
 void main()
 {
-    if (vertex_height >= 0) {
+    if (vertex_height > 0.05) {
         if (vertex_normal.y >= 0.9) {
             // Green plains
             vec4 material_color = texture(GrassSampler, vertex_texture_coordinates);

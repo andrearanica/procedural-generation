@@ -165,7 +165,7 @@ void create_scene()
     global.texture_managers.push_back(texture_manager);
   }
 
-  global.noise_generator.set_seed(42);
+  global.noise_generator.set_seed(get_random_seed());
   global.world.regenerate_mesh(&global.noise_generator);
   global.water.regenerate_mesh();
 }
