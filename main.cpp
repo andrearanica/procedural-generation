@@ -130,7 +130,7 @@ void create_scene()
   glm::vec3 position = glm::vec3(
     0.0f,
     max_dim * 1.0f,
-    max_dim * 1.1f
+    -max_dim * 1.1f
   );
   glm::vec3 up = glm::vec3(0, 1, 0);
 
