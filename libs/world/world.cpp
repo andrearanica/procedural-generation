@@ -80,8 +80,7 @@ float World::get_point_height(float x, float z, NoiseGenerator* noise_generator)
 
     float falloff = get_vertex_falloff(x, z);
 
-    float vertex_height = vertex_noise - falloff * 1;
-    glm::mix(vertex_noise, -0.05f, falloff);
+    float vertex_height = vertex_noise - falloff;
     return vertex_height;
 }
 
@@ -94,10 +93,10 @@ void World::regenerate_mesh(NoiseGenerator* noise_generator)
         {
             int base = 6 * (x * width + z);
 
-            glm::vec3 sw(x,     get_point_height(x, z, noise_generator), z);
-            glm::vec3 se(x + 1, get_point_height(x + 1, z, noise_generator), z);
-            glm::vec3 ne(x + 1, get_point_height(x + 1, z - 1, noise_generator), z - 1);
-            glm::vec3 nw(x,     get_point_height(x, z - 1, noise_generator), z - 1);
+            glm::vec3 sw(x,     get_point_height(x, z + 1, noise_generator), z + 1);
+            glm::vec3 se(x + 1, get_point_height(x + 1, z + 1, noise_generator), z + 1);
+            glm::vec3 ne(x + 1, get_point_height(x + 1, z, noise_generator), z);
+            glm::vec3 nw(x,     get_point_height(x, z, noise_generator), z);
 
             glm::vec3 first_face_normal = get_face_normal(sw, se, ne);
             glm::vec3 second_face_normal = get_face_normal(ne, nw, sw);

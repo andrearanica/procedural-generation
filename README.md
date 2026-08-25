@@ -58,3 +58,4 @@ General idea: https://medium.com/@sashminadhikari/introduction-to-opengl-procedu
 
 Water generation: https://www.youtube.com/watch?v=5yhDb9dzJ58
 
+Falloff function: https://www.youtube.com/watch?v=COmtTyLCd6I&list=PLFt_AvWsXl0eBW2EiBtl_sxmDtSgZBxB3&index=11
