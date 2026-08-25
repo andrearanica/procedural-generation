@@ -20,16 +20,21 @@ class World {
         WorldShader shader;
         GLuint VAO, VBO;
         bool enable_falloff;
-    
-    public:
         int width;
         int height;
-
+    
+    public:
         World(int width, int height) {
             this->width = width;
             this->height = height;
             enable_falloff = true;
         }
+
+        int get_width();
+        void adjust_width(int delta);
+
+        int get_height();
+        void adjust_height(int delta);
 
         bool is_falloff_enabled();
         void set_falloff(bool falloff);

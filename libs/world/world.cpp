@@ -6,6 +6,27 @@
 #include "../utils/utils.h"
 #include "../transform/transform.h"
 
+int World::get_width()
+{
+    return width;
+}
+
+void World::adjust_width(int delta)
+{
+    width = std::max(0, width + delta);
+}
+
+int World::get_height()
+{
+    return height;
+}
+
+void World::adjust_height(int delta)
+{
+    height = std::max(0, height + delta);
+}
+
+
 bool World::is_falloff_enabled()
 {
     return enable_falloff;

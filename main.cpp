@@ -125,7 +125,7 @@ void init(int argc, char *argv[])
  */
 void create_scene()
 {
-  float max_dim = std::max(global.world.width, global.world.height);
+  float max_dim = std::max(global.world.get_width(), global.world.get_height());
   glm::vec3 target = glm::vec3(0, 0, 0);
   glm::vec3 position = glm::vec3(
     0.0f,
@@ -237,11 +237,11 @@ void render_gui()
   global.gui.add_label(glm::vec2(0, 0), seed_label, text_size, handle_seed_click);
 
   std::string width_label = "Width: " +
-                            std::to_string((int)global.world.width);
+                            std::to_string((int)global.world.get_width());
   global.gui.add_label(glm::vec2(0, 20), width_label, text_size);
 
   std::string height_label = "Height: " +
-                             std::to_string((int)global.world.height);
+                             std::to_string((int)global.world.get_height());
   global.gui.add_label(glm::vec2(0, 40), height_label, text_size);
 
   std::stringstream frequency_ss;
@@ -274,7 +274,7 @@ void MyRenderScene()
 
   LocalTransform modelT;
   modelT.rotate(global.gradX, global.gradY, 0.0f);
-  modelT.translate(-global.world.width / 2, 0, -global.world.height / 2);
+  modelT.translate(-global.world.get_width() / 2, 0, -global.world.get_height() / 2);
 
   global.water.render(&modelT, &global.camera, global.time);
   global.world.render(&modelT, &global.camera);
