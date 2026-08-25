@@ -39,6 +39,11 @@ void World::set_falloff(bool falloff)
 
 bool World::init()
 {
+    grass_texture.load("./textures/grass.jpg");
+    sand_texture.load("./textures/sand.jpg");
+    mountain_texture.load("./textures/mountain.jpg");
+    rock_texture.load("./textures/rock.jpg");
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
@@ -146,6 +151,11 @@ void World::regenerate_mesh(NoiseGenerator* noise_generator)
 void World::render(LocalTransform* modelT, Camera* camera)
 {
     shader.enable();
+
+    grass_texture.bind(1);
+    sand_texture.bind(2);
+    mountain_texture.bind(3);
+    rock_texture.bind(4);
 
     shader.set_model_transform(modelT->T());
     shader.set_camera_transform(camera->CP());

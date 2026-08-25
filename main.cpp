@@ -60,8 +60,6 @@ struct global_struct
                     noise_generator(0.1, 2.0, get_random_seed())
   {
   }
-
-  std::vector<Texture2D> texture_managers;
 } global;
 
 // Function invoked from the main loop that computes the transformation matrix
@@ -163,16 +161,6 @@ void create_scene()
   {
     std::cerr << "Error initializing GUI shaders..." << std::endl;
     exit(0);
-  }
-
-  std::vector<std::string> textures = {
-      "water.jpg", "grass.jpg", "sand.jpg", "mountain.jpg", "rock.jpg", "font.png"};
-
-  for (int i = 0; i < textures.size(); i++)
-  {
-    Texture2D texture_manager = Texture2D();
-    texture_manager.load("./textures/" + textures[i]);
-    global.texture_managers.push_back(texture_manager);
   }
 
   global.noise_generator.set_seed(get_random_seed());
@@ -282,11 +270,6 @@ void render_gui()
 void MyRenderScene()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  for (int i = 0; i < global.texture_managers.size(); i++)
-  {
-    global.texture_managers[i].bind(i);
-  }
 
   LocalTransform modelT;
   modelT.rotate(global.gradX, global.gradY, 0.0f);

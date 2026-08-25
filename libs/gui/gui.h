@@ -5,6 +5,7 @@
 #include "./widgets/widget.h"
 #include "font.h"
 #include "../shaders/gui_shader.h"
+#include "../texture/texture.h"
 
 #include <memory>
 #include <string>
@@ -20,9 +21,10 @@ class Gui
         std::vector<std::unique_ptr<Widget>> widgets;
         GuiShader shader;
         GLuint VAO, VBO;
+        Texture2D gui_texture;
 
     public:
-        Gui() : font(5, 19) {}
+        Gui() : font(5, 19), gui_texture() {}
 
         void clear();
         void add_label(glm::vec2 position, std::string text, float text_size);

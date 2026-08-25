@@ -10,6 +10,7 @@
 
 bool Gui::init()
 {
+    gui_texture.load("./textures/font.png");
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
@@ -33,6 +34,8 @@ void Gui::add_label(glm::vec2 position, std::string text, float text_size, void 
 
 void Gui::render(int window_width, int window_height)
 {
+    gui_texture.bind(5);
+
     shader.enable();
 
     glm::mat4 projection_matrix = glm::ortho(0.0f, (float)window_width, (float)window_height, 0.0f, 1.0f, -1.0f);

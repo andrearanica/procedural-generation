@@ -12,38 +12,46 @@
 #include "../shaders/world_shader.h"
 #include "../transform/transform.h"
 #include "../camera/camera.h"
+#include "../texture/texture.h"
 
-class World {
-    private:
-        float evaluate(float value);
-        float get_vertex_falloff(float x, float z);
-        WorldShader shader;
-        GLuint VAO, VBO;
-        bool enable_falloff;
-        int width;
-        int height;
-    
-    public:
-        World(int width, int height) {
-            this->width = width;
-            this->height = height;
-            enable_falloff = true;
-        }
+class World
+{
+private:
+    float evaluate(float value);
+    float get_vertex_falloff(float x, float z);
+    WorldShader shader;
+    GLuint VAO, VBO;
+    bool enable_falloff;
+    int width;
+    int height;
 
-        int get_width();
-        void adjust_width(int delta);
+    Texture2D grass_texture, sand_texture, mountain_texture, rock_texture;
 
-        int get_height();
-        void adjust_height(int delta);
+public:
+    World(int width, int height) : grass_texture(),
+                                   sand_texture(),
+                                   mountain_texture(),
+                                   rock_texture()
+    {
+        this->width = width;
+        this->height = height;
+        enable_falloff = true;
+    }
 
-        bool is_falloff_enabled();
-        void set_falloff(bool falloff);
+    int get_width();
+    void adjust_width(int delta);
 
-        // Initializes the world shader
-        bool init();
-        void regenerate_mesh(NoiseGenerator* noise_generator);
-        void render(LocalTransform* modelT, Camera* camera);
-        float get_point_height(float x, float z, NoiseGenerator* noise_generator);
+    int get_height();
+    void adjust_height(int delta);
+
+    bool is_falloff_enabled();
+    void set_falloff(bool falloff);
+
+    // Initializes the world shader
+    bool init();
+    void regenerate_mesh(NoiseGenerator *noise_generator);
+    void render(LocalTransform *modelT, Camera *camera);
+    float get_point_height(float x, float z, NoiseGenerator *noise_generator);
 };
 
 #endif

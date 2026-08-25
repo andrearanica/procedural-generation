@@ -11,6 +11,8 @@
 
 bool Water::init()
 {
+    water_texture.load("./textures/water.jpg");
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -100,6 +102,8 @@ void Water::regenerate_mesh()
 
 void Water::render(LocalTransform* modelT, Camera* camera, float time)
 {  
+    water_texture.bind(0);
+
     shader.enable();
 
     shader.set_model_transform(modelT->T());

@@ -4,6 +4,7 @@
 #include "../shaders/water_shader.h"
 #include "../transform/transform.h"
 #include "../camera/camera.h"
+#include "../texture/texture.h"
 
 class Water {
     private:
@@ -11,10 +12,10 @@ class Water {
         float width, height;
         WaterShader shader;
         GLuint VAO, VBO, EBO;
-
+        Texture2D water_texture;
 
     public:
-        Water(glm::vec3 position, float width, float height) {
+        Water(glm::vec3 position, float width, float height) : water_texture() {
             this->position = position;
             this->width = width;
             this->height = height;
