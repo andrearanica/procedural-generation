@@ -54,23 +54,19 @@ bool World::init()
 
 float World::get_vertex_falloff(float x, float z)
 {
-    /*
-    glm::vec3 world_center = glm::vec3(width / 2, 0, height / 2);
-
-    float dx = x - world_center.x;
-    float dz = z - world_center.z;
-
-    float distance = std::sqrt(dx * dx + dz * dz);
-    float max_distance = glm::length(world_center);
-
-    float attenuation = glm::clamp(distance / max_distance, 0.0f, 1.0f);
-    return attenuation;
-    */
    float i = x / (float)width * 2 - 1;
    float j = z / (float)height * 2 - 1;
    
    float value = glm::max(glm::abs(i), glm::abs(j));
-   return value;
+   return evaluate(value);
+}
+
+float World::evaluate(float value)
+{
+    float a = 3;
+    float b = 2.2f;
+
+    return glm::pow(value, a) / (glm::pow(value, a) + glm::pow(b - b * value, a));
 }
 
 float World::get_point_height(float x, float z, NoiseGenerator* noise_generator)
