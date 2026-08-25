@@ -37,7 +37,7 @@ struct global_struct
   float WINDOW_WIDTH = 1024.0f;
   float WINDOW_HEIGHT = 768.0f;
 
-  int world_width = 15, world_height = 15;
+  int world_width = 50, world_height = 50;
 
   Camera camera;
 
@@ -100,7 +100,7 @@ void init(int argc, char *argv[])
     exit(1);
   }
 
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClearColor(0.25f, 0.40f, 0.49f, 1.0f);
 
   glutDisplayFunc(MyRenderScene);
   glutTimerFunc(16, Timer, 0);
@@ -125,10 +125,19 @@ void init(int argc, char *argv[])
  */
 void create_scene()
 {
+  float max_dim = std::max(global.world.width, global.world.height);
+  glm::vec3 target = glm::vec3(0, 0, 0);
+  glm::vec3 position = glm::vec3(
+    0.0f,
+    max_dim * 1.0f,
+    max_dim * 1.1f
+  );
+  glm::vec3 up = glm::vec3(0, 1, 0);
+
   global.camera.set_camera(
-      glm::vec3(0, 3, -global.world.height * 1.5),
-      glm::vec3(0, 0, 0),
-      glm::vec3(0, 1, 0));
+      position,
+      target,
+      up);
 
   global.camera.set_perspective(
       45.0f,
@@ -286,16 +295,10 @@ void MyKeyboard(unsigned char key, int x, int y)
     break;
 
   case 'w':
-    if (global.gradX > -90)
-    {
-      global.gradX -= global.SPEED;
-    }
+    global.gradX -= global.SPEED;
     break;
   case 's':
-    if (global.gradX < 0)
-    {
-      global.gradX += global.SPEED;
-    }
+    global.gradX += global.SPEED;
     break;
   case 'a':
     global.gradY -= global.SPEED;
