@@ -46,8 +46,11 @@ struct global_struct
   Water water;
   Gui gui;
 
+  bool render_water = true;
+
   const float SPEED = 10;
   float gradX, gradY;
+  float time = 0;
 
   global_struct() : gradX(0.0f),
                     gradY(0.0f),
@@ -56,8 +59,6 @@ struct global_struct
                     noise_generator(0.1, 2.0, get_random_seed())
   {
   }
-
-  float time = 0;
 
   std::vector<Texture2D> texture_managers;
 } global;
@@ -128,10 +129,9 @@ void create_scene()
   float max_dim = std::max(global.world.get_width(), global.world.get_height());
   glm::vec3 target = glm::vec3(0, 0, 0);
   glm::vec3 position = glm::vec3(
-    0.0f,
-    max_dim * 1.0f,
-    -max_dim * 1.1f
-  );
+      0.0f,
+      max_dim * 1.0f,
+      -max_dim * 1.1f);
   glm::vec3 up = glm::vec3(0, 1, 0);
 
   global.camera.set_camera(
@@ -206,11 +206,11 @@ void handle_amplitude_click(int button_type)
 {
   if (button_type == 0)
   {
-    global.noise_generator.adjust_amplitude(0.1);
+    global.noise_generator.adjust_amplitude(0.5);
   }
   else if (button_type == 2)
   {
-    global.noise_generator.adjust_amplitude(-0.1);
+    global.noise_generator.adjust_amplitude(-0.5);
   }
   else
   {
@@ -221,8 +221,19 @@ void handle_amplitude_click(int button_type)
 
 void handle_falloff_click(int button_type)
 {
-  global.world.set_falloff(!global.world.is_falloff_enabled());
-  global.world.regenerate_mesh(&global.noise_generator);
+  if (button_type == 0)
+  {
+    global.world.set_falloff(!global.world.is_falloff_enabled());
+    global.world.regenerate_mesh(&global.noise_generator);
+  }
+}
+
+void handle_water_click(int button_type)
+{
+  if (button_type == 0)
+  {
+    global.render_water = !global.render_water;
+  }
 }
 
 void render_gui()
@@ -256,9 +267,13 @@ void render_gui()
   std::string amplitude = "Amplitude: " + amplitude_str;
   global.gui.add_label(glm::vec2(0, 80), amplitude, text_size, handle_amplitude_click);
 
-  std::string falloff_label = "Falloff: " +
+  std::string falloff_label = "Apply falloff: " +
                               std::to_string(global.world.is_falloff_enabled());
   global.gui.add_label(glm::vec2(0, 100), falloff_label, text_size, handle_falloff_click);
+
+  std::string water_label = "Show water: " +
+                            std::to_string(global.render_water);
+  global.gui.add_label(glm::vec2(0, 120), water_label, text_size, handle_water_click);
 
   global.gui.render(global.WINDOW_WIDTH, global.WINDOW_HEIGHT);
 }
@@ -276,7 +291,10 @@ void MyRenderScene()
   modelT.rotate(global.gradX, global.gradY, 0.0f);
   modelT.translate(-global.world.get_width() / 2, 0, -global.world.get_height() / 2);
 
-  global.water.render(&modelT, &global.camera, global.time);
+  if (global.render_water)
+  {
+    global.water.render(&modelT, &global.camera, global.time);
+  }
   global.world.render(&modelT, &global.camera);
   render_gui();
 

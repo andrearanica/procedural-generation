@@ -52,7 +52,7 @@ void Water::regenerate_mesh()
         for (int x = 0; x < (width + 1); x++)
         {
             glm::vec2 texture_coordinates = glm::vec2(x / float(width / 10), z / float(height / 10));
-            Vertex v(glm::vec3(position.x + x, -0, position.z + z), VERTEX_WATER, texture_coordinates);
+            Vertex v(glm::vec3(position.x + x, position.y, position.z + z), VERTEX_WATER, texture_coordinates);
 
             vertices.push_back(v);
         }
