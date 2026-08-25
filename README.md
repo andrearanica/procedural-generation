@@ -4,7 +4,7 @@ Procedural terrain engine built 100% from scratch using OpenGL, FreeGlut and GLM
 
 The program renders a pseudo-random island using Perlin noise and allows the user to change the island's parameters during runtime to generate different islands.
 
-![alt text](assets/screenshot.png)
+![alt text](assets/screenshot.gif)
 
 ## Build
 

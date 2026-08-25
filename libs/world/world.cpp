@@ -152,18 +152,18 @@ void World::render(LocalTransform* modelT, Camera* camera)
 {
     shader.enable();
 
-    grass_texture.bind(1);
-    sand_texture.bind(2);
-    mountain_texture.bind(3);
-    rock_texture.bind(4);
+    grass_texture.bind(0);
+    sand_texture.bind(1);
+    mountain_texture.bind(2);
+    rock_texture.bind(3);
 
     shader.set_model_transform(modelT->T());
     shader.set_camera_transform(camera->CP());
 
-    shader.set_texture_sampler("GrassSampler", 1);
-    shader.set_texture_sampler("SandSampler", 2);
-    shader.set_texture_sampler("MountainSampler", 3);
-    shader.set_texture_sampler("RockSampler", 4);
+    shader.set_texture_sampler("GrassSampler", 0);
+    shader.set_texture_sampler("SandSampler", 1);
+    shader.set_texture_sampler("MountainSampler", 2);
+    shader.set_texture_sampler("RockSampler", 3);
 
     unsigned long n_vertices = static_cast<unsigned long>(6) * width * height;
     

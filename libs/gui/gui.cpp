@@ -34,14 +34,14 @@ void Gui::add_label(glm::vec2 position, std::string text, float text_size, void 
 
 void Gui::render(int window_width, int window_height)
 {
-    gui_texture.bind(5);
+    gui_texture.bind(0);
 
     shader.enable();
 
     glm::mat4 projection_matrix = glm::ortho(0.0f, (float)window_width, (float)window_height, 0.0f, 1.0f, -1.0f);
     shader.set_projection_transform(projection_matrix);
 
-    shader.set_texture_sampler("BitmapFontSampler", 5);
+    shader.set_texture_sampler("BitmapFontSampler", 0);
 
     std::vector<Vertex> vertices;
     for (const auto &widget : widgets)
