@@ -38,6 +38,7 @@ struct global_struct
   float WINDOW_HEIGHT = 768.0f;
 
   int world_width = 50, world_height = 50;
+  float water_margin = 3;
 
   Camera camera;
 
@@ -55,7 +56,7 @@ struct global_struct
   global_struct() : gradX(0.0f),
                     gradY(0.0f),
                     world(world_width, world_height),
-                    water(glm::vec3(0, 0, 0), world_width, world_height),
+                    water(glm::vec3(-water_margin / 2, 0, -water_margin / 2), world_width + water_margin, world_height + water_margin),
                     noise_generator(0.1, 2.0, get_random_seed())
   {
   }
