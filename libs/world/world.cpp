@@ -5,6 +5,7 @@
 #include "../noise/noise_generator.h"
 #include "../utils/utils.h"
 #include "../transform/transform.h"
+#include "../noise/falloff_generator.h"
 
 int World::get_width()
 {
@@ -78,23 +79,6 @@ bool World::init()
     return shader.init();
 }
 
-float World::get_vertex_falloff(float x, float z)
-{
-   float i = x / (float)width * 2 - 1;
-   float j = z / (float)height * 2 - 1;
-   
-   float value = glm::max(glm::abs(i), glm::abs(j));
-   return evaluate(value);
-}
-
-float World::evaluate(float value)
-{
-    float a = 3;
-    float b = 2.2f;
-
-    return glm::pow(value, a) / (glm::pow(value, a) + glm::pow(b - b * value, a));
-}
-
 float World::get_point_height(float x, float z, NoiseGenerator* noise_generator)
 {
     float vertex_noise = noise_generator->get_noise(x, z);
@@ -104,7 +88,7 @@ float World::get_point_height(float x, float z, NoiseGenerator* noise_generator)
         return vertex_noise;
     }
 
-    float falloff = get_vertex_falloff(x, z);
+    float falloff = FalloffGenerator::get_vertex_falloff(x, z, width, height);
 
     float vertex_height = vertex_noise - falloff;
     return vertex_height;

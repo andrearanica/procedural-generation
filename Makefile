@@ -22,7 +22,7 @@ else
 	COPY_DLLS = 
 endif
 
-OBJS = main.o utils.o transform.o camera.o shaderclass.o world_shader.o water_shader.o world.o noise.o water.o texture.o gui.o gui_shader.o font.o label.o widget.o
+OBJS = main.o utils.o transform.o camera.o shaderclass.o world_shader.o water_shader.o world.o noise.o water.o texture.o gui.o gui_shader.o font.o label.o widget.o falloff_generator.o
 
 main.exe : $(OBJS)
 	$(CC) $(CCFLAGS) $^ $(LIBDIRS) $(LIBS) -o $@
@@ -74,6 +74,9 @@ label.o: ./libs/gui/widgets/label.cpp
 	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
 
 widget.o: ./libs/gui/widgets/widget.cpp
+	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
+
+falloff_generator.o: ./libs/noise/falloff_generator.cpp
 	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
 
 .PHONY clean:

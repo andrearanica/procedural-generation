@@ -17,8 +17,6 @@
 class World
 {
 private:
-    float evaluate(float value);
-    float get_vertex_falloff(float x, float z);
     WorldShader shader;
     GLuint VAO, VBO;
     bool enable_falloff;
