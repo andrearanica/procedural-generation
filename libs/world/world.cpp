@@ -112,14 +112,14 @@ void World::regenerate_mesh(NoiseGenerator* noise_generator)
             glm::vec3 second_face_normal = get_face_normal(ne, nw, sw);
 
             // First triangle
-            vertices.push_back(Vertex(sw, VERTEX_GRID, first_face_normal, glm::vec2(x, z)));
-            vertices.push_back(Vertex(se, VERTEX_GRID, first_face_normal, glm::vec2(x + 1, z)));
-            vertices.push_back(Vertex(ne, VERTEX_GRID, first_face_normal, glm::vec2(x + 1, z - 1)));
+            vertices.push_back(Vertex(sw, VERTEX_GRID, first_face_normal, glm::vec2(x, z + 1)));
+            vertices.push_back(Vertex(se, VERTEX_GRID, first_face_normal, glm::vec2(x + 1, z + 1)));
+            vertices.push_back(Vertex(ne, VERTEX_GRID, first_face_normal, glm::vec2(x + 1, z)));
 
             // Second triangle
-            vertices.push_back(Vertex(ne, VERTEX_GRID, second_face_normal, glm::vec2(x + 1, z - 1)));
-            vertices.push_back(Vertex(nw, VERTEX_GRID, second_face_normal, glm::vec2(x, z - 1)));
-            vertices.push_back(Vertex(sw, VERTEX_GRID, second_face_normal, glm::vec2(x, z)));
+            vertices.push_back(Vertex(ne, VERTEX_GRID, second_face_normal, glm::vec2(x + 1, z)));
+            vertices.push_back(Vertex(nw, VERTEX_GRID, second_face_normal, glm::vec2(x, z)));
+            vertices.push_back(Vertex(sw, VERTEX_GRID, second_face_normal, glm::vec2(x, z + 1)));
         }
     }
 
