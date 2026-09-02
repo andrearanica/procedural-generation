@@ -8,7 +8,7 @@ The program renders a pseudo-random island using Perlin noise and allows the use
 
 ## Build
 
-If you are running a Debian-based distro, you can download the [latest release](https://github.com/andrearanica/procedural-generation/releases/) from the releases page. 
+You can download the [latest release](https://github.com/andrearanica/procedural-generation/releases/) from the releases page. 
 
 Otherwise, you can build the project on your machine:
 
