@@ -1,36 +1,44 @@
 CC = g++
 CCFLAGS = -O3 -s -DNDEBUG
+LDFLAGS = 
 
 ifeq ($(OS),Windows_NT)
-	BASEDIR = ./base
-	INCLUDEDIRS += -I$(BASEDIR)/freeglut/include
-	INCLUDEDIRS += -I$(BASEDIR)/glew/include
-	INCLUDEDIRS += -I$(BASEDIR)/glm
+    BASEDIR = ./base
+    INCLUDEDIRS += -I$(BASEDIR)/freeglut/include
+    INCLUDEDIRS += -I$(BASEDIR)/glew/include
+    INCLUDEDIRS += -I$(BASEDIR)/glm
 
-	LIBDIRS += -L$(BASEDIR)/freeglut/lib
-	LIBDIRS += -L$(BASEDIR)/glew/lib/Release/Win32
+    LIBDIRS += -L$(BASEDIR)/glew/lib/Release/Win32
+    LIBDIRS += -L$(BASEDIR)/freeglut/lib
 
-	LIBS += -lfreeglut 
-	LIBS += -lopengl32
-	LIBS += -lglew32
+    LIBS += -lglew32
+    LIBS += -lfreeglut 
+    LIBS += -lopengl32
+    LIBS += -lgdi32 -lwinmm
 
-	ifneq ($(findstring sh,$(SHELL)),)
-        COPY_DLLS = cp base/freeglut/bin/freeglut.dll . 2>/dev/null || true; cp base/glew/bin/Release/Win32/glew32.dll . 2>/dev/null || true
+    # Solo static runtime C/C++, MAI "-static" puro
+    LDFLAGS += -static-libgcc -static-libstdc++
+
+	# Rilevamento shell per evitare che cmd.exe fallisca sui path Unix
+    ifeq ($(shell echo "check"),check)
+        # Siamo in una shell tipo Bash / MSYS2 / Git Bash
+        COPY_DLLS = cp -f base/freeglut/bin/freeglut.dll ./ 2>/dev/null || true; \
+                    cp -f base/glew/bin/Release/Win32/glew32.dll ./ 2>/dev/null || true
     else
-        # Se stiamo usando cmd.exe standard su Windows
-        COPY_DLLS = -copy /Y base\freeglut\bin\freeglut.dll .\ >nul & -copy /Y base\glew\bin\Release\Win32\glew32.dll .\ >nul
+        # Siamo su cmd.exe nativo di Windows
+        COPY_DLLS = cmd /c "copy /Y base\freeglut\bin\freeglut.dll . >nul 2>&1 & copy /Y base\glew\bin\Release\Win32\glew32.dll . >nul 2>&1"
     endif
 else
-	LIBS += -lglut
-	LIBS += -lGLEW
-	LIBS += -lGL
-	COPY_DLLS = 
+    LIBS += -lglut
+    LIBS += -lGLEW
+    LIBS += -lGL
+    COPY_DLLS = 
 endif
 
 OBJS = main.o utils.o transform.o camera.o shaderclass.o world_shader.o water_shader.o world.o noise.o water.o texture.o gui.o gui_shader.o font.o label.o widget.o falloff_generator.o
 
 main.exe : $(OBJS)
-	$(CC) $(CCFLAGS) $^ $(LIBDIRS) $(LIBS) -o $@
+	$(CC) $(CCFLAGS) $(LDFLAGS) $(LIBDIRS) $^ $(LIBS) -o $@
 	$(COPY_DLLS)
 
 main.o : main.cpp
@@ -87,9 +95,9 @@ falloff_generator.o: ./libs/noise/falloff_generator.cpp
 .PHONY clean:
 clean:
 ifeq ($(OS),Windows_NT) 
-		del *.o *.exe
+	del *.o *.exe
 else
-		rm -f *.o *.exe
+	rm -f *.o *.exe
 endif
 
 run:
