@@ -21,7 +21,7 @@ float NoiseGenerator::get_amplitude()
 
 void NoiseGenerator::adjust_amplitude(float delta)
 {
-    amp = std::max(0.1f, amp + delta);
+    amp = std::max(0.5f, amp + delta);
 }
 
 float NoiseGenerator::get_frequency()
@@ -31,7 +31,9 @@ float NoiseGenerator::get_frequency()
 
 void NoiseGenerator::adjust_frequency(float delta)
 {
-    freq = std::clamp(freq + delta, 0.1f, 1.0f);
+    freq = freq + delta;
+    freq = std::max(freq, 0.1f);
+    freq = std::min(freq, 0.9f);
 }
 
 // Pseudorandom and deterministic hashing function
