@@ -25,6 +25,11 @@ jobs:
         run: |
           mkdir build_output
           cp main.exe build_output/
+
+          # Add dependencies script
+          cp install_dependencies.sh build_output/
+          chmod +x build_output/install_dependencies.sh
+
           # Add other assets (es. shader, texture)
           cp -r ./textures build_output/ 2>/dev/null || true
           cp -r ./shaders build_output/ 2>/dev/null || true
