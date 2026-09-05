@@ -1,6 +1,5 @@
 CC = g++
 CCFLAGS = -O3 -s -DNDEBUG
-LDFLAGS = 
 
 ifeq ($(OS),Windows_NT)
     BASEDIR = ./base
@@ -8,26 +7,12 @@ ifeq ($(OS),Windows_NT)
     INCLUDEDIRS += -I$(BASEDIR)/glew/include
     INCLUDEDIRS += -I$(BASEDIR)/glm
 
-    LIBDIRS += -L$(BASEDIR)/glew/lib/Release/Win32
     LIBDIRS += -L$(BASEDIR)/freeglut/lib
+    LIBDIRS += -L$(BASEDIR)/glew/lib/Release/Win32
 
-    LIBS += -lglew32
     LIBS += -lfreeglut 
     LIBS += -lopengl32
-    LIBS += -lgdi32 -lwinmm
-
-    # Solo static runtime C/C++, MAI "-static" puro
-    LDFLAGS += -static-libgcc -static-libstdc++
-
-	# Rilevamento shell per evitare che cmd.exe fallisca sui path Unix
-    ifeq ($(shell echo "check"),check)
-        # Siamo in una shell tipo Bash / MSYS2 / Git Bash
-        COPY_DLLS = cp -f base/freeglut/bin/freeglut.dll ./ 2>/dev/null || true; \
-                    cp -f base/glew/bin/Release/Win32/glew32.dll ./ 2>/dev/null || true
-    else
-        # Siamo su cmd.exe nativo di Windows
-        COPY_DLLS = cmd /c "copy /Y base\freeglut\bin\freeglut.dll . >nul 2>&1 & copy /Y base\glew\bin\Release\Win32\glew32.dll . >nul 2>&1"
-    endif
+    LIBS += -lglew32
 else
     LIBS += -lglut
     LIBS += -lGLEW
@@ -38,8 +23,7 @@ endif
 OBJS = main.o utils.o transform.o camera.o shaderclass.o world_shader.o water_shader.o world.o noise.o water.o texture.o gui.o gui_shader.o font.o label.o widget.o falloff_generator.o
 
 main.exe : $(OBJS)
-	$(CC) $(CCFLAGS) $(LDFLAGS) $(LIBDIRS) $^ $(LIBS) -o $@
-	$(COPY_DLLS)
+	$(CC) $(CCFLAGS) $(LIBDIRS) $^ $(LIBS) -o $@
 
 main.o : main.cpp
 	$(CC) -c $(CCFLAGS) $(INCLUDEDIRS) $? -o $@
