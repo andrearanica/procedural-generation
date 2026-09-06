@@ -8,23 +8,19 @@ The program renders a pseudo-random island using Perlin noise and allows the use
 
 ## Build
 
-You can download the [latest release](https://github.com/andrearanica/procedural-generation/releases/) from the releases page. 
-
-Otherwise, you can build the project on your machine:
-
-1. Clone the repository
+1. Clone the repository or download the [latest release](https://github.com/andrearanica/procedural-generation/releases/) from the releases page. 
 
     ``` bash
     git clone https://github.com/andrearanica/procedural-generation
     ```
 
-2. Install the compiler: if you are using Windows you can install [MinGW32](https://github.com/brechtsanders/winlibs_mingw/releases/download/10.2.0-11.0.0-8.0.0-r7/winlibs-i686-posix-dwarf-gcc-10.2.0-llvm-11.0.0-mingw-w64-8.0.0-r7.7z). On Linux you can use the default compiler which can be installed with the following command. 
+2. Install the compiler: if you are using Windows you can install [MinGW32](https://github.com/brechtsanders/winlibs_mingw/releases/download/10.2.0-11.0.0-8.0.0-r7/winlibs-i686-posix-dwarf-gcc-10.2.0-llvm-11.0.0-mingw-w64-8.0.0-r7.7z) and extract it under `C:\`. On Linux you can use the default compiler which can be installed with the following command. 
 
     ``` bash
     sudo apt install build-essential
     ```
 
-3. Libraries: on Windows you don't need to install anything manually, since libraries are stored inside the `base/` subfolder; on Linux you need to run the following commands. 
+3. Libraries: on Windows you don't need to install anything manually, since libraries are stored inside the `base/` subfolder; on Linux you need to run the `install_dependencies.sh` script or manually run the following commands. 
 
     ``` bash
     sudo apt install mesa-utils
@@ -39,16 +35,6 @@ Otherwise, you can build the project on your machine:
     make
     make run
     ```
-
-## Structure
-
-The rendering process is divided in three phases:
-
-1. World generation: the CPU defines the terrain mesh using Perlin Noise to determine each vertex height; later, the fragment shader defines each surface color using the surface height and slope to show sand, plains and rock textures
-
-2. Water generation: as in world generation, water is defined by a triangular mesh; the vertex shader applies a movement effect using a distortion formula
-
-3. GUI generation: the interface allows the user to change world parameters (seed, frequency, amplitude...)
 
 ## Sources
 
