@@ -17,7 +17,7 @@ The program renders a pseudo-random island using Perlin noise and allows the use
 
 2. Install the compiler:
 
-     2.1 On Windows, you can install [MinGW32](https://github.com/brechtsanders/winlibs_mingw/releases/download/10.2.0-11.0.0-8.0.0-r7/winlibs-i686-posix-dwarf-gcc-10.2.0-llvm-11.0.0-mingw-w64-8.0.0-r7.7z) and extract it under `C:\`. Then you have to use [MSYS](https://sourceforge.net/projects/mingw/files/MSYS/Base/msys-core/msys-1.0.11/MSYS-1.0.11.exe/download) as shell, which has all the necessary components to build the project. 
+     2.1 On Windows, you can install [MinGW32](https://github.com/brechtsanders/winlibs_mingw/releases/download/10.2.0-11.0.0-8.0.0-r7/winlibs-i686-posix-dwarf-gcc-10.2.0-llvm-11.0.0-mingw-w64-8.0.0-r7.7z) and extract it under `C:\mingw32\`. Then you have to install [MSYS](https://sourceforge.net/projects/mingw/files/MSYS/Base/msys-core/msys-1.0.11/MSYS-1.0.11.exe/download), which is a shell that has all the necessary components to build the project. 
 
      2.2 On Linux you can use the default compiler which can be installed with the following command. 
 
@@ -35,7 +35,7 @@ The program renders a pseudo-random island using Perlin noise and allows the use
     sudo apt install assimp-utils
     ```
 
-5. Compile: once everything is installed, you can compile and run the project
+5. Compile: once everything is installed, you can compile and run the project. On Windows, remember to run these commands using the MSYS shell. 
     ``` bash
     make
     make run
