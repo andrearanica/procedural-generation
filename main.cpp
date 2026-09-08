@@ -54,10 +54,10 @@ struct global_struct
   float time = 0;
 
   global_struct() : gradX(0.0f),
-                    gradY(0.0f),
-                    world(world_width, world_height),
-                    water(glm::vec3(-water_margin / 2, 0, -water_margin / 2), world_width + water_margin, world_height + water_margin),
-                    noise_generator(0.1, 2.0, get_random_seed())
+    gradY(0.0f),
+    world(world_width, world_height),
+    water(glm::vec3(-water_margin / 2, 0, -water_margin / 2), world_width + water_margin, world_height + water_margin),
+    noise_generator(0.1, 2.0, get_random_seed(), 12)
   {
   }
 } global;
@@ -78,7 +78,7 @@ void MyReshape(int w, int h);
 void Timer(int);
 
 // Initializes the OpenGL environment (GLUT + GLEW)
-void init(int argc, char *argv[])
+void init(int argc, char* argv[])
 {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -128,22 +128,22 @@ void create_scene()
   float max_dim = std::max(global.world.get_width(), global.world.get_height());
   glm::vec3 target = glm::vec3(0, 0, 0);
   glm::vec3 position = glm::vec3(
-      0.0f,
-      max_dim * 1.0f,
-      -max_dim * 1.1f);
+    0.0f,
+    max_dim * 1.0f,
+    -max_dim * 1.1f);
   glm::vec3 up = glm::vec3(0, 1, 0);
 
   global.camera.set_camera(
-      position,
-      target,
-      up);
+    position,
+    target,
+    up);
 
   global.camera.set_perspective(
-      45.0f,
-      global.WINDOW_WIDTH,
-      global.WINDOW_HEIGHT,
-      0.1,
-      100);
+    45.0f,
+    global.WINDOW_WIDTH,
+    global.WINDOW_HEIGHT,
+    0.1,
+    100);
 
   if (!global.world.init())
   {
@@ -225,6 +225,24 @@ void handle_water_click(int button_type)
   }
 }
 
+void handle_octaves_click(int button_type)
+{
+  if (button_type == 0)
+  {
+    global.noise_generator.adjust_octaves(1);
+  }
+  else if (button_type == 2)
+  {
+    global.noise_generator.adjust_octaves(-1);
+  }
+  else
+  {
+    return;
+  }
+
+  global.world.regenerate_mesh(&global.noise_generator);
+}
+
 void render_gui()
 {
   global.gui.clear();
@@ -233,15 +251,15 @@ void render_gui()
 
   // Draw widgets
   std::string seed_label = "Seed: " +
-                           std::to_string((int)global.noise_generator.get_seed());
+    std::to_string((int)global.noise_generator.get_seed());
   global.gui.add_label(glm::vec2(0, 0), seed_label, text_size, handle_seed_click);
 
   std::string width_label = "Width: " +
-                            std::to_string((int)global.world.get_width());
+    std::to_string((int)global.world.get_width());
   global.gui.add_label(glm::vec2(0, 20), width_label, text_size);
 
   std::string height_label = "Height: " +
-                             std::to_string((int)global.world.get_height());
+    std::to_string((int)global.world.get_height());
   global.gui.add_label(glm::vec2(0, 40), height_label, text_size);
 
   std::stringstream frequency_ss;
@@ -257,12 +275,16 @@ void render_gui()
   global.gui.add_label(glm::vec2(0, 80), amplitude, text_size, handle_amplitude_click);
 
   std::string falloff_label = "Apply falloff: " +
-                              std::to_string(global.world.is_falloff_enabled());
+    std::to_string(global.world.is_falloff_enabled());
   global.gui.add_label(glm::vec2(0, 100), falloff_label, text_size, handle_falloff_click);
 
   std::string water_label = "Show water: " +
-                            std::to_string(global.render_water);
+    std::to_string(global.render_water);
   global.gui.add_label(glm::vec2(0, 120), water_label, text_size, handle_water_click);
+
+  std::string octaves_label = "Perlin Octaves: " +
+    std::to_string(global.noise_generator.get_octaves());
+  global.gui.add_label(glm::vec2(0, 140), octaves_label, text_size, handle_octaves_click);
 
   global.gui.render(global.WINDOW_WIDTH, global.WINDOW_HEIGHT);
 }
@@ -340,11 +362,11 @@ void MyReshape(int w, int h)
   global.WINDOW_HEIGHT = h;
 
   global.camera.set_perspective(
-      45.0f,
-      global.WINDOW_WIDTH,
-      global.WINDOW_HEIGHT,
-      0.1,
-      100);
+    45.0f,
+    global.WINDOW_WIDTH,
+    global.WINDOW_HEIGHT,
+    0.1,
+    100);
 }
 
 void MyClose(void)
@@ -360,7 +382,7 @@ void Timer(int)
   glutTimerFunc(16, Timer, 0);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
   srand(time(NULL));
   init(argc, argv);

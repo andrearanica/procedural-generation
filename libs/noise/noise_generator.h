@@ -7,7 +7,7 @@ typedef struct {
 
 class NoiseGenerator {
     private:
-        float freq, amp, seed;
+        float freq, amp, seed, n_octaves;
         vector2 randomGradient(int ix, int iz);
 
         float dotGridGradient(int ix, int iz, float x, float z);
@@ -15,9 +15,10 @@ class NoiseGenerator {
         float perlin(float x, float z);
 
     public:
-        NoiseGenerator(float freq, float amp, float seed) : freq(freq), amp(amp), seed(seed) {}
+        NoiseGenerator(float freq, float amp, float seed, float n_octaves) : freq(freq), amp(amp), seed(seed), n_octaves(n_octaves) {}
         NoiseGenerator(float freq, float amp) : freq(freq), amp(amp) {
             seed = 0;
+            n_octaves = 12;
         }
 
         float get_noise(float x, float z);
@@ -30,6 +31,9 @@ class NoiseGenerator {
 
         float get_seed();
         void set_seed(float seed);
+
+        float get_octaves();
+        void adjust_octaves(float delta);
 };
 
 

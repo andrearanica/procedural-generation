@@ -36,6 +36,19 @@ void NoiseGenerator::adjust_frequency(float delta)
     freq = std::min(freq, 0.9f);
 }
 
+float NoiseGenerator::get_octaves()
+{
+    return n_octaves;
+}
+
+void NoiseGenerator::adjust_octaves(float delta)
+{
+    if (n_octaves + delta > 0)
+    {
+        n_octaves += delta;
+    }
+}
+
 // Pseudorandom and deterministic hashing function
 vector2 NoiseGenerator::randomGradient(int ix, int iz) {
     // No precomputed gradients mean this works for any number of grid coordinates
@@ -101,7 +114,7 @@ float NoiseGenerator::get_noise(float x, float z) {
     float temp_amp = amp;
     
     float noise = 0;
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < n_octaves; i++) {
         float perlin = NoiseGenerator::perlin(x * temp_freq, z * temp_freq);
         noise += perlin * temp_amp;
         temp_freq *= 2;
