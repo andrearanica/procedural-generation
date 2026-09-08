@@ -12,14 +12,18 @@ The program renders a pseudo-random island using Perlin noise and allows the use
 
     ``` bash
     git clone https://github.com/andrearanica/procedural-generation
+    cd procedural-generation
     ```
 
 2. Install the compiler:
+
      2.1 On Windows, you can install [MinGW32](https://github.com/brechtsanders/winlibs_mingw/releases/download/10.2.0-11.0.0-8.0.0-r7/winlibs-i686-posix-dwarf-gcc-10.2.0-llvm-11.0.0-mingw-w64-8.0.0-r7.7z) and extract it under `C:\`. Then you have to use [MSYS](https://elearning.unimib.it/pluginfile.php/1915801/course/section/333018/MSYS-1.0.11.exe?time=1614584713647) as shell, which has all the necessary components to build the project. 
+
      2.2 On Linux you can use the default compiler which can be installed with the following command. 
-        ``` bash
-        sudo apt install build-essential
-        ```
+
+    ``` bash
+    sudo apt install build-essential
+    ```
 
 4. Libraries: on Windows you don't need to install anything manually, since libraries are stored inside the `base/` subfolder; on Linux you need to run the `install_dependencies.sh` script or manually run the following commands. 
 
