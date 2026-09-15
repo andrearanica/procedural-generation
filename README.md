@@ -41,6 +41,10 @@ The program renders a pseudo-random island using Perlin noise and allows the use
     make run
     ```
 
+## Contributions
+
+Contributions are welcome! Please check the [Issue tracker](https://github.com/andrearanica/procedural-generation/issues) to find something to work on, or open a new issue if you cannot find one that suits your interests. 
+
 ## Sources
 
 The core structure of the source code was provided by the teachers of the computer graphics course of the University of Milano-Bicocca; this core has been expanded to reach the goals of the project. 
